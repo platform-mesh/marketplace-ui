@@ -1,0 +1,16 @@
+.default-account-label {
+  margin-left: 10px;
+}
+:host ::ng-deep {
+  .fdp-table-no-header thead {
+    display: none;
+  }
+
+  th[role='columnheader'] {
+    border-bottom: 0.25px solid var(--sapField_BorderColor) !important;
+  }
+
+  .fd-toolbar {
+    border-bottom: none;
+  }
+}

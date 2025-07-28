@@ -1,0 +1,218 @@
+@if (extension) {
+  <fdp-dynamic-page
+    ariaLabel="View Extension"
+    size="large"
+    [autoResponsive]="false"
+  >
+    <fdp-dynamic-page-title
+      [subtitle]="extension.category ?? 'DXP'"
+      [title]="extension.displayName"
+    >
+      <fdp-dynamic-page-global-actions>
+        <fd-toolbar fdType="transparent" [clearBorder]="true">
+          <ng-container *requiredPolicies="'providerAdmin'">
+            @if (showEditButton()) {
+              <fdp-button
+                buttonType="standard"
+                contentDensity="compact"
+                data-testid="dxp-extension-details-edit-button"
+                glyph="customize"
+                label="Configure"
+                i18n-label
+                [disabled]="(isChanging | async) ?? false"
+                (click)="editExtension()"
+              />
+            }
+          </ng-container>
+        </fd-toolbar>
+      </fdp-dynamic-page-global-actions>
+    </fdp-dynamic-page-title>
+
+    <fdp-dynamic-page-header
+      [collapsed]="false"
+      [collapsible]="false"
+      [pinnable]="false"
+    >
+      <fd-facet-group
+        ariaLabel="View Extension Header"
+        data-testid="dxp-extension-details-header"
+      >
+        <fd-facet id="avatar" type="image">
+          <fd-avatar
+            ariaLabel="Extension avatar"
+            size="m"
+            [contain]="true"
+            [image]="getIcon(extension)"
+            [transparent]="true"
+          />
+        </fd-facet>
+        <fd-facet type="key-value">
+          <label
+            data-testid="dxp-extension-details-providerVerification-label"
+            fd-form-label
+            [colon]="true"
+            >Provider</label
+          >
+          <app-provider-verification [verification]="extension.verification" />
+        </fd-facet>
+        @if (extension.creationTimestamp) {
+          <fd-facet id="created-on" type="key-value">
+            <label
+              data-testid="dxp-extension-details-createdOn-label"
+              fd-form-label
+              [colon]="true"
+              >Created On</label
+            >
+            <span
+              aria-label="created-on"
+              fd-object-status
+              [label]="extension.creationTimestamp | date: 'mediumDate'"
+            ></span>
+          </fd-facet>
+        }
+        @let status = status$ | async;
+        @if (status) {
+          <fd-facet type="key-value">
+            <label
+              data-testid="dxp-extension-details-status-label"
+              fd-form-label
+              [colon]="true"
+              >Status</label
+            >
+            <span
+              fd-object-status
+              status="critical"
+              [label]="status.label"
+            ></span>
+          </fd-facet>
+        }
+        @if (extension.labels) {
+          <fd-facet class="label-container" type="custom">
+            @for (label of extension.labels; track label.title) {
+              <div>
+                <fd-info-label
+                  type="icon"
+                  [color]="label.color"
+                  [label]="label.title"
+                  [title]="label.title"
+                />
+              </div>
+            }
+          </fd-facet>
+        }
+
+        @if (extension.serviceLevel) {
+          <fd-facet type="key-value">
+            <label
+              data-testid="dxp-extension-details-serviceLevel-label"
+              fd-form-label
+              [colon]="true"
+              >Service Level</label
+            >
+            <span
+              data-testid="dxp-extension-details-serviceLevel-status"
+              fd-object-status
+              [label]="mapServiceLevel(extension.serviceLevel)"
+            >
+            </span>
+          </fd-facet>
+        }
+      </fd-facet-group>
+    </fdp-dynamic-page-header>
+
+    @if (hasAccountType()) {
+      <fdp-dynamic-page-content id="accounts">
+        <app-provider-account-table [extension]="extension" />
+      </fdp-dynamic-page-content>
+    } @else {
+      <fdp-dynamic-page-content id="description">
+        <ng-container *ngTemplateOutlet="descriptionSection" />
+      </fdp-dynamic-page-content>
+    }
+  </fdp-dynamic-page>
+}
+
+<ng-template #descriptionSection>
+  <div class="page-section" data-testid="dxp-extension-details-description">
+    <div class="page-section__title">
+      <h4
+        fd-title
+        i18n="
+          Extension description title|An introduction header for the description
+          of an extension
+        "
+      >
+        What is {{ extension?.displayName }}?
+      </h4>
+    </div>
+    {{ extension?.description }}
+  </div>
+  @if (extension?.documentation) {
+    <div class="page-section" data-testid="dxp-extension-details-documentation">
+      <div class="page-section__title">
+        <h4
+          fd-title
+          i18n="
+            Extension documentation title|An introduction header for the
+            documentation of an extension
+          "
+        >
+          Want to know more?
+        </h4>
+      </div>
+      @if (extension?.documentation?.length) {
+        @for (doc of extension?.documentation; track doc.name) {
+          <p>
+            <a fd-link target="_blank" [href]="doc.url"
+              >{{ doc.name || 'Documentation' }}
+              <fd-icon glyph="inspect" />
+            </a>
+          </p>
+        }
+      }
+    </div>
+  }
+  @if (extension?.contacts) {
+    <div class="page-section" data-testid="dxp-extension-details-contacts">
+      <div class="page-section__title">
+        <h4
+          fd-title
+          i18n="
+            Extension contacts title|An introduction header for the contacts of
+            an extension
+          "
+        >
+          Contacts
+        </h4>
+      </div>
+      @for (contact of extension?.contacts; track contact) {
+        <div>
+          @if (contact.contactLink) {
+            <a fd-link target="_blank" [href]="contact.contactLink"
+              >{{ contact.displayName }}
+            </a>
+          } @else {
+            <a fd-link target="_blank" [href]="'mailto:' + contact.email">
+              {{ contact.displayName }}
+            </a>
+          }
+
+          @if (contact.roles) {
+            <span class="contact-role">
+              (
+              @for (r of contact.roles; track r) {
+                <span
+                  >{{ r }}
+                  @if (!$last) {
+                    <span>, </span>
+                  }
+                </span>
+              }
+              )
+            </span>
+          }
+        </div>
+      }
+    </div>
+  }
+</ng-template>

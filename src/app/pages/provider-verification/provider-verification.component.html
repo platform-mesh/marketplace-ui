@@ -1,0 +1,21 @@
+@if (verificationInfo) {
+  <div>
+    @if (verificationInfo.inlineHelp) {
+      <fd-avatar
+        ariaLabel="Verified icon"
+        class="verified-icon"
+        image="assets/images/verified.svg"
+        size="xs"
+        [contain]="true"
+        [fd-inline-help]="verificationInfo.inlineHelp"
+        [transparent]="true"
+      />
+    }
+    <span
+      class="verification-label"
+      fd-object-status
+      [label]="verificationInfo.label"
+      [status]="verificationInfo.objectStatus"
+    ></span>
+  </div>
+}

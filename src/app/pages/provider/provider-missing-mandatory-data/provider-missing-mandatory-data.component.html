@@ -1,0 +1,41 @@
+<ng-container *requiredPolicies="'providerAdmin'">
+  <div style="width: 100%; display: flex; justify-content: center">
+    <figure fd-illustrated-message [svgConfig]="sceneConfig">
+      <figcaption fd-illustrated-message-figcaption>
+        <h3 fd-illustrated-message-title>Extension not configured</h3>
+        <p fd-illustrated-message-text></p>
+      </figcaption>
+      <fd-illustrated-message-actions>
+        <button
+          data-testid="dxp-missing-mandatory-data-navigate-to-wizard-configuration-extension-button"
+          fd-button
+          fdCompact
+          fdType="emphasized"
+          label="Configure"
+          (click)="openExtensionConfiguration()"
+        ></button>
+      </fd-illustrated-message-actions>
+    </figure>
+  </div>
+</ng-container>
+
+<ng-container *requiredPolicies="'projectMember'">
+  <div style="width: 100%; display: flex; justify-content: center">
+    <figure fd-illustrated-message [svgConfig]="sceneConfig">
+      <figcaption fd-illustrated-message-figcaption>
+        <h3 fd-illustrated-message-title>Extension not configured</h3>
+        <p fd-illustrated-message-text>
+          Contact the
+          <a
+            class="members-mandatory-data-link"
+            data-testid="dxp-missing-mandatory-data-navigate-to-members-button"
+            fd-link
+            (click)="navigateToMembers()"
+            >project owners</a
+          >
+          to finish configuring the extension.
+        </p>
+      </figcaption>
+    </figure>
+  </div>
+</ng-container>

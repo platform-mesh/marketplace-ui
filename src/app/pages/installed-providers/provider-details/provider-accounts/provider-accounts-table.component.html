@@ -1,0 +1,220 @@
+<div>
+  @for (
+    apiResourceConfig of getAccountConnections();
+    track apiResourceConfig.name
+  ) {
+    @for (
+      messageStrip of getAccountMessageStrips(apiResourceConfig);
+      track messageStrip.text
+    ) {
+      <fd-message-strip
+        [dismissible]="messageStrip.dismissible"
+        [noIcon]="messageStrip.noIcon"
+        [type]="messageStrip.type"
+      >
+        {{ messageStrip.text }}
+      </fd-message-strip>
+    }
+  }
+</div>
+
+@if (userIsExtensionReader | async) {
+  @if (this.extension().name === 'dxp-btp-accounts-ui') {
+    <app-btp-account-table [provider]="this.extension()" />
+  } @else if (hasApiResourcesAccConnectionType()) {
+    @for (
+      apiResourceConfig of getAccountConnections();
+      track apiResourceConfig.name
+    ) {
+      <app-provider-account-resources
+        class="account-table"
+        [accountConnection]="apiResourceConfig"
+      />
+    }
+  } @else {
+    @if (
+      showAddAccountMessage(
+        (accountHasCustomResources | async) ?? false,
+        (userIsExtensionReader | async) ?? false
+      )
+    ) {
+      <fdp-table
+        #table
+        class="fdp-table-no-header"
+        fdCompact
+        noVisibleColumnsMessage=" "
+        [dataSource]="[]"
+        [enableDragResize]="false"
+        [highlightNavigatedRow]="false"
+        [noBodyBorders]="true"
+        [noBorderY]="true"
+        [noOuterBorders]="true"
+        [nonInteractiveHeader]="true"
+        [rowNavigatable]="false"
+      >
+        <fdp-table-toolbar
+          [hideItemCount]="true"
+          [hideSearchInput]="true"
+          [title]="extension().displayName + ' ' + accountNamingConfig().plural"
+        />
+        <fdp-table-no-data-wrapper>
+          <figure fd-illustrated-message type="spot" [svgConfig]="spotConfig">
+            <figcaption fd-illustrated-message-figcaption>
+              <h3 fd-illustrated-message-title>
+                No {{ extension().displayName }}
+                {{ accountNamingConfigLowerCase().plural }}
+              </h3>
+              <p fd-illustrated-message-text>
+                Add a {{ extension().displayName }}
+                {{ accountNamingConfigLowerCase().singular }} to get started.
+              </p>
+            </figcaption>
+            <fd-illustrated-message-actions *requiredPolicies="'providerAdmin'">
+              <button
+                ariaLabel="Add"
+                data-testid="dxp-extension-accounts-add-account-button"
+                fd-button
+                fdType="ghost"
+                label="Add"
+                (click)="addAccount(extension().accountConnections?.[0])"
+              ></button>
+            </fd-illustrated-message-actions>
+          </figure>
+        </fdp-table-no-data-wrapper>
+      </fdp-table>
+    } @else {
+      @for (group of getAccountGroups(); track group) {
+        <fdp-table
+          #table
+          fdCompact
+          [dataSource]="accountsPerType[group]"
+          [noBodyBorders]="true"
+          [noBorderY]="true"
+          [noOuterBorders]="true"
+          [noVerticalBorders]="true"
+          [rowNavigatable]="false"
+        >
+          @if (true) {
+            <fdp-table-toolbar
+              [hideSearchInput]="true"
+              [title]="
+                accountTypes[group].displayName +
+                ' ' +
+                accountNamingConfig().plural
+              "
+            >
+              <fdp-table-toolbar-actions>
+                @if (true) {
+                  <button
+                    ariaLabel="Add"
+                    buttonType="transparent"
+                    data-testid="dxp-extension-accounts-add-account-button"
+                    fd-button
+                    label="Add"
+                    (click)="addAccount(extension().accountConnections?.[0])"
+                  ></button>
+                }
+              </fdp-table-toolbar-actions>
+            </fdp-table-toolbar>
+          }
+
+          <fdp-column label="Organization" name="organization">
+            <fdp-table-cell *fdpCellDef="let item">
+              <a
+                aria-label="Emphasized"
+                fd-link
+                [attr.data-testid]="
+                  'dxp-extension-accounts-table-' +
+                  item.displayName +
+                  '-account-link'
+                "
+                [emphasized]="true"
+                (click)="openLink(item)"
+                >{{ item.displayName }}</a
+              >
+              @if (item.id === accountTypes[group].defaultAccount?.id) {
+                <fd-info-label
+                  class="default-account-label"
+                  i18n="default | default account label| account list"
+                  color="10"
+                  label="default"
+                  title="default"
+                />
+              }
+            </fdp-table-cell>
+          </fdp-column>
+
+          <fdp-column label="Host" name="host">
+            <fdp-table-cell *fdpCellDef="let item">
+              {{ item.subType }}
+            </fdp-table-cell>
+          </fdp-column>
+
+          @let _githubRegistrations = (githubRegistrations | async) ?? [];
+          @if (showIssuesColumn(_githubRegistrations)) {
+            <fdp-column label="Issues" name="issues">
+              <fdp-table-cell *fdpCellDef="let item">
+                @if (
+                  installationHasSelectedRepositories(
+                    _githubRegistrations,
+                    item.subType,
+                    item.displayName
+                  )
+                ) {
+                  <dxp-status-info-popover [statusInfo]="limitedAccess" />
+                }
+              </fdp-table-cell>
+            </fdp-column>
+          }
+
+          <fdp-column align="end" label="" name="actions">
+            <fdp-table-cell *fdpCellDef="let item">
+              <button
+                *requiredPolicies="'providerAdmin'"
+                ariaLabel="Edit"
+                fd-button
+                fdType="transparent"
+                glyph="edit"
+                title="Edit"
+                [attr.data-testid]="
+                  'dxp-extension-accounts-list-' +
+                  item.displayName +
+                  '-edit-button'
+                "
+                (click)="editAccount(item)"
+              ></button>
+
+              <button
+                *requiredPolicies="'providerAdmin'"
+                ariaLabel="Remove"
+                data-analytics-id="dxp-extension-account-list-delete-button"
+                fd-button
+                fdType="transparent"
+                glyph="delete"
+                title="Remove"
+                [attr.data-testid]="
+                  'dxp-extension-accounts-list-' +
+                  item.displayName +
+                  '-remove-button'
+                "
+                (click)="removeAccount(item)"
+              ></button>
+            </fdp-table-cell>
+          </fdp-column>
+        </fdp-table>
+      }
+    }
+  }
+} @else {
+  <figure fd-illustrated-message type="spot" [svgConfig]="spotConfig">
+    <figcaption fd-illustrated-message-figcaption>
+      <h3 fd-illustrated-message-title>
+        You need to be member of this {{ scopeTypeText | async }} to view the
+        {{ accountNamingConfigLowerCase().plural }}.
+      </h3>
+      <p fd-illustrated-message-text>
+        You can ask an owner to add you to this {{ scopeTypeText | async }}.
+      </p>
+    </figcaption>
+  </figure>
+}

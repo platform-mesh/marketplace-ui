@@ -1,0 +1,11 @@
+<fdp-dynamic-page>
+  <fdp-dynamic-page-title />
+  <fdp-dynamic-page-content>
+    @let mode = isFeatureToggle();
+    <app-provider-all
+      [infoLabelFilters]="mode ? infoLabelFilters : undefined"
+      [isFeatureMode]="mode"
+      [title]="mode ? undefined : 'Marketplace'"
+    />
+  </fdp-dynamic-page-content>
+</fdp-dynamic-page>

@@ -1,0 +1,16 @@
+dxp-wizard-generator {
+  display: block;
+  height: 100vh;
+}
+:host ::ng-deep .fd-checkbox__label {
+  user-select: none;
+  //remove once we have the new fundamentals version (after v0.53.2)
+  &-container {
+    pointer-events: auto !important;
+  }
+}
+
+:host ::ng-deep .fd-checkbox__text {
+  // needed to avoid the ellipsis in the create resource checkbox
+  overflow: visible;
+}

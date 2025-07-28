@@ -1,0 +1,60 @@
+.page-section {
+  padding: 1rem 0 0;
+  white-space: pre-line;
+}
+
+.page-section__title {
+  height: 2.75rem;
+  width: 100%;
+  border-bottom: 0.0625rem transparent;
+  margin: 0 -2rem 1rem -2rem;
+  padding: 0 2rem;
+
+  h4 {
+    line-height: 2.75rem;
+    border-bottom: 0.0625rem transparent;
+    width: fit-content;
+  }
+}
+
+.label-container {
+  margin-left: 0.5rem;
+}
+
+:host ::ng-deep {
+  // TODO temporary solutions https://github.tools.sap/dxp/extension-manager/issues/105
+  // Removes border from dynamic page header
+  .fd-dynamic-page__collapsible-header-visibility-container {
+    display: none;
+  }
+
+  // Removes bloating footer from dynamic page content
+  .fd-dynamic-page .footer-spacer {
+    display: none;
+  }
+
+  .fd-dynamic-page__toolbar-container {
+    margin-left: auto;
+  }
+
+  .fd-dynamic-page fd-tab#dependencies-panel .fd-dynamic-page__content {
+    padding: 0;
+  }
+
+  .fd-title--h5 {
+    font-size: var(--sapFontSize) !important;
+  }
+
+  fd-facet h1.fd-margin-bottom--sm {
+    margin-bottom: 0 !important;
+  }
+
+  .fd-facet-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .fd-facet {
+    margin-bottom: 0;
+  }
+}

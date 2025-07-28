@@ -1,0 +1,70 @@
+<fd-message-box>
+  <fd-message-box-header>
+    <h1 fd-title>Edit {{ accountNamingConfigLowerCase().singular }}</h1>
+  </fd-message-box-header>
+
+  <fd-message-box-body>
+    <ul fd-list [byline]="true">
+      <li class="list-item" fd-list-item>
+        <span fd-list-thumbnail>
+          <fd-avatar
+            ariaLabel="Extension avatar"
+            size="xs"
+            [contain]="true"
+            [image]="account.type.image"
+            [transparent]="true"
+          />
+        </span>
+        <div fd-list-content>
+          <div
+            fd-list-title
+            [attr.data-testid]="'dxp-extension-account-edit-dialog-displayName'"
+          >
+            {{ account.displayName }}
+          </div>
+          <div fd-list-byline>{{ account.subType }}</div>
+        </div>
+      </li>
+      <li class="list-item side-content" fd-list-item>
+        <div fd-list-content>
+          <fd-checkbox
+            fd-initial-focus
+            i18n="Set as default account| edit account dialog"
+            [attr.data-testid]="
+              'dxp-extension-account-edit-dialog-set-as-default-checkbox'
+            "
+            [disabled]="accountIsDefault()"
+            [label]="
+              'Set as default ' + accountNamingConfigLowerCase().singular
+            "
+            [(ngModel)]="setDefault"
+          />
+          @if (!accountIsDefault() && account.type.defaultAccount) {
+            <label fd-form-label
+              >This will override the current default account "<b>{{
+                account.type.defaultAccount.displayName
+              }}</b
+              >"</label
+            >
+          }
+        </div>
+      </li>
+    </ul>
+  </fd-message-box-body>
+
+  <fd-message-box-footer>
+    <fd-button-bar
+      ariaLabel="Save"
+      data-testid="dxp-extension-account-edit-dialog-button"
+      fdType="emphasized"
+      label="Save"
+      (click)="edit()"
+    />
+    <fd-button-bar
+      ariaLabel="Cancel"
+      data-testid="dxp-extension-account-cancel-edit-dialog-button"
+      label="Cancel"
+      (click)="cancel()"
+    />
+  </fd-message-box-footer>
+</fd-message-box>

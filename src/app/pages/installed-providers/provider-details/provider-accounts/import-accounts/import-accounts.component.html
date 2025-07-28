@@ -1,0 +1,87 @@
+<fd-dynamic-page ariaLabel="Import Table Dialog" size="small">
+  <fd-dynamic-page-header />
+  <fd-dynamic-page-content>
+    <fd-message-strip type="information">
+      Import only the Jenkins instances that belong to the specific Product or
+      Experiment you are working with. Instances that are incorrectly mapped,
+      cannot be re-imported later.
+    </fd-message-strip>
+
+    <fd-message-strip type="warning">
+      Before proceeding with the Jenkins import, make sure that
+      <b
+        >this Product or Experiment has a connection to your Hyperspace
+        Onboarding group</b
+      >
+      (if you have one). If there is no connection and you would like to
+      transfer your pipelines from Onboarding to the Portal in the future, we
+      recommend that you delete this Product or Experiment and start fresh.
+      <fdp-link
+        href="https://hyperspace.tools.sap/docs/features_and_use_cases/how_tos/transfer-pipeline-to-portal/#connect-your-hyperspace-onboarding-group-to-a-hyperspace-portal-product-or-experiment-prerequisite"
+        target="_blank"
+      >
+        Learn how to connect a Hyperspace Onboarding Group to a Portal
+        Product/Experiment.
+      </fdp-link>
+    </fd-message-strip>
+
+    <fdp-table
+      emptyTableMessage="No accounts found"
+      selectableKey="selectable"
+      selectedKey="selected"
+      selectionMode="multiple"
+      [dataSource]="data"
+      [enableDragResize]="false"
+      [noBodyBorders]="true"
+      [noBorderY]="true"
+      [noOuterBorders]="true"
+      (rowSelectionChange)="onRowSelectionChange($event)"
+    >
+      <fdp-table-toolbar
+        title="Instance"
+        [hideSearchInput]="true"
+        [shouldOverflow]="true"
+      />
+
+      <fdp-column
+        align="start"
+        key="name"
+        label="Instance Name"
+        name="instanceName"
+      />
+
+      <fdp-column align="start" key="size" label="Size" name="size" />
+
+      <fdp-column align="center" key="imported" label="" name="imported">
+        <fdp-table-cell *fdpCellDef="let item">
+          @if (item.imported) {
+            <fdp-object-status
+              glyph="sys-enter-2"
+              label="Imported"
+              status="positive"
+              [clickable]="true"
+              [inverted]="true"
+            />
+          }
+        </fdp-table-cell>
+      </fdp-column>
+    </fdp-table>
+  </fd-dynamic-page-content>
+  <fd-dynamic-page-footer>
+    <div barDesign="footer" fd-bar>
+      <div fd-bar-right>
+        <fdp-button
+          buttonType="emphasized"
+          label="Import"
+          [disabled]="this.selectedElements.length === 0"
+          (click)="importAccounts()"
+        />
+        <fdp-button
+          buttonType="transparent"
+          label="Cancel"
+          (click)="wizardCanceled()"
+        />
+      </div>
+    </div>
+  </fd-dynamic-page-footer>
+</fd-dynamic-page>

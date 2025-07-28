@@ -1,0 +1,24 @@
+.extensions-install-dialog-body {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+fd-dynamic-page fd-dynamic-page-content.fd-dynamic-page__content {
+  display: flex;
+}
+
+:host ::ng-deep {
+  .fd-scrollbar {
+    height: 100%;
+  }
+}
+
+fd-dynamic-page-header {
+  display: none;
+}
+
+:host ::ng-deep {
+  fd-dialog-body {
+    background: transparent;
+  }
+}

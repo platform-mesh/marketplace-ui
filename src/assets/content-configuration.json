@@ -1,0 +1,203 @@
+{
+  "name": "extension-manager",
+  "luigiConfigFragment": {
+    "data": {
+      "viewGroup": {
+        "preloadSuffix": "/#/preload"
+      },
+      "nodes": [
+        {
+          "entityType": "project",
+          "pathSegment": "marketplace",
+          "label": "{{marketplace}}",
+          "icon": "retail-store",
+          "testId": "dxp-frame-navigation-project-marketplace",
+          "hideFromNav": false,
+          "urlSuffix": "/#/entity/:projectId/marketplace",
+          "order": 4,
+          "dxpOrder": 4
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "configurations",
+          "defineEntity": {
+            "id": "configurations",
+            "useBack": true
+          },
+          "keepSelectedForChildren": true,
+          "label": "Configurations",
+          "virtualTree": false,
+          "hideFromNav": true
+        },
+        {
+          "pathSegment": "btp-accounts",
+          "label": "BTP Accounts",
+          "entityType": "project",
+          "urlSuffix": "/#/configurations/btp-accounts",
+          "visibleForContext": "contains(entityContext.project.policies, 'iamMember')",
+          "visibleForFeatureToggles": ["btpAccount"],
+          "category": {
+            "id": "settings::configurations",
+            "label": "Configurations"
+          },
+          "context": {
+            "providerName": "dxp-btp-accounts-ui"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "configurations/:providerName",
+          "hideFromNav": true,
+          "urlSuffix": "/#/configurations/:providerName",
+          "context": {
+            "providerName": ":providerName"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "create-res/:scope/:providerName/:accountType",
+          "hideFromNav": true,
+          "urlSuffix": "/#/create-res/:scope/:providerName/:accountType",
+          "context": {
+            "providerName": ":providerName"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "create-btp-acc/:scope/:providerName",
+          "hideFromNav": true,
+          "urlSuffix": "/#/create-btp-acc/:scope/:providerName",
+          "context": {
+            "providerName": ":providerName"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "import/:providerName",
+          "hideFromNav": true,
+          "urlSuffix": "/#/import/:providerName",
+          "context": {
+            "providerName": ":providerName"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "edit-res/:scope/:providerName/:accountType/:name/:nspace",
+          "hideFromNav": true,
+          "urlSuffix": "/#/edit-res/:scope/:providerName/:accountType/:name/:nspace",
+          "context": {
+            "providerName": ":providerName"
+          }
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "accounts",
+          "hideFromNav": true,
+          "urlSuffix": "/#/configurations/dxp-github-ui",
+          "context": {
+            "providerName": "dxp-github-ui"
+          }
+        },
+        {
+          "pathSegment": "extension-missing-mandatory-data",
+          "hideFromNav": true,
+          "context": {
+            "providesMissingMandatoryDataUrl": true
+          },
+          "urlSuffix": "/#/extension-missing-mandatory-data/:providerName",
+          "entityType": "project",
+          "testId": "dxp-frame-navigation-project-extension-missing-mandatory-data"
+        },
+        {
+          "entityType": "project",
+          "pathSegment": "extensions",
+          "label": "{{extensions}}",
+          "hideFromNav": true,
+          "children": [
+            {
+              "pathSegment": ":providerName",
+              "hideFromNav": true,
+              "urlSuffix": "/#/extensions/:providerName",
+              "context": {
+                "providerName": ":providerName"
+              }
+            }
+          ]
+        },
+        {
+          "entityType": "team",
+          "pathSegment": "extensions",
+          "label": "{{extensions}}",
+          "hideFromNav": true,
+          "children": [
+            {
+              "pathSegment": ":providerName",
+              "hideFromNav": true,
+              "urlSuffix": "/#/extensions/:providerName",
+              "context": {
+                "providerName": ":providerName"
+              }
+            }
+          ]
+        },
+        {
+          "category": {
+            "id": "community-extensions",
+            "label": "{{communityExtensions}}",
+            "isGroup": true
+          },
+          "dxpOrder": 20,
+          "order": 20,
+          "entityType": "project"
+        },
+        {
+          "category": {
+            "id": "community-extensions",
+            "label": "{{communityExtensions}}",
+            "isGroup": true
+          },
+          "dxpOrder": 20,
+          "order": 20,
+          "entityType": "project.component"
+        },
+        {
+          "pathSegment": "extension-configuration",
+          "entityType": "project",
+          "hideFromNav": true,
+          "hideSideNav": true,
+          "label": "Extension Configuration",
+          "urlSuffix": "/#/extension-configuration"
+        }
+      ],
+      "texts": [
+        {
+          "locale": "",
+          "textDictionary": {
+            "extensions": "Extensions",
+            "all": "All",
+            "communityExtensions": "Community Extensions",
+            "marketplace": "Marketplace"
+          }
+        },
+        {
+          "locale": "en",
+          "textDictionary": {
+            "extensions": "Extensions",
+            "all": "All",
+            "communityExtensions": "Community Extensions",
+            "marketplace": "Marketplace"
+          }
+        },
+        {
+          "locale": "de",
+          "textDictionary": {
+            "extensions": "Erweiterungen",
+            "all": "Alle",
+            "communityExtensions": "Community Erweiterungen",
+            "marketplace": "Marktplatz"
+          }
+        }
+      ]
+    }
+  }
+}

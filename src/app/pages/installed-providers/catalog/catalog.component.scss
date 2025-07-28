@@ -1,0 +1,8 @@
+/* change the color of the text when click on it */
+.catalog-page .fd-grid-list__item--link:active {
+  color: var(--sapTextColor) !important;
+}
+
+::ng-deep .fd-dynamic-page__header {
+  display: none !important;
+}

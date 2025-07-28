@@ -1,0 +1,36 @@
+@if (data?.length) {
+  <dxp-table-generator [data]="data ?? []" [tableConfig]="tableConfig" />
+} @else {
+  <figure fd-illustrated-message type="spot" [svgConfig]="spotConfig">
+    <figcaption fd-illustrated-message-figcaption>
+      <h3 fd-illustrated-message-title>
+        You need to add {{ accountNamingArticle }}
+        {{ accountNamingConfigLowercase.singular }} for the
+        {{ (provider | async)?.displayName }} extension
+      </h3>
+      <p fd-illustrated-message-text>
+        {{ accountNamingConfig.plural }} help you reap the benefits of the
+        extension.
+      </p>
+    </figcaption>
+    <fd-illustrated-message-actions>
+      @for (
+        globalAction of this.tableConfig.toolbar?.actions;
+        track globalAction.id
+      ) {
+        <fdp-button
+          *requiredPolicies="globalAction.requiredPolicies"
+          [ariaLabel]="globalAction.label"
+          [attr.data-testid]="
+            'dxp-extension-accounts-' + globalAction.id + '-button'
+          "
+          [buttonType]="globalAction.transparentButton ? 'transparent' : ''"
+          [glyph]="globalAction.glyph || ''"
+          [label]="globalAction.label"
+          [title]="globalAction.label"
+          (click)="toolbarActionCallback($event, globalAction)"
+        />
+      }
+    </fd-illustrated-message-actions>
+  </figure>
+}

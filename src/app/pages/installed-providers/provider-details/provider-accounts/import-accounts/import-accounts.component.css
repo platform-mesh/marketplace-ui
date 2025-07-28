@@ -1,0 +1,26 @@
+::ng-deep .fdp-table__container {
+  border-top: 1px solid var(--sapGroup_ContentBorderColor) !important;
+  border-bottom: 1px solid var(--sapGroup_ContentBorderColor) !important;
+}
+
+fd-dynamic-page-content {
+  background-color: #fff;
+  height: calc(100vh - 40px) !important;
+  padding: 1rem !important;
+}
+
+fd-message-strip {
+  margin-bottom: 1rem;
+}
+
+::ng-deep .fd-dynamic-page__title-area {
+  display: none !important;
+}
+
+:host ::ng-deep td.is-last-child {
+  border-left-style: none !important;
+}
+
+:host ::ng-deep .fd-table__cell {
+  border-left-style: none !important;
+}
