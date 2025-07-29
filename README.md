@@ -43,5 +43,5 @@ To develop locally using an account configuration (e.g., jira), you need to:
           "context": {
             "extClassName": "jira"
           }
-        },
+        }
 ```
