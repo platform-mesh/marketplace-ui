@@ -17,7 +17,7 @@ import {
 } from '@fundamental-ngx/core/illustrated-message';
 import { LinkComponent } from '@fundamental-ngx/core/link';
 import { Store } from '@ngrx/store';
-import { ProviderMetadata } from 'models/provider-metadata';
+import { MarketplaceEntry } from 'models/provider-metadata';
 import { Subject, combineLatest, takeUntil } from 'rxjs';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
@@ -46,7 +46,7 @@ export class ProviderMissingMandatoryDataComponent
   implements OnInit, OnDestroy
 {
   projectId = '';
-  extension: ProviderMetadata | undefined;
+  marketplaceEntry: MarketplaceEntry | undefined;
   ngUnsubscribe = new Subject<void>();
 
   title = 'Mandatory Data Missing';
@@ -83,19 +83,19 @@ export class ProviderMissingMandatoryDataComponent
 
     combineLatest([this.store.select(selectAllProviders), this.route.params])
       .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(([extensions, params]) => {
-        this.extension = extensions.find(
-          (e) => e.name === (params['providerName'] as string) || undefined,
+      .subscribe(([marketplaceEntries, params]) => {
+        this.marketplaceEntry = marketplaceEntries.find(
+          (e) =>
+            e.metadata.name === (params['providerName'] as string) || undefined,
         );
       });
   }
 
   openExtensionConfiguration(): void {
-    if (this.extension) {
+    if (this.marketplaceEntry) {
       this.providerService.openConfigurationWizard(
-        this.extension.name,
-        this.extension.displayName,
-        this.extension.scope.type,
+        this.marketplaceEntry.metadata.name,
+        this.marketplaceEntry.spec.providerMetadata.spec.displayName,
       );
     }
   }

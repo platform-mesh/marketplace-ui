@@ -4,24 +4,24 @@ import { NotificationService } from '@dxp/ngx-core/notification';
 import { ConfirmationModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { ConfirmationDialogDecision } from 'models/dialog';
-import { EXTENSION_INSTALLED } from 'models/luigi-go-back';
+import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { ProviderConfigurationData } from 'models/provider-configuration-data';
 import {
   AccountConnection,
   ColorCategory,
   InstallProviderInput,
   Label,
+  MarketplaceEntry,
   ProviderMetadata,
   ScopeType,
   ServiceInstance,
   ServiceLevel,
-  ServiceStatus,
 } from 'models/provider-metadata';
 import { filter, take } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
 import { triggerMatomoEvent } from 'shared/helpers';
 import { AccountNamingService } from 'state/account-naming/account-naming.service';
-import { unInstallExtension } from 'state/changing-extensions.actions';
+import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
 import { ScopeInformation, selectScopeInfo } from 'state/luigi.selectors';
 import { loadProviders } from 'state/providers.actions';
 
@@ -57,75 +57,75 @@ export class ProviderService {
     });
   }
 
-  installExtension(
-    extension: ProviderMetadata | undefined,
+  installProviderInstance(
+    marketplaceEntry: MarketplaceEntry | undefined,
     installationData?: Record<string, unknown>,
   ) {
-    if (!extension) {
-      throw new Error('Extension is undefined');
+    if (!marketplaceEntry) {
+      throw new Error('Provider is undefined');
     }
-    const installExtensionInstanceInput: InstallProviderInput = {
+    const installProviderInstanceInput: InstallProviderInput = {
       installationData,
       providerInput: {
-        id: extension.name,
-        scope: extension.scope.type,
+        id: marketplaceEntry.metadata.name,
       },
-      displayName: extension.displayName,
+      displayName: marketplaceEntry.spec.providerMetadata.spec.displayName,
     };
 
-    return this.graphqlService.installExtension(installExtensionInstanceInput);
-  }
-
-  updateExtension(
-    extension: ProviderMetadata,
-    extensionInstance: ServiceInstance,
-    installationData: Record<string, unknown>,
-  ) {
-    const updateExtensionInstanceInput = {
-      installationData,
-      instanceId: extensionInstance.id,
-      providerInput: {
-        id: extensionInstance.providerMetadata.name,
-        scope: extension.scope.type,
-      },
-    };
-    return this.graphqlService.updateExtensionInstance(
-      updateExtensionInstanceInput,
+    return this.graphqlService.installProviderInstance(
+      installProviderInstanceInput,
     );
   }
 
-  uninstallExtension(extension: ProviderMetadata): void {
+  updateProviderInstance(
+    marketplaceEntry: MarketplaceEntry,
+    providerInstance: ServiceInstance,
+    installationData: Record<string, unknown>,
+  ) {
+    const updateProviderInstanceInput = {
+      installationData,
+      instanceId: providerInstance.id,
+      providerInput: {
+        id: marketplaceEntry.metadata.name,
+      },
+    };
+    return this.graphqlService.updateProviderInstance(
+      updateProviderInstanceInput,
+    );
+  }
+
+  uninstallProviderInstance(marketplaceEntry: MarketplaceEntry): void {
     this.store.dispatch(
-      unInstallExtension({
-        extensionInstanceName: extension.instance!.id,
-        extension,
+      unInstallProviderInstance({
+        providerName: marketplaceEntry.metadata.name,
       }),
     );
   }
 
-  private triggerExtensionUninstallMatomoEvent(
-    extension: ProviderMetadata,
+  private triggerProviderInstanceUninstallMatomoEvent(
+    marketplaceEntry: MarketplaceEntry,
   ): void {
     this.pmLuigiContextService
       .contextObservable()
       .pipe(take(1))
       .subscribe((ctx) => {
-        triggerMatomoEvent('ExtensionUninstalled', {
-          extensionProvider: extension.provider,
-          extensionName: extension.name,
+        triggerMatomoEvent('providerUninstalled', {
+          providerProvider:
+            marketplaceEntry.spec.providerMetadata.spec.provider,
+          providerName: marketplaceEntry.metadata.name,
           projectType: ctx.context.entityContext?.project?.type,
           projectId: ctx.context.projectId,
         });
       });
   }
 
-  async uninstallExtensionDialog(
-    extension: ProviderMetadata,
+  async uninstallProviderInstanceDialog(
+    marketplaceEntry: MarketplaceEntry,
   ): Promise<boolean> {
     const settings: ConfirmationModalSettings = {
       type: 'warning',
-      header: $localize`Uninstall Extension` as string,
-      body: $localize`Are you sure you want to uninstall the Extension <b>${extension.displayName}</b>? All configurations will be removed.` as string,
+      header: $localize`Uninstall Provider` as string,
+      body: $localize`Are you sure you want to uninstall the Provider <b>${marketplaceEntry.spec.providerMetadata.spec.displayName}</b>? All configurations will be removed.` as string,
       buttonConfirm: $localize`Uninstall` as string,
       buttonDismiss: $localize`Cancel` as string,
     };
@@ -134,8 +134,8 @@ export class ProviderService {
       return false;
     }
 
-    this.uninstallExtension(extension);
-    this.triggerExtensionUninstallMatomoEvent(extension);
+    this.uninstallProviderInstance(marketplaceEntry);
+    this.triggerProviderInstanceUninstallMatomoEvent(marketplaceEntry);
     return true;
   }
 
@@ -149,53 +149,34 @@ export class ProviderService {
       .catch(() => Promise.resolve(ConfirmationDialogDecision.DISMISSED));
   }
 
-  public isUninstallable(extension: ProviderMetadata): boolean {
+  public isUninstallable(marketplaceEntry: MarketplaceEntry): boolean {
     return (
-      !this.isDeletionPrevented(extension) &&
-      this.hasScopeExtensionInstance(extension) &&
-      !this.isExtensionMandatory(extension) &&
-      extension?.instance?.status !== ServiceStatus.IN_DELETION
+      marketplaceEntry.spec.installed &&
+      !this.isDeletionPrevented(marketplaceEntry) &&
+      !this.isProviderMandatory(marketplaceEntry)
+      // && provider?.instance?.status !== ServiceStatus.IN_DELETION
     );
   }
 
-  private isDeletionPrevented(extension: ProviderMetadata): boolean {
+  private isDeletionPrevented(marketplaceEntry: MarketplaceEntry): boolean {
     return (
-      extension.instance?.providerData?.['disableProjectDeletion'] === 'true'
-    );
-  }
-  private hasScopeExtensionInstance(extension: ProviderMetadata): boolean {
-    return !!(
-      this.scopeInfo &&
-      !!this.scopeInfo.scopeId &&
-      extension.instance &&
-      extension.instance.scope.type === this.scopeInfo.scopeType
+      // provider.instance?.providerData?.['disableProjectDeletion'] === 'true'
+      !!marketplaceEntry
     );
   }
 
-  public isInstallableExtension(extension: ProviderMetadata): boolean {
-    return !!(
-      this.scopeInfo &&
-      !!this.scopeInfo.scopeId &&
-      !extension.instance
+  public isInstallable(marketplaceEntry: MarketplaceEntry): boolean {
+    return !marketplaceEntry.spec.installed;
+  }
+
+  public isProviderMandatory(marketplaceEntry: MarketplaceEntry): boolean {
+    return (
+      !marketplaceEntry.spec.installed &&
+      !!marketplaceEntry.spec.providerMetadata.spec.isMandatory
     );
   }
 
-  public isInstalledExtension(
-    extension: ProviderMetadata | undefined,
-  ): boolean {
-    return !!(
-      this.scopeInfo &&
-      !!this.scopeInfo.scopeId &&
-      !!extension &&
-      !!extension.instance
-    );
-  }
-
-  public isExtensionMandatory(extension: ProviderMetadata): boolean {
-    return !!extension.instance && !!extension.instance.isMandatoryExtension;
-  }
-
-  public getIcon(extension: ProviderMetadata): string {
+  public getIcon(provider: ProviderMetadata): string {
     let isDark = false;
     const theme = this.luigiClient.uxManager().getCurrentTheme() as string;
     switch (theme) {
@@ -204,45 +185,43 @@ export class ProviderService {
         isDark = true;
     }
 
-    if (extension.icon) {
+    if (provider.spec.icon) {
       if (isDark) {
-        if (extension.icon.dark?.url) {
-          return extension.icon.dark.url;
+        if (provider.spec.icon.dark?.url) {
+          return provider.spec.icon.dark.url;
         }
-        if (extension.icon.dark?.data) {
-          return extension.icon.dark.data;
+        if (provider.spec.icon.dark?.data) {
+          return provider.spec.icon.dark.data;
         }
       }
 
       // Fall back to light icons if no dark icon data was found
-      if (extension.icon.light?.url) {
-        return extension.icon.light.url;
+      if (provider.spec.icon.light?.url) {
+        return provider.spec.icon.light.url;
       }
-      if (extension.icon.light?.data) {
-        return extension.icon.light.data;
+      if (provider.spec.icon.light?.data) {
+        return provider.spec.icon.light.data;
       }
     }
     // nothing matched so go with the deprecated image value
-    return extension.image ?? '';
+    return provider.spec.image ?? '';
   }
 
   public openConfigurationWizard(
     providerName: string | undefined,
     providerDisplayName: string | undefined,
-    scope: ScopeType | undefined,
     modalSize?: 'l' | 'm' | 's',
   ) {
     const params: ProviderConfigurationData = {
       providerName: providerName ?? '',
       providerDisplayName: providerDisplayName ?? '',
-      scope: scope ?? ScopeType.GLOBAL,
       installableIn: this.scopeInfo?.scopeType ?? ScopeType.GLOBAL,
     };
     this.luigiClient
       .linkManager()
       .fromClosestContext()
       .withParams(params)
-      .openAsModal('/extension-configuration', {
+      .openAsModal('/provider-configuration', {
         size: modalSize,
       })
       .catch((error: unknown) => {
@@ -250,12 +229,12 @@ export class ProviderService {
       });
   }
 
-  navigateToProviderDetails(provider: ProviderMetadata) {
+  navigateToProviderDetails(marketplaceEntry: MarketplaceEntry) {
     const context = this.luigiClient
       .linkManager()
       .fromContext(this.scopeInfo?.scopeType?.toLowerCase() ?? '');
 
-    context.navigate(provider.name);
+    context.navigate(marketplaceEntry.metadata.name);
   }
 
   async openDialogForAddAccountType(account: AccountConnection): Promise<void> {
@@ -275,7 +254,7 @@ export class ProviderService {
 
   buildLabels(elem: ProviderMetadata): Label[] {
     const labels =
-      elem.labels?.map((l) => ({
+      elem.spec.labels?.map((l) => ({
         title: l.title,
         color: l.color || this.mapToColorCategory(l.title),
       })) || [];
@@ -309,10 +288,10 @@ export class ProviderService {
   }
 
   private isNew(elem: ProviderMetadata): boolean {
-    if (!elem.creationTimestamp) {
+    if (!elem.spec.creationTimestamp) {
       return false;
     }
-    const creationDate = new Date(elem.creationTimestamp);
+    const creationDate = new Date(elem.spec.creationTimestamp);
     const dateInThreeMonths = creationDate.setMonth(
       creationDate.getMonth() + 3,
     );
@@ -324,10 +303,12 @@ export class ProviderService {
     this.pmLuigiContextService
       .contextObservable()
       .pipe(
-        filter((data) => data.context.goBackContext === EXTENSION_INSTALLED),
+        filter(
+          (data) => data.context.goBackContext === PROVIDER_INSTANCE_INSTALLED,
+        ),
       )
       .subscribe(() => {
-        this.notificationService.openSuccessToast('Extension Installed');
+        this.notificationService.openSuccessToast('Provider Installed');
         this.luigiClient.clearFrameCache();
         this.store.dispatch(loadProviders());
       });

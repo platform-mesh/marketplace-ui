@@ -19,8 +19,12 @@
 </div>
 
 @if (userIsExtensionReader | async) {
-  @if (this.extension().name === 'dxp-btp-accounts-ui') {
-    <app-btp-account-table [provider]="this.extension()" />
+  @if (
+    this.marketplaceEntryInputSignal().metadata.name === 'dxp-btp-accounts-ui'
+  ) {
+    <app-btp-account-table
+      [marketplaceEntrySignal]="this.marketplaceEntryInputSignal()"
+    />
   } @else if (hasApiResourcesAccConnectionType()) {
     @for (
       apiResourceConfig of getAccountConnections();
@@ -55,17 +59,30 @@
         <fdp-table-toolbar
           [hideItemCount]="true"
           [hideSearchInput]="true"
-          [title]="extension().displayName + ' ' + accountNamingConfig().plural"
+          [title]="
+            marketplaceEntryInputSignal().spec.providerMetadata.spec
+              .displayName +
+            ' ' +
+            accountNamingConfig().plural
+          "
         />
         <fdp-table-no-data-wrapper>
           <figure fd-illustrated-message type="spot" [svgConfig]="spotConfig">
             <figcaption fd-illustrated-message-figcaption>
               <h3 fd-illustrated-message-title>
-                No {{ extension().displayName }}
+                No
+                {{
+                  marketplaceEntryInputSignal().spec.providerMetadata.spec
+                    .displayName
+                }}
                 {{ accountNamingConfigLowerCase().plural }}
               </h3>
               <p fd-illustrated-message-text>
-                Add a {{ extension().displayName }}
+                Add a
+                {{
+                  marketplaceEntryInputSignal().spec.providerMetadata.spec
+                    .displayName
+                }}
                 {{ accountNamingConfigLowerCase().singular }} to get started.
               </p>
             </figcaption>
@@ -76,7 +93,12 @@
                 fd-button
                 fdType="ghost"
                 label="Add"
-                (click)="addAccount(extension().accountConnections?.[0])"
+                (click)="
+                  addAccount(
+                    marketplaceEntryInputSignal().spec.providerMetadata.spec
+                      .accountConnections?.[0]
+                  )
+                "
               ></button>
             </fd-illustrated-message-actions>
           </figure>
@@ -111,7 +133,12 @@
                     data-testid="dxp-extension-accounts-add-account-button"
                     fd-button
                     label="Add"
-                    (click)="addAccount(extension().accountConnections?.[0])"
+                    (click)="
+                      addAccount(
+                        marketplaceEntryInputSignal().spec.providerMetadata.spec
+                          .accountConnections?.[0]
+                      )
+                    "
                   ></button>
                 }
               </fdp-table-toolbar-actions>

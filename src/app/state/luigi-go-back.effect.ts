@@ -39,14 +39,14 @@ export class LuigiGoBackEffect {
             context.luigiContext.goBackContext?.action ===
               LuigiGoBackAction.WIZARD_CONFIG_ERROR ||
             context.luigiContext.goBackContext?.action ===
-              LuigiGoBackAction.EXTENSION_UNINSTALLED
+              LuigiGoBackAction.PROVIDER_INSTANCE_UNINSTALLED
           );
         }),
         map(({ luigiContext: { goBackContext } }) => {
           const { action, wizardConfigError: wizardError } =
             goBackContext as GoBackContext;
           switch (action) {
-            case LuigiGoBackAction.EXTENSION_UNINSTALLED:
+            case LuigiGoBackAction.PROVIDER_INSTANCE_UNINSTALLED:
               this.luigiClient.clearFrameCache();
               break;
             case LuigiGoBackAction.WIZARD_CONFIG_ERROR:

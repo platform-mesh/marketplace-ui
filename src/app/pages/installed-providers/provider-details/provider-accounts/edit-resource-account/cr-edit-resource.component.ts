@@ -105,7 +105,6 @@ export class CrEditResourceComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           accountResourceSelected({
             providerName: params['providerName'] as string,
-            extClassScope: params['scope'] as string,
             accountType: params['accountType'] as string,
             resourceNamespace: params['nspace'] as string,
             resourceName: params['name'] as string,
@@ -150,7 +149,7 @@ export class CrEditResourceComponent implements OnInit, OnDestroy {
               spec:
                 (wizValueResult.spec as Record<string, object>) ||
                 wizValueResult,
-              extClass: resourceViewState.extensionClass,
+              marketplaceEntry: resourceViewState.marketplaceEntry,
               accountConnection: resourceViewState.accountConnection,
               resourceName: resourceViewState.accountResource.resourceName,
             }),
@@ -163,7 +162,7 @@ export class CrEditResourceComponent implements OnInit, OnDestroy {
               spec:
                 (wizValueResult.spec as Record<string, object>) ||
                 wizValueResult,
-              extClass: resourceViewState.extensionClass,
+              marketplaceEntry: resourceViewState.marketplaceEntry,
               accountConnection: resourceViewState.accountConnection,
             }),
           );

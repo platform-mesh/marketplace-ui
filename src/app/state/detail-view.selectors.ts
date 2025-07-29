@@ -10,10 +10,12 @@ export const selectSelectedProvider = createSelector(
   (state: ProviderState) => {
     return {
       detailView: state.detailView,
-      providers: state.providers,
+      marketplaceEntries: state.marketplaceEntries,
     };
   },
   (state) => {
-    return state.providers.find((e) => e.name === state.detailView.provider);
+    return state.marketplaceEntries.find(
+      (e) => e.metadata.name === state.detailView.providerName,
+    );
   },
 );

@@ -50,8 +50,8 @@ import {
   AccountConnection,
   AccountNamingConfig,
   AccountType,
+  MarketplaceEntry,
   MessageStripConfig,
-  ProviderMetadata,
   ScopeType,
 } from 'models/provider-metadata';
 import { Observable, Subject, filter, map } from 'rxjs';
@@ -101,7 +101,7 @@ import { ProviderState } from 'state/providerState';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
-  extension = input.required<ProviderMetadata>();
+  marketplaceEntryInputSignal = input.required<MarketplaceEntry>();
 
   accountsPerType: Record<string, Account[]> = {};
   accountTypes: Record<string, AccountType> = {};
@@ -141,7 +141,9 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
     private accountNamingService: AccountNamingService,
   ) {
     effect(() => {
-      if (this.extension().name === 'dxp-github-ui') {
+      if (
+        this.marketplaceEntryInputSignal().metadata.name === 'dxp-github-ui'
+      ) {
         this.accountNamingService.updateAccountNamingConfig({
           singular: 'Organization',
           plural: 'Organizations',
@@ -177,7 +179,9 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.extension().name === 'dxp-btp-accounts-ui') {
+    if (
+      this.marketplaceEntryInputSignal().metadata.name === 'dxp-btp-accounts-ui'
+    ) {
       this.btpSecretService
         .getBTPSecrets()
         .pipe(takeUntil(this.ngUnsubscribe))
@@ -193,7 +197,7 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
               .map((secretPath) =>
                 this.btpSecretService.createBTPAccount(
                   secretPath,
-                  this.extension().name,
+                  this.marketplaceEntryInputSignal().metadata.name,
                 ),
               );
             accounts.forEach((account) => {
@@ -241,7 +245,7 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
         });
     }
 
-    if (this.extension().name === 'dxp-github-ui') {
+    if (this.marketplaceEntryInputSignal().metadata.name === 'dxp-github-ui') {
       this.githubRegistrations = this.githubService
         .getGithubAppRegistrations<GithubRegistration[]>()
         .pipe(takeUntil(this.ngUnsubscribe));
@@ -302,14 +306,14 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
 
   getAccountConnections(): AccountConnection[] {
     return (
-      this.extension().accountConnections?.filter(
+      this.marketplaceEntryInputSignal().spec.providerMetadata.spec.accountConnections?.filter(
         (acc) => !!acc.type?.apiResourceConfig,
       ) ?? []
     );
   }
 
   hasApiResourcesAccConnectionType(): boolean {
-    return !!this.extension().accountConnections?.some(
+    return !!this.marketplaceEntryInputSignal().spec.providerMetadata.spec.accountConnections?.some(
       (acc) => !!acc.type?.apiResourceConfig,
     );
   }
@@ -373,7 +377,7 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
   }
 
   findAccountConnection(): AccountConnection | undefined {
-    return this.extension().accountConnections?.find(
+    return this.marketplaceEntryInputSignal().spec.providerMetadata.spec.accountConnections?.find(
       (acc) => !!acc.type?.apiResourceConfig,
     );
   }

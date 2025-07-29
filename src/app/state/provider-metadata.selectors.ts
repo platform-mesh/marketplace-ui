@@ -2,13 +2,14 @@ import { ProviderState } from './providerState';
 import { createSelector } from '@ngrx/store';
 
 export const selectProviderMetadata = createSelector(
-  (state: ProviderState) => state.provider,
+  (state: ProviderState) => state.marketplaceEntry,
   (provider) => provider,
 );
 
 export const selectProviderMetadataProductOwners = createSelector(
   (state: ProviderState) => {
-    const contacts = state.provider?.contacts;
+    const contacts =
+      state.marketplaceEntry?.spec.providerMetadata.spec.contacts;
     if (!contacts) {
       return [];
     }
@@ -32,7 +33,9 @@ export const selectProviderMetadataSupportLinks = createSelector(
 
 function filterByDisplayName(displayName: string) {
   return (state: ProviderState) => {
-    const supportChannels = state.provider?.preferredSupportChannels;
+    const supportChannels =
+      state.marketplaceEntry?.spec.providerMetadata.spec
+        .preferredSupportChannels;
     if (!supportChannels) {
       return [];
     }

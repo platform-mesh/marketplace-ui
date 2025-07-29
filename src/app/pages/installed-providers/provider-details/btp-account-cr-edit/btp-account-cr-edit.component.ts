@@ -52,7 +52,6 @@ export class BtpAccountCrEditComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           creditDialogOpened({
             providerName: params['providerName'] as string,
-            extClassScope: params['scope'] as string,
             dialogType: creditDialogType,
           }),
         );
@@ -64,13 +63,14 @@ export class BtpAccountCrEditComponent implements OnInit, OnDestroy {
       querySelector[4]?.setAttribute('type', 'password');
     });
 
-    this.store.select(selectProviderMetadata).subscribe((extClass) => {
-      if (!extClass) {
+    this.store.select(selectProviderMetadata).subscribe((marketplaceEntry) => {
+      if (!marketplaceEntry) {
         return;
       }
 
       const wizardConfig =
-        extClass?.accountConnections?.[0].type.apiResourceConfig.wizardConfig;
+        marketplaceEntry?.spec.providerMetadata.spec.accountConnections?.[0]
+          .type.apiResourceConfig.wizardConfig;
       this.wizardConfig = wizardConfig;
       this.wizardDefinition = YAML.parse(
         wizardConfig?.wizardDefinition ?? '',

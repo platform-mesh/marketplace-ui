@@ -20,18 +20,21 @@ export class DetailViewEffect {
         if (context.providerName) {
           const { providerName } = context as LayoutParams;
           return {
-            provider: providerName,
+            providerName,
           };
         }
 
         const nodeParams = getNodeParams() as LayoutParams;
         const { providerName } = nodeParams;
         return {
-          provider: providerName,
+          providerName,
         };
       }),
       withLatestFromWaiting(this.store.select(selectDetailViewState)),
-      filter(([newState, oldState]) => newState.provider != oldState.provider),
+      filter(
+        ([newState, oldState]) =>
+          newState.providerName != oldState.providerName,
+      ),
       map(([newState]) => detailViewOpened(newState)),
     ),
   );

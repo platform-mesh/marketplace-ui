@@ -13,11 +13,11 @@ import {
   ServiceInstance,
   ServiceStatus,
 } from 'models/index';
-import { EXTENSION_INSTALLED } from 'models/luigi-go-back';
+import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
 import { firstValueFrom, of } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
-import { unInstallExtension } from 'state/changing-extensions.actions';
+import { unInstallProviderInstance } from 'state/changing-provider-instances.actions';
 import { loadProviders } from 'state/providers.actions';
 
 const extensionClass: ProviderMetadata = {
@@ -158,7 +158,7 @@ describe('ExtensionService', () => {
       scopeType: ScopeType.PROJECT,
     };
 
-    expect(service.isInstallableExtension(extensionClass)).toBe(true);
+    expect(service.isInstallable(extensionClass)).toBe(true);
     expect(service.isUninstallable(extensionClass)).toBe(false);
   });
 
@@ -177,9 +177,7 @@ describe('ExtensionService', () => {
         extensionClass,
       },
     } as unknown as ProviderMetadata;
-    expect(service.isInstallableExtension(extensionClassScopedInstance)).toBe(
-      false,
-    );
+    expect(service.isInstallable(extensionClassScopedInstance)).toBe(false);
     expect(service.isUninstallable(extensionClassScopedInstance)).toBe(true);
 
     const extensionClassDeletionPrevented = {
@@ -273,7 +271,7 @@ describe('ExtensionService', () => {
 
   describe('installExtension', () => {
     it('should throw an error if extension is undefined', () => {
-      expect(() => service.installExtension(undefined)).toThrow(
+      expect(() => service.installProviderInstance(undefined)).toThrow(
         'Extension is undefined',
       );
     });
@@ -297,10 +295,13 @@ describe('ExtensionService', () => {
 
       const graphqlService = TestBed.inject(GraphqlService);
       const spy = jest
-        .spyOn(graphqlService, 'installExtension')
+        .spyOn(graphqlService, 'installProviderInstance')
         .mockReturnValue(of({ result: 'result' }));
 
-      const result$ = service.installExtension(extension, installationData);
+      const result$ = service.installProviderInstance(
+        extension,
+        installationData,
+      );
 
       expect(spy).toHaveBeenCalledWith(expectedInput);
       await expect(firstValueFrom(result$)).resolves.toEqual({
@@ -338,10 +339,10 @@ describe('ExtensionService', () => {
 
       const graphqlService = TestBed.inject(GraphqlService);
       const spy = jest
-        .spyOn(graphqlService, 'updateExtensionInstance')
+        .spyOn(graphqlService, 'updateProviderInstance')
         .mockReturnValue(of({ result: 'updated' }));
 
-      const result$ = service.updateExtension(
+      const result$ = service.updateProviderInstance(
         extension,
         extensionInstance,
         installationData,
@@ -369,12 +370,12 @@ describe('ExtensionService', () => {
       };
       jest.spyOn(store, 'dispatch');
 
-      service.uninstallExtension(mockExtension);
+      service.uninstallProviderInstance(mockExtension);
 
       expect(store.dispatch).toHaveBeenCalledWith(
-        unInstallExtension({
-          extensionInstanceName: id,
-          extension: mockExtension,
+        unInstallProviderInstance({
+          providerInstanceName: id,
+          provider: mockExtension,
         }),
       );
     });
@@ -386,11 +387,11 @@ describe('ExtensionService', () => {
         .spyOn(luigiClient.uxManager(), 'showConfirmationModal')
         .mockRejectedValue(new Error('User closed the modal'));
 
-      jest.spyOn(service, 'uninstallExtension');
+      jest.spyOn(service, 'uninstallProviderInstance');
 
-      await service.uninstallExtensionDialog(extensionClass);
+      await service.uninstallProviderInstanceDialog(extensionClass);
 
-      expect(service.uninstallExtension).not.toHaveBeenCalled();
+      expect(service.uninstallProviderInstance).not.toHaveBeenCalled();
     });
 
     it('should uninstall if decision is CONFIRMED', async () => {
@@ -409,10 +410,12 @@ describe('ExtensionService', () => {
         .spyOn(luigiClient.uxManager(), 'showConfirmationModal')
         .mockResolvedValue(undefined);
 
-      jest.spyOn(service, 'uninstallExtension');
+      jest.spyOn(service, 'uninstallProviderInstance');
 
-      await service.uninstallExtensionDialog(mockExtension);
-      expect(service.uninstallExtension).toHaveBeenCalledWith(mockExtension);
+      await service.uninstallProviderInstanceDialog(mockExtension);
+      expect(service.uninstallProviderInstance).toHaveBeenCalledWith(
+        mockExtension,
+      );
     });
   });
 
@@ -510,7 +513,7 @@ describe('ExtensionService', () => {
       pmLuigiContextService.contextObservable = jest
         .fn()
         .mockReturnValue(
-          of({ context: { goBackContext: EXTENSION_INSTALLED } }),
+          of({ context: { goBackContext: PROVIDER_INSTANCE_INSTALLED } }),
         );
 
       const openSuccessToastSpy = jest.spyOn(

@@ -6,7 +6,10 @@
       <h3 fd-illustrated-message-title>
         You need to add {{ accountNamingArticle }}
         {{ accountNamingConfigLowercase.singular }} for the
-        {{ (provider | async)?.displayName }} extension
+        {{
+          (marketplaceEntry | async)?.spec?.providerMetadata?.spec?.displayName
+        }}
+        extension
       </h3>
       <p fd-illustrated-message-text>
         {{ accountNamingConfig.plural }} help you reap the benefits of the

@@ -1,11 +1,11 @@
 import { createAction, props } from '@ngrx/store';
-import { ProviderMetadata } from 'models/provider-metadata';
+import { MarketplaceEntry } from 'models/provider-metadata';
 
 export const retrievedProviders = createAction(
-  '[ProviderMetadata Classes/API] Retrieve Providers Success',
-  props<{ providers: readonly ProviderMetadata[] }>(),
+  '[MarketplaceEntry Classes/API] Retrieve Providers Success',
+  props<{ providers: readonly MarketplaceEntry[] }>(),
 );
 
 export const loadProviders = createAction(
-  '[ProviderMetadata Classes/API] LoadProviders',
+  '[MarketplaceEntry Classes/API] LoadProviders',
 );

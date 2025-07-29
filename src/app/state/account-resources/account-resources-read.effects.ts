@@ -102,7 +102,6 @@ export class AccountResourcesReadEffects {
         const installableIn = parseScopeType(scopeOfCurrentView);
         return loadProviderMetadata({
           providerName: action.providerName,
-          scope: parseScopeType(action.extClassScope),
           installableIn: installableIn ? [installableIn] : [],
           includeHidden: true,
         });
@@ -140,7 +139,7 @@ export class AccountResourcesReadEffects {
         ofType(openAccountResourceEditDialog),
         withLatestFrom(this.store.select(selectSelectedProvider)),
         withLatestFrom(this.store.select(luigiContextSelector)),
-        map(([[action, extClass], dxpContext]) => {
+        map(([[action, marketplaceEntry], dxpContext]) => {
           this.luigiClient
             .linkManager()
             .fromClosestContext()
@@ -148,8 +147,8 @@ export class AccountResourcesReadEffects {
               type: action.accountConnection?.type?.name || '',
             })
             .navigate(
-              `edit-res/${extClass?.scope?.type.toString().toLowerCase()}/${
-                extClass?.name
+              `edit-res/${
+                marketplaceEntry?.metadata.name
               }/${action.accountConnection?.type?.name}/${
                 action.resourceName
               }/${dxpContext.entityContext?.project?.automaticdNamespace}`,
@@ -217,7 +216,7 @@ export class AccountResourcesReadEffects {
       this.actions.pipe(
         ofType(openAccountResourceCreationDialog),
         withLatestFrom(this.store.select(selectSelectedProvider)),
-        map(([action, extClass]) => {
+        map(([action, marketplaceEntry]) => {
           this.luigiClient
             .linkManager()
             .fromClosestContext()
@@ -225,9 +224,7 @@ export class AccountResourcesReadEffects {
               type: action.accountConnection?.type?.name || '',
             })
             .navigate(
-              `create-res/${extClass?.scope?.type
-                .toString()
-                .toLowerCase()}/${extClass?.name}/${
+              `create-res/${marketplaceEntry?.metadata.name}/${
                 action.accountConnection?.type?.name
               }`,
               undefined,

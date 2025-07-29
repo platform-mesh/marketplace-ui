@@ -136,7 +136,7 @@ describe('GraphqlService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('getExtensionClassForScopeQuery', () => {
+  describe('getMarketplaceEntries', () => {
     it('should query for an extension class for a given scope', fakeAsync(() => {
       mockApolloQuery.mockReturnValue(
         of({ data: { getExtensionClassForScope: mockExtensionClass } }),
@@ -148,7 +148,7 @@ describe('GraphqlService', () => {
 
       let result: ProviderMetadata | undefined;
       service
-        .getExtensionClassForScopeQuery(scope, providerName, extFilter)
+        .getMarketplaceEntries(scope, providerName, extFilter)
         .subscribe((res) => {
           result = res;
         });
@@ -203,11 +203,9 @@ describe('GraphqlService', () => {
       const extFilter = service.createExtFilter(installableIn);
 
       let result: ProviderMetadata[] | undefined;
-      service
-        .getExtensionClassesForScopesQuery(scopes, installableIn)
-        .subscribe((res) => {
-          result = res;
-        });
+      service.getMarketplaceEntries(scopes, installableIn).subscribe((res) => {
+        result = res;
+      });
 
       tick();
 
@@ -239,7 +237,7 @@ describe('GraphqlService', () => {
 
       let result: ProviderMetadata[] | undefined;
       service
-        .getExtensionClassesForScopesQuery(scopes, undefined, customFilter)
+        .getMarketplaceEntries(scopes, undefined, customFilter)
         .subscribe((res) => {
           result = res;
         });
@@ -278,7 +276,7 @@ describe('GraphqlService', () => {
       };
 
       let result: unknown;
-      service.installExtension(installInput).subscribe((res) => {
+      service.installProviderInstance(installInput).subscribe((res) => {
         result = res;
       });
 
@@ -340,7 +338,7 @@ describe('GraphqlService', () => {
       };
 
       let result: unknown;
-      service.updateExtensionInstance(updateInput).subscribe((res) => {
+      service.updateProviderInstance(updateInput).subscribe((res) => {
         result = res;
       });
 
@@ -361,7 +359,7 @@ describe('GraphqlService', () => {
     it('should throw error if input is undefined', fakeAsync(() => {
       let error: Error | undefined;
       service
-        .updateExtensionInstance(undefined as unknown as UpdateProviderInput)
+        .updateProviderInstance(undefined as unknown as UpdateProviderInput)
         .subscribe({
           error: (err) => (error = err),
         });

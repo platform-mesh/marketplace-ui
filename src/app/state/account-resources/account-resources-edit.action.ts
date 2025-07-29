@@ -3,7 +3,7 @@ import { ObjectMeta } from 'kubernetes-types/meta/v1';
 import {
   AccountConnection,
   GlobalAccountActionConfig,
-  ProviderMetadata,
+  MarketplaceEntry,
 } from 'models/provider-metadata';
 
 export const createAccountResource = createAction(
@@ -11,7 +11,7 @@ export const createAccountResource = createAction(
   props<{
     metadata: ObjectMeta;
     spec: Record<string, object>;
-    extClass: ProviderMetadata | undefined;
+    marketplaceEntry: MarketplaceEntry | undefined;
     accountConnection: AccountConnection | undefined;
   }>(),
 );
@@ -20,7 +20,7 @@ export const editAccountResource = createAction(
   '[Account Resources] Edit resource',
   props<{
     spec: Record<string, object>;
-    extClass: ProviderMetadata | undefined;
+    marketplaceEntry: MarketplaceEntry | undefined;
     accountConnection: AccountConnection | undefined;
     resourceName: string | undefined;
   }>(),

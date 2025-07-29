@@ -1,4 +1,4 @@
-import { NodeContext } from '../../../models';
+import { MarketplaceEntry, NodeContext } from '../../../models';
 import { ProviderVerificationComponent } from '../../provider-verification/provider-verification.component';
 import { AsyncPipe } from '@angular/common';
 import {
@@ -35,12 +35,11 @@ import {
   DynamicPageTitleComponent,
 } from '@fundamental-ngx/platform/dynamic-page';
 import { Store } from '@ngrx/store';
-import { EXTENSION_INSTALLED } from 'models/luigi-go-back';
+import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import {
   Contact,
   Link,
   ProviderMetadata,
-  ScopeType,
   ServiceLevel,
 } from 'models/provider-metadata';
 import { Observable, Subscription, combineLatest, mergeMap, tap } from 'rxjs';
@@ -49,9 +48,10 @@ import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { PolicyDirective } from 'shared/directives/policy';
 import { getInstallableScope, triggerMatomoEvent } from 'shared/helpers';
+import { getEntityScopeFromContext } from 'shared/utils/entity-context.util';
 import { readAccountsForAccountConnectionTypes } from 'state/accounts.action';
 import { selectAccountsPerConnectionTypes } from 'state/accounts.selectors';
-import { isExtensionChanging } from 'state/changing-extension.selectors';
+import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { selectScope } from 'state/luigi.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import {
@@ -95,7 +95,7 @@ import YAML from 'yaml';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
-  providerObservable: Observable<ProviderMetadata | undefined>;
+  marketplaceEntryObservable: Observable<MarketplaceEntry>;
   providerSubscription?: Subscription;
 
   isChanging?: Observable<boolean>;
@@ -104,8 +104,9 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   communityChannels: Observable<Link[]> | undefined;
   supportChannels: Observable<Link[]> | undefined;
 
-  extension: ProviderMetadata | undefined;
-  userIsExtensionAdmin = false;
+  marketplaceEntry!: MarketplaceEntry;
+  providerMetadata!: ProviderMetadata;
+  userIsProviderAdmin = false;
   private context: NodeContext | undefined;
 
   constructor(
@@ -114,7 +115,7 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
     private contextService: PmLuigiContextService,
     private providerService: ProviderService,
   ) {
-    this.providerObservable = combineLatest([
+    this.marketplaceEntryObservable = combineLatest([
       this.store.select(selectScope),
       this.contextService.contextObservable(),
     ]).pipe(
@@ -123,7 +124,6 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           loadProviderMetadata({
             providerName: this.context.providerName,
-            scope: this.getExtensionScopeFromContext(),
             installableIn: getInstallableScope(scope),
           }),
         );
@@ -135,11 +135,12 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.providerSubscription = this.providerObservable.subscribe(
-      (extension: ProviderMetadata | undefined) => {
-        this.extension = extension;
+    this.providerSubscription = this.marketplaceEntryObservable.subscribe(
+      (marketplaceEntry: MarketplaceEntry) => {
+        this.marketplaceEntry = marketplaceEntry;
+        this.providerMetadata = marketplaceEntry?.spec.providerMetadata;
         this.isChanging = this.store.select<boolean>(
-          isExtensionChanging(this.extension?.name),
+          isProviderInstanceChanging(this.marketplaceEntry?.metadata.name),
         );
         this.productOwners = this.store.select<Contact[]>(
           selectProviderMetadataProductOwners,
@@ -155,17 +156,21 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
           .pipe(
             map(
               (accounts) =>
-                this.providerService.isInstalledExtension(this.extension) &&
-                !!this.extension?.accountConnections &&
+                this.marketplaceEntry?.spec.installed &&
+                !!this.marketplaceEntry?.spec.providerMetadata.spec
+                  .accountConnections &&
                 accounts.length === 0,
             ),
           );
-        if (this.extension?.accountConnections) {
+        if (
+          this.marketplaceEntry?.spec.providerMetadata.spec.accountConnections
+        ) {
           this.store.dispatch(
             readAccountsForAccountConnectionTypes({
-              accountConnectionTypes: this.extension.accountConnections.map(
-                (e) => e.name,
-              ),
+              accountConnectionTypes:
+                this.marketplaceEntry.spec.providerMetadata.spec.accountConnections.map(
+                  (e) => e.name,
+                ),
             }),
           );
         }
@@ -182,70 +187,73 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   }
 
   protected installExtension(): void {
-    if (this.extension?.wizardConfig) {
+    if (this.providerMetadata?.spec.wizardConfig) {
       const wizardDefinition: WizardDefinition | undefined = YAML.parse(
-        this.extension.wizardConfig?.wizardDefinition,
+        this.providerMetadata?.spec.wizardConfig?.wizardDefinition,
       );
       const wizardDefinitionSize = wizardDefinition?.modalSize;
 
       this.providerService.openConfigurationWizard(
-        this.extension.name,
-        this.extension.displayName,
-        this.extension.scope.type,
+        this.providerMetadata?.spec.name,
+        this.providerMetadata?.spec.displayName,
         wizardDefinitionSize,
       );
     } else {
-      this.providerService.installExtension(this.extension).subscribe(() => {
-        this.luigiClient.linkManager().goBack(EXTENSION_INSTALLED);
-        if (this.extension) {
-          triggerMatomoEvent('InstallExtension', {
-            extensionProvider: this.extension.provider,
-            extensionName: this.extension.name,
-            projectType: this.context?.entityContext?.project?.type,
-            projectId: this.context?.projectId,
-          });
-        }
-      });
+      this.providerService
+        .installProviderInstance(this.marketplaceEntry)
+        .subscribe(() => {
+          this.luigiClient.linkManager().goBack(PROVIDER_INSTANCE_INSTALLED);
+          if (this.marketplaceEntry) {
+            triggerMatomoEvent('InstallExtension', this.getMatomoEventObject());
+          }
+        });
     }
   }
 
+  private getMatomoEventObject() {
+    return {
+      provider: this.marketplaceEntry?.spec.providerMetadata.spec.displayName,
+      providerName: this.marketplaceEntry?.metadata.name,
+      entityType: getEntityScopeFromContext(this.context).entityType,
+      entitytId: getEntityScopeFromContext(this.context).entityId,
+    };
+  }
+
   protected visitExtension(): void {
-    if (this.extension)
-      this.providerService.navigateToProviderDetails(this.extension);
+    if (this.marketplaceEntry) {
+      this.providerService.navigateToProviderDetails(this.marketplaceEntry);
+    }
   }
 
   protected async uninstallExtension(): Promise<void> {
-    if (this.extension) {
+    if (this.marketplaceEntry) {
       const extensionIsUninstalled =
-        await this.providerService.uninstallExtensionDialog(this.extension);
+        await this.providerService.uninstallProviderInstanceDialog(
+          this.marketplaceEntry,
+        );
 
       if (extensionIsUninstalled) {
-        triggerMatomoEvent('UninstallExtension', {
-          extensionProvider: this.extension.provider,
-          extensionName: this.extension.name,
-          projectType: this.context?.entityContext?.project?.type,
-          projectId: this.context?.projectId,
-        });
+        triggerMatomoEvent('UninstallExtension', this.getMatomoEventObject());
       }
     }
   }
 
   protected showInstallButton(): boolean {
-    if (!this.extension) {
+    if (!this.marketplaceEntry) {
       return false;
     }
-    return this.providerService.isInstallableExtension(this.extension);
+    return this.providerService.isInstallable(this.marketplaceEntry);
   }
 
   protected showUninstallButton(): boolean {
-    if (!this.extension) {
+    if (!this.marketplaceEntry) {
       return false;
     }
-    return this.providerService.isUninstallable(this.extension);
+    return this.providerService.isUninstallable(this.marketplaceEntry);
   }
 
   protected showInstalledLabel(): boolean {
-    return this.providerService.isInstalledExtension(this.extension);
+    return this.marketplaceEntry?.spec.installed;
   }
 
   protected getIcon(extension: ProviderMetadata): string {
@@ -258,17 +266,10 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getExtensionScopeFromContext(): ScopeType {
-    return (
-      (this.luigiClient.getNodeParams()['scope'] as ScopeType) ??
-      ScopeType.GLOBAL
-    );
-  }
-
   private setUserPolicies(context: NodeContext) {
     const entityContext = context?.entityContext;
     const policies =
       entityContext?.project?.policies || entityContext?.team?.policies || [];
-    this.userIsExtensionAdmin = policies.includes('providerAdmin');
+    this.userIsProviderAdmin = policies.includes('providerAdmin');
   }
 }

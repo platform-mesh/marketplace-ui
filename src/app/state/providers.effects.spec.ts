@@ -152,25 +152,19 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(
-        of(providersMock),
-      );
+      graphqlService.getMarketplaceEntries.mockReturnValue(of(providersMock));
 
       const effects = createEffectsInstance();
 
       let emittedAction: unknown;
-      const subscription = effects.loadProvidersForProjectOrTeam.subscribe(
-        (action) => {
-          emittedAction = action;
-        },
-      );
+      const subscription = effects.loadProviders.subscribe((action) => {
+        emittedAction = action;
+      });
 
       actionsSubject.next(loadProviders());
       tick();
 
-      expect(
-        graphqlService.getExtensionClassesForScopesQuery,
-      ).toHaveBeenCalledWith(
+      expect(graphqlService.getMarketplaceEntries).toHaveBeenCalledWith(
         [scope, ScopeType.TENANT, ScopeType.GLOBAL],
         [scope],
       );
@@ -187,13 +181,12 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(of([]));
+      graphqlService.getMarketplaceEntries.mockReturnValue(of([]));
 
       const effects = createEffectsInstance();
 
       const expectations = jest.fn();
-      const subscription =
-        effects.loadProvidersForProjectOrTeam.subscribe(expectations);
+      const subscription = effects.loadProviders.subscribe(expectations);
 
       actionsSubject.next(loadProviders());
       tick(100);
@@ -208,7 +201,7 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(
+      graphqlService.getMarketplaceEntries.mockReturnValue(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         new (class extends Observable<any> {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -221,8 +214,7 @@ describe('ExtensionClassesEffects', () => {
       const effects = createEffectsInstance();
 
       const expectations = jest.fn();
-      const subscription =
-        effects.loadProvidersForProjectOrTeam.subscribe(expectations);
+      const subscription = effects.loadProviders.subscribe(expectations);
 
       actionsSubject.next(loadProviders());
       tick(100);
@@ -250,7 +242,7 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(
+      graphqlService.getMarketplaceEntries.mockReturnValue(
         of(tenantExtensionClassesMock),
       );
 
@@ -266,12 +258,14 @@ describe('ExtensionClassesEffects', () => {
       actionsSubject.next(loadProviders());
       tick();
 
-      expect(
-        graphqlService.getExtensionClassesForScopesQuery,
-      ).toHaveBeenCalledWith([ScopeType.TENANT, ScopeType.GLOBAL], [], {
-        excludeHiddenExtensions: true,
-        excludeHiddenInGlobalCatalogExtensions: true,
-      });
+      expect(graphqlService.getMarketplaceEntries).toHaveBeenCalledWith(
+        [ScopeType.TENANT, ScopeType.GLOBAL],
+        [],
+        {
+          excludeHiddenExtensions: true,
+          excludeHiddenInGlobalCatalogExtensions: true,
+        },
+      );
       expect(emittedAction).toEqual(
         retrievedProviders({
           providers: tenantExtensionClassesMock,
@@ -286,7 +280,7 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(of([]));
+      graphqlService.getMarketplaceEntries.mockReturnValue(of([]));
 
       const effects = createEffectsInstance();
 
@@ -307,7 +301,7 @@ describe('ExtensionClassesEffects', () => {
       mockStore.overrideSelector(selectScope, scope);
       mockStore.refreshState();
 
-      graphqlService.getExtensionClassesForScopesQuery.mockReturnValue(
+      graphqlService.getMarketplaceEntries.mockReturnValue(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         new (class extends Observable<any> {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

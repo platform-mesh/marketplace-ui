@@ -7,9 +7,9 @@ export interface EntityScope {
 }
 
 export function getEntityScopeFromContext(
-  nodeContext: NodeContext,
+  nodeContext: NodeContext | undefined,
 ): EntityScope {
-  const entityContext = nodeContext?.entityContext;
+  const entityContext = nodeContext?.entityContext || {};
   const [entityKey, entityValue] = Object.entries(entityContext)[0];
 
   return {

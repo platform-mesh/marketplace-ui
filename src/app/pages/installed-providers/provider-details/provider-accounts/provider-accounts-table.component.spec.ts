@@ -122,7 +122,7 @@ const mockExtensionClassWithoutApiResources: ProviderMetadata = {
     providerData: {
       githubAccountAdded: 'true',
     },
-    isMandatoryExtension: true,
+    isMandatory: true,
     providerMetadata: {
       name: 'dxp-github-ui',
       category: 'Source Code Management',
@@ -184,7 +184,7 @@ const mockExtensionClassWithApiResources: ProviderMetadata = {
     providerData: {
       githubAccountAdded: 'true',
     },
-    isMandatoryExtension: true,
+    isMandatory: true,
     providerMetadata: {
       name: 'dxp-github-ui',
       category: 'Source Code Management',

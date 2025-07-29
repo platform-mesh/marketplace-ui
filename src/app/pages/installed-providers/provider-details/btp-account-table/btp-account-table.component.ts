@@ -23,7 +23,7 @@ import {
   TableToolbarActionsComponent,
   TableToolbarComponent,
 } from '@fundamental-ngx/platform';
-import { ProviderMetadata } from 'models/provider-metadata';
+import { MarketplaceEntry } from 'models/provider-metadata';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BtpSecretService } from 'services/btp-secret-service';
@@ -51,7 +51,7 @@ import { PolicyDirective } from 'shared/directives/policy';
 })
 export class BtpAccountTableComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject<void>();
-  provider = input.required<ProviderMetadata>();
+  marketplaceEntrySignal = input.required<MarketplaceEntry>();
   protected accounts: TableItem[];
 
   constructor(
@@ -88,9 +88,10 @@ export class BtpAccountTableComponent implements OnInit, OnDestroy {
   }
 
   addAccount(): void {
-    const extensionClass = this.provider();
-    if (extensionClass?.accountConnections) {
-      const accountConnection = extensionClass?.accountConnections[0];
+    const marketplaceEntry = this.marketplaceEntrySignal();
+    if (marketplaceEntry?.spec.providerMetadata.spec.accountConnections) {
+      const accountConnection =
+        marketplaceEntry.spec.providerMetadata.spec.accountConnections[0];
       this.luigiClient
         .linkManager()
         .fromClosestContext()
@@ -98,9 +99,7 @@ export class BtpAccountTableComponent implements OnInit, OnDestroy {
           type: accountConnection?.type?.name || '',
         })
         .navigate(
-          `create-btp-acc/${extensionClass?.scope?.type.toString().toLowerCase()}/${
-            extensionClass?.name
-          }`,
+          `create-btp-acc/${marketplaceEntry?.metadata.name}`,
           undefined,
           true,
           {

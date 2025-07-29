@@ -33,6 +33,7 @@ import {
 } from '@fundamental-ngx/platform/dynamic-page';
 import { Store } from '@ngrx/store';
 import {
+  MarketplaceEntry,
   ProviderMetadata,
   ServiceInstanceStatusValue,
   ServiceLevel,
@@ -42,7 +43,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { ProviderService } from 'services/provider.service';
 import { getExtensionClassStatusValue } from 'shared/helpers';
 import { readAccountsForAccountConnectionTypes } from 'state/accounts.action';
-import { isExtensionChanging } from 'state/changing-extension.selectors';
+import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { selectSelectedProvider } from 'state/detail-view.selectors';
 import { ProviderState } from 'state/providerState';
 import { loadProviders } from 'state/providers.actions';
@@ -80,9 +81,8 @@ import { loadProviders } from 'state/providers.actions';
 })
 export class ProviderDetailsComponent implements OnDestroy {
   status$: Observable<ServiceInstanceStatusValue | undefined>;
-  extension: ProviderMetadata | undefined;
-  extensionObservable: Observable<ProviderMetadata> =
-    new Observable<ProviderMetadata>();
+  marketplaceEntry!: MarketplaceEntry;
+  marketplaceEntryObservable = new Observable<MarketplaceEntry>();
   isChanging: Observable<boolean> | undefined;
   ngUnsubscribe = new Subject<void>();
   // Fundamental Platform Dynamic Page doesn't automatically open the first tab
@@ -99,7 +99,7 @@ export class ProviderDetailsComponent implements OnDestroy {
   ) {
     this.selectExtension();
 
-    this.status$ = this.extensionObservable.pipe(
+    this.status$ = this.marketplaceEntryObservable.pipe(
       map(getExtensionClassStatusValue),
     );
 
@@ -109,30 +109,34 @@ export class ProviderDetailsComponent implements OnDestroy {
   private selectExtension() {
     this.store.dispatch(loadProviders());
 
-    this.extensionObservable = this.store
+    this.marketplaceEntryObservable = this.store
       .select(selectSelectedProvider)
-      .pipe(filter((ext): ext is ProviderMetadata => !!ext));
+      .pipe(filter((ext): ext is MarketplaceEntry => !!ext));
   }
 
   private getExtension() {
-    this.extensionObservable
+    this.marketplaceEntryObservable
       .pipe(
         takeUntil(this.ngUnsubscribe),
         filter((x) => !!x),
       )
       .subscribe((extension) => {
-        this.extension = extension;
+        this.marketplaceEntry = extension;
 
         this.isChanging = this.store.select<boolean>(
-          isExtensionChanging(this.extension?.name),
+          isProviderInstanceChanging(this.marketplaceEntry?.metadata.name),
         );
 
-        if (this.hasAccountType() && this.extension.accountConnections) {
+        if (
+          this.hasAccountType() &&
+          this.marketplaceEntry.spec.providerMetadata.spec.accountConnections
+        ) {
           this.store.dispatch(
             readAccountsForAccountConnectionTypes({
-              accountConnectionTypes: this.extension.accountConnections.map(
-                (e) => e.name,
-              ),
+              accountConnectionTypes:
+                this.marketplaceEntry.spec.providerMetadata.spec.accountConnections.map(
+                  (e) => e.name,
+                ),
             }),
           );
         }
@@ -143,7 +147,10 @@ export class ProviderDetailsComponent implements OnDestroy {
   }
 
   public showEditButton(): boolean {
-    return !!(this.extension?.template || this.extension?.wizardConfig);
+    return !!(
+      this.marketplaceEntry?.spec.providerMetadata.spec.template ||
+      this.marketplaceEntry?.spec.providerMetadata.spec.wizardConfig
+    );
   }
 
   public getIcon(extension: ProviderMetadata): string {
@@ -157,14 +164,14 @@ export class ProviderDetailsComponent implements OnDestroy {
 
   editExtension() {
     this.providerService.openConfigurationWizard(
-      this.extension?.name,
-      this.extension?.displayName,
-      this.extension?.scope?.type,
+      this.marketplaceEntry?.metadata.name,
+      this.marketplaceEntry?.spec.providerMetadata.spec.displayName,
     );
   }
 
   hasAccountType(): boolean {
-    return !!this.extension?.accountConnections;
+    return !!this.marketplaceEntry?.spec.providerMetadata.spec
+      .accountConnections;
   }
 
   mapServiceLevel(serviceLevel: ServiceLevel): string {

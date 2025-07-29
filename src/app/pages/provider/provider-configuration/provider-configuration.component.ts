@@ -27,19 +27,20 @@ import {
 } from '@fundamental-ngx/core';
 import { Store } from '@ngrx/store';
 import {
-  EXTENSION_INSTALLED,
-  EXTENSION_UPDATED,
   GoBackContext,
   LuigiGoBackAction,
+  PROVIDER_INSTANCE_INSTALLED,
+  PROVIDER_INSTANCE_UPDATED,
 } from 'models/luigi-go-back';
 import { ProviderConfigurationData } from 'models/provider-configuration-data';
-import { ProviderMetadata, ServiceInstance } from 'models/provider-metadata';
+import { MarketplaceEntry, ServiceInstance } from 'models/provider-metadata';
 import { WizardConfig } from 'models/wizard-configuration';
 import { Observable, combineLatest, filter, map } from 'rxjs';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { WizardConfigService } from 'services/wizard-config.service';
 import { set, triggerMatomoEvent } from 'shared/helpers';
+import { getEntityScopeFromContext } from 'shared/utils/entity-context.util';
 import { selectSelectedProvider } from 'state/detail-view.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import { selectProviderMetadata } from 'state/provider-metadata.selectors';
@@ -100,7 +101,7 @@ export class ProviderConfigurationComponent {
   protected wizardError(wizardError: WizardConfigError | Error): void {
     this.luigiClient.linkManager().goBack({
       action: LuigiGoBackAction.WIZARD_CONFIG_ERROR,
-      extension: this.provider(),
+      provider: this.provider(),
       wizardConfigError: wizardError,
     } as GoBackContext);
   }
@@ -109,30 +110,41 @@ export class ProviderConfigurationComponent {
     const installationData = wizardValues;
 
     const extensionInstance = this.serviceInstance();
-    const extensionClass = this.provider();
-    if (extensionInstance && extensionClass) {
+    const marketplaceEntry = this.provider();
+    if (extensionInstance && marketplaceEntry) {
       this.providerService
-        .updateExtension(extensionClass, extensionInstance, installationData)
+        .updateProviderInstance(
+          marketplaceEntry,
+          extensionInstance,
+          installationData,
+        )
         .subscribe(() => {
-          this.closeDialog(EXTENSION_UPDATED);
+          this.closeDialog(PROVIDER_INSTANCE_UPDATED);
         });
-    } else if (extensionClass) {
+    } else if (marketplaceEntry) {
       this.providerService
-        .installExtension(extensionClass, installationData)
+        .installProviderInstance(marketplaceEntry, installationData)
         .subscribe(() => {
-          this.closeDialog(EXTENSION_INSTALLED);
-          triggerMatomoEvent('InstallExtension', {
-            extensionProvider: extensionClass.provider,
-            extensionName: extensionClass.name,
-            projectType: this.context()?.context.entityContext?.project?.type,
-            projectId: this.context()?.context.projectId,
-          });
+          this.closeDialog(PROVIDER_INSTANCE_INSTALLED);
+          triggerMatomoEvent(
+            'InstallExtension',
+            this.getMatomoEventObject(marketplaceEntry),
+          );
         });
     }
   }
 
+  private getMatomoEventObject(marketplaceEntry: MarketplaceEntry) {
+    return {
+      provider: marketplaceEntry?.spec.providerMetadata.spec.displayName,
+      providerName: marketplaceEntry?.metadata.name,
+      entityType: getEntityScopeFromContext(this.context()?.context).entityType,
+      entitytId: getEntityScopeFromContext(this.context()?.context).entityId,
+    };
+  }
+
   protected closeDialog(
-    msg?: 'EXTENSION_UPDATED' | 'EXTENSION_INSTALLED',
+    msg?: 'PROVIDER_INSTANCE_UPDATED' | 'PROVIDER_INSTANCE_INSTALLED',
   ): void {
     this.luigiClient.linkManager().goBack(msg);
   }
@@ -158,7 +170,7 @@ export class ProviderConfigurationComponent {
     );
   }
 
-  private getProvider(): Observable<Readonly<ProviderMetadata> | undefined> {
+  private getProvider(): Observable<Readonly<MarketplaceEntry> | undefined> {
     return this.store
       .select(selectProviderMetadata)
       .pipe(filter((ext) => !!ext));
@@ -172,38 +184,44 @@ export class ProviderConfigurationComponent {
           finish: { label: serviceInstance ? 'Save' : 'Install' },
         };
         this.isLoading.set(false);
-        return serviceInstance.instance!;
+        // return serviceInstance.instance!; todo gkr
+        return {} as any;
       }),
     );
   }
 
   private getHeader(
-    extensionClass: ProviderMetadata | undefined,
+    marketplaceEntry: MarketplaceEntry | undefined,
   ): DxpWizardGeneratorHeader {
     const header: Record<string, unknown> = {};
-    if (extensionClass) {
-      header['icon'] = this.providerService.getIcon(extensionClass);
-      if (extensionClass.displayName) {
-        header['title'] = extensionClass.displayName;
+    if (marketplaceEntry) {
+      header['icon'] = this.providerService.getIcon(
+        marketplaceEntry.spec.providerMetadata,
+      );
+      if (marketplaceEntry.spec.providerMetadata.spec.displayName) {
+        header['title'] =
+          marketplaceEntry.spec.providerMetadata.spec.displayName;
       }
-      if (extensionClass.category) {
-        header['subtitle'] = extensionClass.category;
+      if (marketplaceEntry.spec.providerMetadata.spec.category) {
+        header['subtitle'] =
+          marketplaceEntry.spec.providerMetadata.spec.category;
       }
     }
     return header;
   }
 
   private getWizardConfig(
-    extension: ProviderMetadata | undefined,
+    marketplaceEntry: MarketplaceEntry | undefined,
     defaultValues: Record<string, string> | undefined,
     isInstall: boolean,
   ): WizardConfig | undefined {
-    if (!extension) {
+    if (!marketplaceEntry) {
       return undefined;
     }
 
     if (
-      extension.wizardConfig?.wizardDefinition &&
+      marketplaceEntry.spec.providerMetadata.spec.wizardConfig
+        ?.wizardDefinition &&
       !defaultValues &&
       !isInstall
     ) {
@@ -211,8 +229,9 @@ export class ProviderConfigurationComponent {
     }
 
     if (
-      !extension.wizardConfig?.configData &&
-      !extension.wizardConfig?.wizardDefinition
+      !marketplaceEntry.spec.providerMetadata.spec.wizardConfig?.configData &&
+      !marketplaceEntry.spec.providerMetadata.spec.wizardConfig
+        ?.wizardDefinition
     ) {
       this.luigiClient.linkManager().goBack({
         action: LuigiGoBackAction.WIZARD_CONFIG_ERROR,
@@ -226,10 +245,12 @@ export class ProviderConfigurationComponent {
 
     let wizardConfig = {
       dxpWizardConfiguration: JSON.parse(
-        extension.wizardConfig?.configData ?? '',
+        marketplaceEntry.spec.providerMetadata.spec.wizardConfig?.configData ??
+          '',
       ) as ExtensionConfigurationWizardConfigSpec,
       wizardDefinition: YAML.parse(
-        extension.wizardConfig?.wizardDefinition ?? '',
+        marketplaceEntry.spec.providerMetadata.spec.wizardConfig
+          ?.wizardDefinition ?? '',
       ) as WizardDefinition,
     } as WizardConfig;
 
@@ -254,7 +275,6 @@ export class ProviderConfigurationComponent {
         this.store.dispatch(
           loadProviderMetadata({
             providerName: configurationData.providerName,
-            scope: configurationData.scope,
             installableIn: [configurationData.installableIn],
           }),
         );

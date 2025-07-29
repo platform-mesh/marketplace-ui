@@ -2,15 +2,15 @@ import { ProviderState } from './providerState';
 import { createSelector } from '@ngrx/store';
 
 export const selectProviders = (state: ProviderState) => {
-  return state.providers;
+  return state.marketplaceEntries;
 };
 
 export const selectInstalledProviders = createSelector(
   selectProviders,
-  (providers) => providers.filter((x) => !!x.instance),
+  (marketplaceEntries) => marketplaceEntries.filter((x) => x.spec.installed),
 );
 
 export const selectAllProviders = createSelector(
   selectProviders,
-  (providers) => providers,
+  (marketplaceEntries) => marketplaceEntries,
 );
