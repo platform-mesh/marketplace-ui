@@ -8,6 +8,6 @@ RUN --mount=type=secret,id=github_token --mount=type=secret,id=common_repository
 RUN npm run build
 
 FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html/ui/marketplace-ui/ui
+COPY --from=build /app/dist /usr/share/nginx/html/ui/marketplace/ui
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080
