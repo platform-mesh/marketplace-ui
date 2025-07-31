@@ -9,7 +9,7 @@ import {
 import { provideMockStore } from '@ngrx/store/testing';
 import { mock } from 'jest-mock-extended';
 import { NodeContext, ProviderMetadata, ServiceLevel } from 'models/index';
-import { EXTENSION_INSTALLED } from 'models/luigi-go-back';
+import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
 import { Subject, of } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
@@ -140,7 +140,7 @@ describe('ExtensionDetailDialogComponent', () => {
     mockData = extensionDetailDialogPo.getMockData();
 
     component = fixture.componentInstance;
-    component.providerObservable = of(mockData);
+    component.marketplaceEntryObservable = of(mockData);
 
     fixture.detectChanges();
   });
@@ -238,7 +238,7 @@ describe('ExtensionDetailDialogComponent', () => {
         expect(extensionDetailDialogPo.installButton).not.toBeNull();
         expect(providerServiceMock.installExtension).toHaveBeenCalled();
         expect(luigiLinkManagerGoBackSpy).toHaveBeenCalledWith(
-          EXTENSION_INSTALLED,
+          PROVIDER_INSTANCE_INSTALLED,
         );
       }));
 
@@ -254,7 +254,7 @@ describe('ExtensionDetailDialogComponent', () => {
         component['context'] = context.context as NodeContext;
         fixture.detectChanges();
 
-        component.extension = mockDataWizard;
+        component.marketplaceEntry = mockDataWizard;
 
         jest.spyOn(providerServiceMock, 'openConfigurationWizard');
         extensionDetailDialogPo.clickInstallButton();
@@ -351,14 +351,14 @@ describe('ExtensionDetailDialogComponent', () => {
     });
 
     it('should hide install button for undefined extension', () => {
-      component.extension = undefined;
+      component.marketplaceEntry = undefined;
       fixture.detectChanges();
 
       expect(component['showInstallButton']()).toBe(false);
     });
 
     it('should show install button for correct extension', () => {
-      component.extension = mockData;
+      component.marketplaceEntry = mockData;
       fixture.detectChanges();
       expect(component['showInstallButton']()).toBe(true);
     });
@@ -403,9 +403,9 @@ describe('ExtensionDetailDialogComponent', () => {
         component['installExtension']();
         tick();
 
-        expect(installSpy).toHaveBeenCalledWith(component.extension);
+        expect(installSpy).toHaveBeenCalledWith(component.marketplaceEntry);
         expect(luigiLinkManagerGoBackSpy).toHaveBeenCalledWith(
-          EXTENSION_INSTALLED,
+          PROVIDER_INSTANCE_INSTALLED,
         );
       }));
 
@@ -435,7 +435,7 @@ describe('ExtensionDetailDialogComponent', () => {
         fixture.detectChanges();
         tick();
 
-        component.extension = mockDataWizard;
+        component.marketplaceEntry = mockDataWizard;
         fixture.detectChanges();
 
         const openWizardSpy = jest.spyOn(

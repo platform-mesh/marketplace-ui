@@ -59,10 +59,7 @@ describe('ProviderMetadataEffects', () => {
     cases.forEach((props) => {
       it(`should call graphqlService with correct props`, fakeAsync(() => {
         actions$ = of(loadProviderMetadata(props));
-        const spy = jest.spyOn(
-          graphqlService,
-          'getExtensionClassForScopeQuery',
-        );
+        const spy = jest.spyOn(graphqlService, 'getMarketplaceEntries');
 
         effects.loadProviderMetadata.subscribe();
         tick();
@@ -94,7 +91,7 @@ describe('ProviderMetadataEffects', () => {
         .spyOn(providerService, 'buildLabels')
         .mockReturnValue(labels);
       jest
-        .spyOn(graphqlService, 'getExtensionClassForScopeQuery')
+        .spyOn(graphqlService, 'getMarketplaceEntries')
         .mockReturnValue(of(providerMetadata));
 
       let emittedAction: Action | undefined = undefined;

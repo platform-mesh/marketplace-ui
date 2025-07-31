@@ -1,21 +1,22 @@
 import {
-  ProviderMetadata,
+  MarketplaceEntry,
   ScopeType,
   ServiceInstance,
   ServiceInstanceStatusValue,
 } from 'models/index';
 
 export function getExtensionClassStatusValue(
-  e: ProviderMetadata,
+  e: MarketplaceEntry,
 ): ServiceInstanceStatusValue | undefined {
-  if (!e?.instance) {
+  if (!e?.spec.installed) {
     return undefined;
   }
 
-  return getExtensionInstanceStatusValue(e.instance);
+  // return getExtensionInstanceStatusValue(e.instance); todo gkr
+  return undefined;
 }
 
-export function getExtensionInstanceStatusValue(
+function getExtensionInstanceStatusValue(
   e: ServiceInstance,
 ): ServiceInstanceStatusValue | undefined {
   if (!e.serviceInstanceStatus) {
@@ -30,6 +31,7 @@ export function getExtensionInstanceStatusValue(
   return status[0];
 }
 
+// todo gkr remove
 export function parseScopeType(scope: string): ScopeType | undefined {
   switch (scope.toUpperCase()) {
     case 'PROJECT':
@@ -46,6 +48,7 @@ export function parseScopeType(scope: string): ScopeType | undefined {
       return undefined;
   }
 }
+
 export function getInstallableScope(scope: ScopeType | string): ScopeType[] {
   if ((scope as ScopeType) === ScopeType.TENANT) {
     return [ScopeType.TENANT, ScopeType.PROJECT, ScopeType.TEAM];

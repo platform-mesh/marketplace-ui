@@ -192,33 +192,56 @@ export interface Label {
   color: ColorCategory;
 }
 
+export interface MarketplaceEntry {
+  metadata: {
+    name: string;
+  };
+  spec: {
+    installed: boolean;
+    apiExport: {
+      spec: {
+        permissionClaims: {
+          all: boolean;
+          group: string;
+          identityHash: string;
+          resource: string;
+        }[];
+      };
+    };
+    providerMetadata: ProviderMetadata;
+  };
+}
+
 export interface ProviderMetadata {
-  name: string;
-  displayName: string;
-  tags?: string[];
-  description?: string;
-  image?: string; // data:image/x;base64,
-  category?: string;
-  scope: Scope;
-  configurationMetadata?: string;
-  instance: ServiceInstance | undefined | null;
-  isChangingInstallations?: boolean;
-  icon?: Icon;
-  wizardConfig?: ProviderWizardConfig;
-  documentation?: Documentation[];
-  helpCenterData?: Documentation[];
-  creationTimestamp?: string;
-  accountConnections?: AccountConnection[];
-  contacts?: Contact[];
-  labels?: Label[];
-  links?: Link[];
-  mainLink?: Link;
-  preferredSupportChannels?: Link[];
-  provider?: string;
-  network?: string;
-  verification?: Verification;
-  serviceLevel?: ServiceLevel;
-  template?: TemplateSpec;
+  spec: {
+    name: string;
+    displayName: string;
+    tags?: string[];
+    description?: string;
+    image?: string; // data:image/x;base64,
+    category?: string;
+    scope: Scope;
+    configurationMetadata?: string;
+    instance: ServiceInstance | undefined | null;
+    isChangingInstallations?: boolean;
+    icon?: Icon;
+    wizardConfig?: ProviderWizardConfig;
+    documentation?: Documentation[];
+    helpCenterData?: Documentation[];
+    creationTimestamp?: string;
+    accountConnections?: AccountConnection[];
+    contacts?: Contact[];
+    labels?: Label[];
+    links?: Link[];
+    mainLink?: Link;
+    preferredSupportChannels?: Link[];
+    provider?: string;
+    network?: string;
+    verification?: Verification;
+    serviceLevel?: ServiceLevel;
+    template?: TemplateSpec;
+    isMandatory?: boolean;
+  };
 }
 
 export interface TemplateSpec {
@@ -281,7 +304,7 @@ export interface ServiceInstance {
   configurationMetadata?: unknown;
   installationData?: Record<string, string>;
   providerData?: Record<string, string>;
-  isMandatoryExtension?: boolean;
+  isMandatory?: boolean;
   creationTimestamp?: Date;
   status: ServiceStatus;
   scope: Scope;
@@ -311,7 +334,6 @@ export interface UpdateProviderInput {
 
 export interface ProviderInput {
   id: string;
-  scope: ScopeType;
 }
 
 export interface ProviderMetadataFilter {

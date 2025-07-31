@@ -97,7 +97,6 @@ export class ImportAccountsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           loadProviderMetadata({
             providerName: this.context.providerName,
-            scope: ScopeType.GLOBAL,
             installableIn: [ScopeType.PROJECT],
             includeHidden: false,
           }),
@@ -199,10 +198,10 @@ export class ImportAccountsComponent implements OnInit, OnDestroy {
                   createAccountResource({
                     metadata: { name: element.name },
                     spec: this.buildSpec(element),
-                    extClass: resourceViewState.extensionClass,
+                    marketplaceEntry: resourceViewState.marketplaceEntry,
                     accountConnection:
-                      resourceViewState?.extensionClass
-                        ?.accountConnections?.[0],
+                      resourceViewState?.marketplaceEntry?.spec
+                        ?.providerMetadata?.spec?.accountConnections?.[0],
                   }),
                 );
               });

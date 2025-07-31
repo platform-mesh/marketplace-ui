@@ -11,68 +11,61 @@ import { GraphqlService } from 'services/graphql.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProvidersEffects {
-  loadProvidersForProjectOrTeam = createEffect(() =>
+  loadProviders = createEffect(() =>
     this.actions.pipe(ofType(loadProviders)).pipe(
-      withLatestFromWaiting(
-        this.store.select(selectScope).pipe(filter((c) => !!c)),
-      ),
-      filter(([, scope]) => (scope as ScopeType) !== ScopeType.TENANT),
-      mergeMap(([, scope]) =>
-        this.graphqlService
-          .getExtensionClassesForScopesQuery(
-            [scope, ScopeType.TENANT, ScopeType.GLOBAL],
-            [scope],
-          )
-          .pipe(
-            map((providers) =>
-              retrievedProviders({
-                providers,
-              }),
-            ),
-            catchError(() => EMPTY),
-          ),
-      ),
-    ),
-  );
-
-  loadProvidersForTenant = createEffect(() =>
-    this.actions.pipe(ofType(loadProviders)).pipe(
-      withLatestFromWaiting(
-        this.store.select(selectScope).pipe(filter((c) => !!c)),
-      ),
-      filter(([, scope]) => (scope as ScopeType) === ScopeType.TENANT),
       mergeMap(() =>
-        this.graphqlService
-          .getExtensionClassesForScopesQuery(
-            [ScopeType.TENANT, ScopeType.GLOBAL],
-            [],
-            {
-              excludeHiddenExtensions: true,
-              excludeHiddenInGlobalCatalogExtensions: true,
-            },
-          )
-          .pipe(
-            map((providers) =>
-              retrievedProviders({
-                providers,
-              }),
-            ),
-            catchError(() => EMPTY),
+        this.graphqlService.getMarketplaceEntries().pipe(
+          map((providers) =>
+            retrievedProviders({
+              providers,
+            }),
           ),
+          catchError(() => EMPTY),
+        ),
       ),
     ),
   );
 
-  refreshListIfThereIsAChangingState = createEffect(() =>
-    this.actions.pipe(ofType(retrievedProviders)).pipe(
-      filter((x) =>
-        x.providers.some((y) => y.instance?.status !== ServiceStatus.READY),
-      ),
-      // wait 1 seconds for a status to change
-      delay(1000),
-      map(() => loadProviders()),
-    ),
-  );
+  // todo gkr remove or incorporate
+  // loadProvidersForTenant = createEffect(() =>
+  //   this.actions.pipe(ofType(loadProviders)).pipe(
+  //     withLatestFromWaiting(
+  //       this.store.select(selectScope).pipe(filter((c) => !!c)),
+  //     ),
+  //     filter(([, scope]) => (scope as ScopeType) === ScopeType.TENANT),
+  //     mergeMap(() =>
+  //       this.graphqlService
+  //         .getMarketplaceEntries([], {
+  //           excludeHiddenExtensions: true,
+  //           excludeHiddenInGlobalCatalogExtensions: true,
+  //         })
+  //         .pipe(
+  //           map((providers) =>
+  //             retrievedProviders({
+  //               providers,
+  //             }),
+  //           ),
+  //           catchError(() => EMPTY),
+  //         ),
+  //     ),
+  //   ),
+  // );
+
+  // todo gkr check if we need it
+  // refreshListIfThereIsAChangingState = createEffect(() =>
+  //   this.actions.pipe(ofType(retrievedProviders)).pipe(
+  //     filter((x) =>
+  //       x.providers.some(
+  //         (y) =>
+  //           y.spec.providerMetadata.spec.instance?.status !==
+  //           ServiceStatus.READY,
+  //       ),
+  //     ),
+  //     // wait 1 seconds for a status to change
+  //     delay(1000),
+  //     map(() => loadProviders()),
+  //   ),
+  // );
 
   constructor(
     private actions: Actions,

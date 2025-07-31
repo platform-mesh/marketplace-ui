@@ -1,11 +1,11 @@
 import { ProviderDetailState } from './provider-detail';
-import { Account, ProviderMetadata } from 'models/provider-metadata';
+import { Account, MarketplaceEntry } from 'models/provider-metadata';
 import { AccountResources } from 'state/account-resources/account-resources';
 
 export interface ProviderState {
   accounts: readonly Account[];
-  providers: readonly ProviderMetadata[];
-  provider: Readonly<ProviderMetadata> | undefined;
+  marketplaceEntries: readonly MarketplaceEntry[];
+  marketplaceEntry: Readonly<MarketplaceEntry> | undefined;
   changingProviderNames: readonly string[];
   detailView: ProviderDetailState;
   accountResources: AccountResources;

@@ -1,8 +1,12 @@
-import { ProviderMetadata, ScopeType } from 'models/provider-metadata';
+import {
+  MarketplaceEntry,
+  ProviderMetadata,
+  ScopeType,
+} from 'models/provider-metadata';
 import { VerificationType } from 'models/verification-type';
 
-export const exts: ProviderMetadata[] = [
-  {
+const ext: ProviderMetadata = {
+  spec: {
     scope: { type: ScopeType.GLOBAL },
     instance: null,
     name: 'acme-example-provider',
@@ -66,4 +70,26 @@ export const exts: ProviderMetadata[] = [
       },
     ],
   },
-];
+};
+
+export const exts: MarketplaceEntry = {
+  metadata: {
+    name: 'mp-name',
+  },
+  spec: {
+    installed: false,
+    apiExport: {
+      spec: {
+        permissionClaims: [
+          {
+            all: true,
+            group: 'group1',
+            identityHash: 'identityHash1',
+            resource: 'resource1',
+          },
+        ],
+      },
+    },
+    providerMetadata: ext,
+  },
+};

@@ -5,7 +5,7 @@ import {
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { ProviderMetadata } from 'models/provider-metadata';
+import { MarketplaceEntry } from 'models/provider-metadata';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
@@ -16,8 +16,8 @@ import { requestFailed } from 'state/common.action';
 export class ProviderMetadataEffects {
   loadProviderMetadata = createEffect(() =>
     this.actions.pipe(ofType(loadProviderMetadata)).pipe(
-      switchMap(({ providerName, scope, installableIn, includeHidden }) => {
-        if (!scope || !providerName) {
+      switchMap(({ providerName, installableIn, includeHidden }) => {
+        if (!providerName) {
           return of(
             requestFailed({
               goBack: false,
@@ -27,7 +27,7 @@ export class ProviderMetadataEffects {
                 statusText: 'Bad Request',
                 url: undefined,
               }),
-              dialogTitle: 'Failed to retrieve extension class',
+              dialogTitle: 'Failed to retrieve provider metadata',
             }),
           );
         }
@@ -36,15 +36,21 @@ export class ProviderMetadataEffects {
           excludeHiddenExtensions: !includeHidden,
         };
         return this.graphqlService
-          .getExtensionClassForScopeQuery(scope, providerName, filter)
+          .getMarketplaceEntry(providerName, filter)
           .pipe(
-            map((providerMetadata: ProviderMetadata) => {
-              const labels = this.providerService.buildLabels(providerMetadata);
+            map((marketplaceEntry: MarketplaceEntry) => {
+              const labels = this.providerService.buildLabels(
+                marketplaceEntry.spec.providerMetadata,
+              );
 
-              return { ...providerMetadata, labels };
+              marketplaceEntry.spec.providerMetadata.spec = {
+                ...marketplaceEntry.spec.providerMetadata.spec,
+                labels,
+              };
+              return marketplaceEntry;
             }),
-            map((providerMetadata) =>
-              retrievedProviderMetadata({ providerMetadata }),
+            map((marketplaceEntry) =>
+              retrievedProviderMetadata({ marketplaceEntry }),
             ),
           );
       }),
@@ -53,7 +59,7 @@ export class ProviderMetadataEffects {
           requestFailed({
             goBack: false,
             error,
-            dialogTitle: 'Failed to retrieve extension class',
+            dialogTitle: 'Failed to retrieve provider metadata',
           }),
         ),
       ),

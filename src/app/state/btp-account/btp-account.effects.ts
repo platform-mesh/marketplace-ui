@@ -25,7 +25,6 @@ export class BtpAccountEffects {
         const installableIn = parseScopeType(scopeOfCurrentView);
         return loadProviderMetadata({
           providerName: action.providerName,
-          scope: parseScopeType(action.extClassScope),
           installableIn: installableIn ? [installableIn] : [],
           includeHidden: true,
         });

@@ -38,7 +38,6 @@ export const accountResourceSelected = createAction(
   '[Account Resources] Account resource selected',
   props<{
     providerName: string;
-    extClassScope: string;
     accountType: string;
     resourceName: string;
     resourceNamespace: string;

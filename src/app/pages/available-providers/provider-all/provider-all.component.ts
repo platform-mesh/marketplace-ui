@@ -9,8 +9,14 @@ import {
 import { LinkComponent } from '@fundamental-ngx/platform/link';
 import { ModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
-import { ProviderMetadata, ScopeType } from 'models/provider-metadata';
-import { BehaviorSubject, Observable, Subject, skip } from 'rxjs';
+import { MarketplaceEntry, ProviderMetadata } from 'models/provider-metadata';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  combineLatest,
+  skip,
+} from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
@@ -23,12 +29,11 @@ import {
 import { triggerMatomoEvent } from 'shared/helpers';
 import { selectScope } from 'state/luigi.selectors';
 import { ProviderState } from 'state/providerState';
-import { loadProviders } from 'state/providers.actions';
 import { selectAllProviders } from 'state/providers.selectors';
 
 export interface ProviderCatalogDataItem extends CatalogDataItem {
   id?: string;
-  scope?: ScopeType;
+  scope?: string;
 }
 
 @Component({
@@ -70,34 +75,48 @@ export class ProviderAllComponent implements OnInit {
       .select(selectScope)
       .pipe(map((scope) => scope?.toLowerCase()));
 
-    this.installableProviders = this.store.select(selectAllProviders).pipe(
+    this.installableProviders = combineLatest([
+      this.store.select(selectAllProviders),
+      this.scope, // assuming this.scope is an Observable
+    ]).pipe(
       skip(1),
-      map((providers) => {
+      map(([marketplaceEntries, scope]) => {
         this.isLoading.next(false);
-        return providers.reduce(
-          (total: ProviderCatalogDataItem[], elem: ProviderMetadata) => {
+        return marketplaceEntries.reduce(
+          (
+            total: ProviderCatalogDataItem[],
+            marketplaceEntry: MarketplaceEntry,
+          ) => {
             let badge = '';
-            if (elem.instance && !this.isFeatureMode) {
+            if (marketplaceEntry.spec.installed && !this.isFeatureMode) {
               badge = 'INSTALLED';
             }
-            const labels = this.providerService.buildLabels(elem);
+            const labels = this.providerService.buildLabels(
+              marketplaceEntry.spec.providerMetadata,
+            );
 
             total.push({
-              id: elem.name,
-              scope: elem.scope.type,
-              testId: `app-extensions-catalog-all-card-${elem.name}-entity`,
-              title: elem.displayName,
-              description: elem.description,
-              image: this.providerService.getIcon(elem),
-              verification: elem.verification,
-              category: elem.category,
-              provider: elem.provider,
+              id: marketplaceEntry.metadata.name,
+              scope: scope,
+              testId: `app-extensions-catalog-all-card-${marketplaceEntry.metadata.name}-entity`,
+              title: marketplaceEntry.spec.providerMetadata.spec.displayName,
+              description:
+                marketplaceEntry.spec.providerMetadata.spec.description,
+              image: this.providerService.getIcon(
+                marketplaceEntry.spec.providerMetadata,
+              ),
+              verification:
+                marketplaceEntry.spec.providerMetadata.spec.verification,
+              category: marketplaceEntry.spec.providerMetadata.spec.category,
+              provider: marketplaceEntry.spec.providerMetadata.spec.provider,
               badge: {
                 text: badge,
                 color: 'var(--sapPositiveColor)',
               },
               labels,
-              additionalInfo: this.buildAdditionalInfo(elem),
+              additionalInfo: this.buildAdditionalInfo(
+                marketplaceEntry.spec.providerMetadata,
+              ),
             });
             return total;
           },
@@ -114,7 +133,6 @@ export class ProviderAllComponent implements OnInit {
       .subscribe((ctx) => {
         this.projectId = ctx.context.projectId;
         this.projectType = ctx.context.entityContext?.project?.type;
-        this.store.dispatch(loadProviders());
         this.initialFilter = this.luigiClient.getNodeParams(true)['q'] || '';
       });
   }
@@ -168,12 +186,14 @@ export class ProviderAllComponent implements OnInit {
     this.luigiClient.addNodeParams({ q }, true);
   }
 
-  private buildAdditionalInfo(elem: ProviderMetadata): AdditionalInfo[] {
+  private buildAdditionalInfo(
+    providerMetadata: ProviderMetadata,
+  ): AdditionalInfo[] {
     const additionalInfo: AdditionalInfo[] = [];
-    if (elem.category) {
+    if (providerMetadata.spec.category) {
       additionalInfo.push({
         label: 'Category',
-        value: elem.category,
+        value: providerMetadata.spec.category,
       });
     }
     return additionalInfo;

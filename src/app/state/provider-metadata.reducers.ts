@@ -3,14 +3,14 @@ import {
   retrievedProviderMetadata,
 } from './provider-metadata.action';
 import { createReducer, on } from '@ngrx/store';
-import { ProviderMetadata } from 'models/provider-metadata';
+import { MarketplaceEntry, ProviderMetadata } from 'models/provider-metadata';
 
-export const initialState: ProviderMetadata | undefined = undefined;
+export const initialState: MarketplaceEntry | undefined = undefined;
 
 export const providerMetadataReducer = createReducer(
-  initialState as ProviderMetadata | undefined,
-  on(retrievedProviderMetadata, (state, { providerMetadata }) => {
-    return providerMetadata;
+  initialState as MarketplaceEntry | undefined,
+  on(retrievedProviderMetadata, (state, { marketplaceEntry }) => {
+    return marketplaceEntry;
   }),
   on(clearProviderMetadata, () => {
     return initialState;

@@ -83,7 +83,9 @@ export class ProviderAccountResourcesComponent implements OnInit, OnDestroy {
   @Input() accountConnection?: AccountConnection;
   tableConfig: TableGeneratorConfig = { columns: [] };
   data: TableItemType[] | undefined;
-  protected readonly provider = this.store.select(selectSelectedProvider);
+  protected readonly marketplaceEntry = this.store.select(
+    selectSelectedProvider,
+  );
   private ngUnsubscribe = new Subject<void>();
 
   constructor(

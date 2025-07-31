@@ -24,21 +24,21 @@ export const routes: Routes = [
     component: ProviderDetailsComponent,
   },
   {
-    path: 'create-res/:scope/:providerName/:accountType',
+    path: 'create-res/:providerName/:accountType',
     component: CrEditResourceComponent,
     data: {
       dialogType: CreditDialogType.CREATE,
     },
   },
   {
-    path: 'create-btp-acc/:scope/:providerName',
+    path: 'create-btp-acc/:providerName',
     component: BtpAccountCrEditComponent,
     data: {
       dialogType: CreditDialogType.CREATE,
     },
   },
   {
-    path: 'edit-res/:scope/:providerName/:accountType/:name/:nspace',
+    path: 'edit-res/:providerName/:accountType/:name/:nspace',
     component: CrEditResourceComponent,
     data: {
       dialogType: CreditDialogType.EDIT,

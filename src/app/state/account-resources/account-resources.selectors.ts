@@ -10,17 +10,18 @@ import YAML from 'yaml';
 const accountResourceState = (state: ProviderState) => {
   return {
     accountResource: state.accountResources,
-    extensionClass: state.provider,
+    marketplaceEntry: state.marketplaceEntry,
   };
 };
 
 export const resourceViewState = createSelector(accountResourceState, (x) => {
   return {
     accountResource: x.accountResource,
-    accountConnection: x.extensionClass?.accountConnections?.find(
-      (y) => y.name === x.accountResource.accountType,
-    ),
-    extensionClass: x.extensionClass,
+    accountConnection:
+      x.marketplaceEntry?.spec.providerMetadata.spec.accountConnections?.find(
+        (y) => y.name === x.accountResource.accountType,
+      ),
+    marketplaceEntry: x.marketplaceEntry,
   };
 });
 
@@ -45,7 +46,7 @@ export const editResourceWizardConfig = createSelector(
     if (
       !resourceViewState.accountConnection?.type?.apiResourceConfig
         ?.wizardConfig?.configData ||
-      !resourceViewState.extensionClass
+      !resourceViewState.marketplaceEntry
     ) {
       return undefined;
     }
@@ -74,8 +75,8 @@ export const editResourceWizardConfig = createSelector(
 export const customResourceOfCurrentAccount = createSelector(
   selectSelectedProvider,
   resourceViewState,
-  (extClass, resourceViewState) => {
-    if (!extClass?.accountConnections) {
+  (marketplaceEntry, resourceViewState) => {
+    if (!marketplaceEntry?.spec.providerMetadata.spec.accountConnections) {
       return [];
     }
 
@@ -83,7 +84,7 @@ export const customResourceOfCurrentAccount = createSelector(
     const accountConnectionToResources =
       accountResource.accountConnectionToResources.find(
         (acToResources) =>
-          !!extClass.accountConnections?.find(
+          !!marketplaceEntry.spec.providerMetadata.spec.accountConnections?.find(
             (ac) => ac.name === acToResources.accountConnection.name,
           ),
       );

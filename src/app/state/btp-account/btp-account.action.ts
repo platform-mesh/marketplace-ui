@@ -5,7 +5,6 @@ export const creditDialogOpened = createAction(
   '[BTP Account] credit dialog opened',
   props<{
     providerName: string;
-    extClassScope: string;
     dialogType: CreditDialogType;
   }>(),
 );

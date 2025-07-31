@@ -42,8 +42,8 @@ import { accountResourcesReducer } from 'state/account-resources/account-resourc
 import { AccountsEffects } from 'state/accounts.effects';
 import { accountTypesReducer } from 'state/accounts.reducer';
 import { BtpAccountEffects } from 'state/btp-account/btp-account.effects';
-import { ExtensionInstancesEffects } from 'state/changing-extension.effects';
-import { changingExtensionsReducer } from 'state/changing-extension.reducer';
+import { ProviderInstanceEffects } from 'state/changing-provider-instance.effects';
+import { changingProviderInstanceReducer } from 'state/changing-provider-instance.reducer';
 import { CommonEffects } from 'state/common.effects';
 import { DetailViewEffect } from 'state/detail-view.effect';
 import { detailViewReducer } from 'state/detail-view.reducer';
@@ -73,9 +73,9 @@ export const appConfig: ApplicationConfig = {
     provideLuigiState(),
     provideStore<ProviderState>({
       accounts: accountTypesReducer,
-      providers: providersReducer,
-      provider: providerMetadataReducer,
-      changingProviderNames: changingExtensionsReducer,
+      marketplaceEntries: providersReducer,
+      marketplaceEntry: providerMetadataReducer,
+      changingProviderNames: changingProviderInstanceReducer,
       detailView: detailViewReducer,
       accountResources: accountResourcesReducer,
     }),
@@ -86,7 +86,7 @@ export const appConfig: ApplicationConfig = {
       DetailViewEffect,
       ProviderMetadataEffects,
       ProvidersEffects,
-      ExtensionInstancesEffects,
+      ProviderInstanceEffects,
       CommonEffects,
       LuigiGoBackEffect,
       BtpAccountEffects,
