@@ -1,0 +1,659 @@
+schema {
+  query: PrivateNameForQuery
+  mutation: PrivateNameForMutation
+  subscription: PrivateNameForSubscription
+}
+
+type coreMutation {
+  createDeleteOptions(
+    """The object to create or update"""
+    object: DeleteOptionsInput!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): DeleteOptions
+  createStatus(
+    """The object to create or update"""
+    object: StatusInput!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): Status
+  deleteDeleteOptions(
+    """The name of the object"""
+    name: String!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): Boolean
+  deleteStatus(
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """The name of the object"""
+    name: String!
+  ): Boolean
+  updateDeleteOptions(
+    """The name of the object"""
+    name: String!
+
+    """The object to create or update"""
+    object: DeleteOptionsInput!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): DeleteOptions
+  updateStatus(
+    """The object to create or update"""
+    object: StatusInput!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """The name of the object"""
+    name: String!
+  ): Status
+}
+
+type coreQuery {
+  DeleteOptions(
+    """The name of the object"""
+    name: String!
+  ): DeleteOptions!
+  DeleteOptionsYaml(
+    """The name of the object"""
+    name: String!
+  ): String!
+  Status(
+    """The name of the object"""
+    name: String!
+  ): Status!
+  StatusYaml(
+    """The name of the object"""
+    name: String!
+  ): String!
+  Statuses(
+    """A label selector to filter the objects by"""
+    labelselector: String
+
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+  ): [Status!]!
+}
+
+type DeleteOptions {
+  apiVersion: String
+  dryRun: [String]
+  gracePeriodSeconds: Int
+  kind: String
+  orphanDependents: Boolean
+  preconditions: io_k8s_apimachinery_pkg_apis_meta_v1_Preconditionspreconditions
+  propagationPolicy: String
+}
+
+input DeleteOptionsInput {
+  propagationPolicy: String
+  apiVersion: String
+  dryRun: [String]
+  gracePeriodSeconds: Int
+  kind: String
+  orphanDependents: Boolean
+  preconditions: io_k8s_apimachinery_pkg_apis_meta_v1_PreconditionspreconditionsInput
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_ListMetametadata {
+  continue: String
+  remainingItemCount: Int
+  resourceVersion: String
+  selfLink: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_ListMetametadataInput {
+  continue: String
+  remainingItemCount: Int
+  resourceVersion: String
+  selfLink: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFields {
+  apiVersion: String
+  fieldsType: String
+  fieldsV1: JSONString
+  manager: String
+  operation: String
+  subresource: String
+  time: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFieldsInput {
+  fieldsV1: JSONString
+  manager: String
+  operation: String
+  subresource: String
+  time: String
+  apiVersion: String
+  fieldsType: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadata {
+  annotations: StringMap
+  creationTimestamp: String
+  deletionGracePeriodSeconds: Int
+  deletionTimestamp: String
+  finalizers: [String]
+  generateName: String
+  generation: Int
+  labels: StringMap
+  managedFields: [io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFields]
+  name: String
+  namespace: String
+  ownerReferences: [io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferences]
+  resourceVersion: String
+  selfLink: String
+  uid: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadataInput {
+  selfLink: String
+  creationTimestamp: String
+  managedFields: [io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFieldsInput]
+  deletionTimestamp: String
+  deletionGracePeriodSeconds: Int
+  name: String
+  ownerReferences: [io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferencesInput]
+  labels: StringMap
+  finalizers: [String]
+  uid: String
+  annotations: StringMap
+  resourceVersion: String
+  generation: Int
+  namespace: String
+  generateName: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferences {
+  apiVersion: String
+  blockOwnerDeletion: Boolean
+  controller: Boolean
+  kind: String
+  name: String
+  uid: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferencesInput {
+  blockOwnerDeletion: Boolean
+  controller: Boolean
+  kind: String
+  name: String
+  uid: String
+  apiVersion: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_Preconditionspreconditions {
+  resourceVersion: String
+  uid: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_PreconditionspreconditionsInput {
+  uid: String
+  resourceVersion: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscauses {
+  field: String
+  message: String
+  reason: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscausesInput {
+  field: String
+  message: String
+  reason: String
+}
+
+type io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetails {
+  causes: [io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscauses]
+  group: String
+  kind: String
+  name: String
+  retryAfterSeconds: Int
+  uid: String
+}
+
+input io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetailsInput {
+  kind: String
+  name: String
+  retryAfterSeconds: Int
+  uid: String
+  causes: [io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscausesInput]
+  group: String
+}
+
+"""A JSON-serialized string representation of any object."""
+scalar JSONString
+
+type marketplace_platform_mesh_ioMutation {
+  createMarketplaceEntry(
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """The object to create or update"""
+    object: MarketplaceEntryInput!
+  ): MarketplaceEntry
+  deleteMarketplaceEntry(
+    """The name of the object"""
+    name: String!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): Boolean
+  updateMarketplaceEntry(
+    """The object to create or update"""
+    object: MarketplaceEntryInput!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """The name of the object"""
+    name: String!
+  ): MarketplaceEntry
+}
+
+type marketplace_platform_mesh_ioQuery {
+  MarketplaceEntries(
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+
+    """A label selector to filter the objects by"""
+    labelselector: String
+  ): [MarketplaceEntry!]!
+  MarketplaceEntry(
+    """The name of the object"""
+    name: String!
+  ): MarketplaceEntry!
+  MarketplaceEntryYaml(
+    """The name of the object"""
+    name: String!
+  ): String!
+}
+
+type MarketplaceEntry {
+  apiVersion: String
+  kind: String
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadata
+  spec: MarketplaceEntryspec
+  status: JSONString
+}
+
+input MarketplaceEntryInput {
+  status: JSONString
+  apiVersion: String
+  kind: String
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadataInput
+  spec: MarketplaceEntryspecInput
+}
+
+type MarketplaceEntryspec {
+  apiExport: MarketplaceEntryspecspecapiExport
+  installed: Boolean
+  providerMetadata: MarketplaceEntryspecspecproviderMetadata
+}
+
+input MarketplaceEntryspecInput {
+  installed: Boolean
+  providerMetadata: MarketplaceEntryspecspecproviderMetadataInput
+  apiExport: MarketplaceEntryspecspecapiExportInput
+}
+
+type MarketplaceEntryspecspecapiExport {
+  apiVersion: String
+  kind: String
+  metadata: JSONString
+  spec: MarketplaceEntryspecspecapiExportspecapiExportspec
+  status: MarketplaceEntryspecspecapiExportspecapiExportstatus
+}
+
+input MarketplaceEntryspecspecapiExportInput {
+  kind: String
+  metadata: JSONString
+  spec: MarketplaceEntryspecspecapiExportspecapiExportspecInput
+  status: MarketplaceEntryspecspecapiExportspecapiExportstatusInput
+  apiVersion: String
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspec {
+  identity: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentity
+  latestResourceSchemas: [String]
+  maximalPermissionPolicy: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicy
+  permissionClaims: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaims]
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecInput {
+  latestResourceSchemas: [String]
+  maximalPermissionPolicy: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicyInput
+  permissionClaims: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsInput]
+  identity: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityInput
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentity {
+  secretRef: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRef
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityInput {
+  secretRef: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRefInput
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRef {
+  name: String
+  namespace: String
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRefInput {
+  name: String
+  namespace: String
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicy {
+  local: JSONString
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicyInput {
+  local: JSONString
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaims {
+  all: Boolean
+  group: String
+  identityHash: String
+  resource: String
+  resourceSelector: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelector]
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsInput {
+  group: String
+  identityHash: String
+  resource: String
+  resourceSelector: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelectorInput]
+  all: Boolean
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelector {
+  name: String
+  namespace: String
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelectorInput {
+  name: String
+  namespace: String
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportstatus {
+  conditions: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditions]
+  identityHash: String
+  virtualWorkspaces: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspaces]
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportstatusInput {
+  conditions: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditionsInput]
+  identityHash: String
+  virtualWorkspaces: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspacesInput]
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditions {
+  lastTransitionTime: String
+  message: String
+  reason: String
+  severity: String
+  status: String
+  type: String
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditionsInput {
+  reason: String
+  severity: String
+  status: String
+  type: String
+  lastTransitionTime: String
+  message: String
+}
+
+type MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspaces {
+  url: String
+}
+
+input MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspacesInput {
+  url: String
+}
+
+type MarketplaceEntryspecspecproviderMetadata {
+  apiVersion: String
+  kind: String
+  metadata: JSONString
+  spec: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspec
+  status: JSONString
+}
+
+input MarketplaceEntryspecspecproviderMetadataInput {
+  kind: String
+  metadata: JSONString
+  spec: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecInput
+  status: JSONString
+  apiVersion: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspec {
+  contacts: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontacts]
+  data: String
+  description: String
+  displayName: String
+  documentation: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentation]
+  helpCenterData: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterData]
+  icon: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecicon
+  links: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinks]
+  preferredSupportChannels: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannels]
+  tags: [String]
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecInput {
+  data: String
+  helpCenterData: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterDataInput]
+  links: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinksInput]
+  contacts: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontactsInput]
+  tags: [String]
+  preferredSupportChannels: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannelsInput]
+  icon: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconInput
+  description: String
+  displayName: String
+  documentation: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentationInput]
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontacts {
+  displayName: String
+  email: String
+  role: [String]
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontactsInput {
+  role: [String]
+  displayName: String
+  email: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentation {
+  displayName: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentationInput {
+  url: String
+  displayName: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterData {
+  displayName: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterDataInput {
+  displayName: String
+  url: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecicon {
+  dark: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondark
+  light: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlight
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconInput {
+  dark: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondarkInput
+  light: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlightInput
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondark {
+  data: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondarkInput {
+  data: String
+  url: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlight {
+  data: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlightInput {
+  data: String
+  url: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinks {
+  displayName: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinksInput {
+  displayName: String
+  url: String
+}
+
+type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannels {
+  displayName: String
+  url: String
+}
+
+input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannelsInput {
+  displayName: String
+  url: String
+}
+
+type PrivateNameForMutation {
+  core: coreMutation
+  marketplace_platform_mesh_io: marketplace_platform_mesh_ioMutation
+}
+
+type PrivateNameForQuery {
+  core: coreQuery
+  marketplace_platform_mesh_io: marketplace_platform_mesh_ioQuery
+  typeByCategory(
+    """The name of the object"""
+    name: String!
+  ): [typeByCategoryObject!]!
+}
+
+type PrivateNameForSubscription {
+  """Subscribe to changes of DeleteOptions"""
+  core_deleteoptions(
+    """A label selector to filter the objects by"""
+    labelselector: String
+
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+  ): [DeleteOptions]
+
+  """Subscribe to changes of Status"""
+  core_status(
+    """The name of the object"""
+    name: String!
+
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+  ): Status
+
+  """Subscribe to changes of Statuses"""
+  core_statuses(
+    """A label selector to filter the objects by"""
+    labelselector: String
+
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+  ): [Status]
+
+  """Subscribe to changes of MarketplaceEntries"""
+  marketplace_platform_mesh_io_marketplaceentries(
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+
+    """A label selector to filter the objects by"""
+    labelselector: String
+
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+  ): [MarketplaceEntry]
+
+  """Subscribe to changes of MarketplaceEntry"""
+  marketplace_platform_mesh_io_marketplaceentry(
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+
+    """The name of the object"""
+    name: String!
+  ): MarketplaceEntry
+}
+
+type Status {
+  apiVersion: String
+  code: Int
+  details: io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetails
+  kind: String
+  message: String
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ListMetametadata
+  reason: String
+  status: String
+}
+
+input StatusInput {
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ListMetametadataInput
+  reason: String
+  status: String
+  apiVersion: String
+  code: Int
+  details: io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetailsInput
+  kind: String
+  message: String
+}
+
+"""A map from strings to strings."""
+scalar StringMap
+
+type typeByCategoryObject {
+  group: String!
+  kind: String!
+  scope: String!
+  version: String!
+}
+
