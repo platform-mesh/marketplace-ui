@@ -1,4 +1,3 @@
-import { exts } from '../pages/installed-providers/catalog/installed-providers';
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MarketplaceEntry } from 'models/index';
@@ -8,8 +7,8 @@ import {
   ProviderMetadataFilter,
   UpdateProviderInput,
 } from 'models/provider-metadata';
-import { Observable, combineLatest, of, switchMap } from 'rxjs';
-import { filter, first, map, mergeMap } from 'rxjs/operators';
+import { Observable, of, switchMap } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { ApolloFactory } from 'services/apollo-factory';
 import { luigiContextSelector } from 'services/luigi/state';
 import { getMarketplaceEntriesQuery } from 'services/marketplace-graphql.queries';
@@ -21,36 +20,32 @@ export class GraphqlService {
 
   getMarketplaceEntry(
     providerName: string,
-    extFilter: ProviderMetadataFilter,
   ): Observable<MarketplaceEntry> {
-    // todo gkr
-    return of(exts);
-
-    // return combineLatest([
-    //   this.extensionApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context]) => {
-    //     return apollo
-    //       .query<{ getExtensionClassForScope: ProviderMetadata }>({
-    //         query: extensionClassForScopeQuery,
-    //         variables: {
-    //           tenantId: context.tenantid,
-    //           type: scope,
-    //           context: GraphqlService.createGraphqlContextObject(context),
-    //           providerName,
-    //           filter: extFilter,
-    //         },
-    //         fetchPolicy: 'no-cache',
-    //       })
-    //       .pipe(
-    //         map(
-    //           (apolloResponse) => apolloResponse.data.getExtensionClassForScope,
-    //         ),
-    //       );
-    //   }),
-    // );
+    return this.store.select(luigiContextSelector).pipe(
+      filter((x) => !!x),
+      switchMap((context) => {
+        return this.apolloFactory
+          .apollo(context)
+          .query<{ getMarketplaceEntriesQuery: MarketplaceEntry[] }>({
+            query: getMarketplaceEntriesQuery,
+            fetchPolicy: 'no-cache',
+          })
+          .pipe(
+            map((apolloResponse: any) => {
+              return apolloResponse.data.marketplace_platform_mesh_io.MarketplaceEntries;
+            }),
+            map((entries: MarketplaceEntry[]) => {
+                const res = entries.filter(entry => {
+                  return entry.metadata.name === providerName;
+                });
+                console.log(res);
+                return res;
+              },
+            ),
+            map((entries:MarketplaceEntry[])=> entries[0] || null)
+          )
+      }
+    ))
   }
 
   createExtFilter(installableIn?: string[]): ProviderMetadataFilter {

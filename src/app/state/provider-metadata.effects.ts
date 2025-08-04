@@ -16,7 +16,7 @@ import { requestFailed } from 'state/common.action';
 export class ProviderMetadataEffects {
   loadProviderMetadata = createEffect(() =>
     this.actions.pipe(ofType(loadProviderMetadata)).pipe(
-      switchMap(({ providerName, installableIn, includeHidden }) => {
+      switchMap(({ providerName}) => {
         if (!providerName) {
           return of(
             requestFailed({
@@ -31,18 +31,14 @@ export class ProviderMetadataEffects {
             }),
           );
         }
-        const filter = {
-          installableIn,
-          excludeHiddenExtensions: !includeHidden,
-        };
         return this.graphqlService
-          .getMarketplaceEntry(providerName, filter)
+          .getMarketplaceEntry(providerName)
           .pipe(
             map((marketplaceEntry: MarketplaceEntry) => {
               const labels = this.providerService.buildLabels(
                 marketplaceEntry.spec.providerMetadata,
               );
-
+              console.log(marketplaceEntry.spec.providerMetadata.spec);
               marketplaceEntry.spec.providerMetadata.spec = {
                 ...marketplaceEntry.spec.providerMetadata.spec,
                 labels,
@@ -54,14 +50,15 @@ export class ProviderMetadataEffects {
             ),
           );
       }),
-      catchError((error: HttpErrorResponse) =>
-        of(
+      catchError((error: HttpErrorResponse) => {
+        return of(
           requestFailed({
             goBack: false,
             error,
             dialogTitle: 'Failed to retrieve provider metadata',
           }),
-        ),
+        );
+      }
       ),
     ),
   );
