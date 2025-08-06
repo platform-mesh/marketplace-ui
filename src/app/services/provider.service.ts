@@ -116,8 +116,8 @@ export class ProviderService {
   ): Promise<boolean> {
     const settings: ConfirmationModalSettings = {
       type: 'warning',
-      header: $localize`Uninstall Provider` as string,
-      body: $localize`Are you sure you want to uninstall the Provider <b>${marketplaceEntry.spec.providerMetadata.spec.displayName}</b>? All configurations will be removed.` as string,
+      header: $localize`Uninstall Service Provider` as string,
+      body: $localize`Are you sure you want to uninstall the Service Provider <b>${marketplaceEntry.spec.providerMetadata.spec.displayName}</b>? The API Binding and all Provider Resources will be removed` as string,
       buttonConfirm: $localize`Uninstall` as string,
       buttonDismiss: $localize`Cancel` as string,
     };
@@ -142,18 +142,20 @@ export class ProviderService {
   }
 
   public isUninstallable(marketplaceEntry: MarketplaceEntry): boolean {
+    const installed = marketplaceEntry.spec.installed
+    const deletionPrevented = this.isDeletionPrevented(marketplaceEntry);
+    const isMandatory = this.isProviderMandatory(marketplaceEntry);
+    // && provider?.instance?.status !== ServiceStatus.IN_DELETION
+
     return (
-      marketplaceEntry.spec.installed &&
-      !this.isDeletionPrevented(marketplaceEntry) &&
-      !this.isProviderMandatory(marketplaceEntry)
-      // && provider?.instance?.status !== ServiceStatus.IN_DELETION
+      installed && !deletionPrevented && !isMandatory
     );
   }
 
   private isDeletionPrevented(marketplaceEntry: MarketplaceEntry): boolean {
     return (
       // provider.instance?.providerData?.['disableProjectDeletion'] === 'true'
-      !!marketplaceEntry
+      false
     );
   }
 
@@ -163,8 +165,7 @@ export class ProviderService {
 
   public isProviderMandatory(marketplaceEntry: MarketplaceEntry): boolean {
     return (
-      !marketplaceEntry.spec.installed &&
-      !!marketplaceEntry.spec.providerMetadata.spec.isMandatory
+      false
     );
   }
 
