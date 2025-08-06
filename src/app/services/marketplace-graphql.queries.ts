@@ -1,5 +1,25 @@
 import { gql } from 'apollo-angular';
 
+export const createAPIBindingMutation = gql`
+  mutation($name:String!, $apiExportPath:String!, $apiExportName: String!) {
+    apis_kcp_io {
+      createAPIBinding(object: {
+        metadata: {
+          name: $name
+        }
+        spec: {
+          reference: {
+            export: {
+              name: $apiExportName
+              path: $apiExportPath
+            }
+          }
+        }
+      }){metadata{name}}
+    }
+  }
+`
+
 export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {
@@ -10,6 +30,7 @@ export const getMarketplaceEntriesQuery = gql`
         spec {
           installed
           apiExport {
+            metadata
             spec {
               permissionClaims {
                 all

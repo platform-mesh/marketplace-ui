@@ -3,7 +3,6 @@ import { Store } from '@ngrx/store';
 import { MarketplaceEntry } from 'models/index';
 import {
   Account,
-  InstallProviderInput,
   ProviderMetadataFilter,
   UpdateProviderInput,
 } from 'models/provider-metadata';
@@ -11,7 +10,7 @@ import { Observable, of, switchMap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApolloFactory } from 'services/apollo-factory';
 import { luigiContextSelector } from 'services/luigi/state';
-import { getMarketplaceEntriesQuery } from 'services/marketplace-graphql.queries';
+import { createAPIBindingMutation, getMarketplaceEntriesQuery } from 'services/marketplace-graphql.queries';
 
 @Injectable({ providedIn: 'root' })
 export class GraphqlService {
@@ -85,30 +84,28 @@ export class GraphqlService {
     );
   }
 
-  installProviderInstance(input: InstallProviderInput): Observable<unknown> {
-    console.log('INSTALLED!!!!!');
+  installProviderInstance(entry: MarketplaceEntry): Observable<unknown> {
+    const name = entry.metadata.name;
+    const metadata = JSON.parse(entry.spec.apiExport.metadata);
+    const apiExportPath = metadata.annotations["kcp.io/path"]
+    const apiExportName = name
 
-    return of([]);
-
-    // return combineLatest([
-    //   this.extensionApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     return apollo.mutate({
-    //       mutation: INSTALL_EXTENSION,
-    //       variables: {
-    //         tenantId: context.tenantid,
-    //         scope: scopeInfo?.scopeId,
-    //         entity: scopeInfo?.scopeType.toLowerCase(),
-    //         input,
-    //       },
-    //     });
-    //   }),
-    // );
+    return this.store.select(luigiContextSelector).pipe(
+      filter((x) => !!x),
+      switchMap((context) =>
+        this.apolloFactory
+          .wsapollo(context)
+          .mutate({
+            mutation: createAPIBindingMutation,
+            variables: {
+              name: name,
+              apiExportName: apiExportName,
+              apiExportPath: apiExportPath,
+            }})
+      ));
   }
+
+
 
   unInstallExtension(name: string): Observable<unknown> {
     return of(true);
