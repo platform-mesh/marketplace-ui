@@ -20,6 +20,14 @@ export const createAPIBindingMutation = gql`
   }
 `
 
+export const deleteAPIBindingMutation = gql`
+  mutation($name:String!) {
+    apis_kcp_io {
+      deleteAPIBinding(name: $name)
+    }
+  }
+`
+
 export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {

@@ -10,7 +10,11 @@ import { Observable, of, switchMap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApolloFactory } from 'services/apollo-factory';
 import { luigiContextSelector } from 'services/luigi/state';
-import { createAPIBindingMutation, getMarketplaceEntriesQuery } from 'services/marketplace-graphql.queries';
+import {
+  createAPIBindingMutation,
+  deleteAPIBindingMutation,
+  getMarketplaceEntriesQuery,
+} from 'services/marketplace-graphql.queries';
 
 @Injectable({ providedIn: 'root' })
 export class GraphqlService {
@@ -108,26 +112,17 @@ export class GraphqlService {
 
 
   unInstallExtension(name: string): Observable<unknown> {
-    return of(true);
-
-    // return combineLatest([
-    //   this.extensionApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     return apollo.mutate({
-    //       mutation: UNINSTALL_EXTENSION,
-    //       variables: {
-    //         tenantId: context.tenantid,
-    //         scope: scopeInfo?.scopeId,
-    //         entity: scopeInfo?.scopeType.toLowerCase(),
-    //         name: name,
-    //       },
-    //     });
-    //   }),
-    // );
+    return this.store.select(luigiContextSelector).pipe(
+      filter((x) => !!x),
+      switchMap((context) =>
+        this.apolloFactory
+          .wsapollo(context)
+          .mutate({
+            mutation: deleteAPIBindingMutation,
+            variables: {
+              name: name
+            }})
+      ));
   }
 
   updateProviderInstance(input: UpdateProviderInput): Observable<unknown> {
