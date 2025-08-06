@@ -123,7 +123,7 @@ export class ProviderConfigurationComponent {
         });
     } else if (marketplaceEntry) {
       this.providerService
-        .installProviderInstance(marketplaceEntry, installationData)
+        .installProviderInstance(marketplaceEntry)
         .subscribe(() => {
           this.closeDialog(PROVIDER_INSTANCE_INSTALLED);
           triggerMatomoEvent(

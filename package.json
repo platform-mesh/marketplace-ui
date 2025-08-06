@@ -3,7 +3,7 @@
   "version": "1.0.485",
   "scripts": {
     "preinstall": "npx only-allow npm",
-    "start": "ng serve",
+    "start": "ng serve --serve-path=/ui/marketplace/ui/",
     "build": "ng build",
     "test": "npm run test:unit || true",
     "test:unit": "jest --detectOpenHandles",

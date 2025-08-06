@@ -199,6 +199,7 @@ export interface MarketplaceEntry {
   spec: {
     installed: boolean;
     apiExport: {
+      metadata: string;
       spec: {
         permissionClaims: {
           all: boolean;
@@ -321,8 +322,7 @@ export enum ServiceStatus {
 }
 
 export interface InstallProviderInput {
-  providerInput: ProviderInput;
-  displayName: string;
+  marketPlaceEntry: MarketplaceEntry;
   installationData?: Record<string, unknown>;
 }
 

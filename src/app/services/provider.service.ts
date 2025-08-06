@@ -59,21 +59,13 @@ export class ProviderService {
 
   installProviderInstance(
     marketplaceEntry: MarketplaceEntry | undefined,
-    installationData?: Record<string, unknown>,
   ) {
     if (!marketplaceEntry) {
       throw new Error('Provider is undefined');
     }
-    const installProviderInstanceInput: InstallProviderInput = {
-      installationData,
-      providerInput: {
-        id: marketplaceEntry.metadata.name,
-      },
-      displayName: marketplaceEntry.spec.providerMetadata.spec.displayName,
-    };
 
     return this.graphqlService.installProviderInstance(
-      installProviderInstanceInput,
+      marketplaceEntry,
     );
   }
 

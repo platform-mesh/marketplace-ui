@@ -52,8 +52,51 @@ export class ApolloFactory {
     );
   }
 
+  public readonly wsapollo = (nodeContext: NodeContext): Apollo =>
+    new Apollo(this.ngZone, this.createWSApolloOptions(nodeContext));
+
   public readonly apollo = (nodeContext: NodeContext): Apollo =>
     new Apollo(this.ngZone, this.createApolloOptions(nodeContext));
+
+  private createWSApolloOptions(
+    nodeContext: NodeContext,
+  ): ApolloClientOptions<any> {
+    const contextLink = setContext(() => {
+      return {
+        uri: () => nodeContext.portalContext.crdGatewayApiUrl,
+        headers: {
+          Authorization: `Bearer ${nodeContext.token}`,
+          Accept: 'charset=utf-8',
+        },
+      };
+    });
+
+    const splitClient = split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      new SSELink({
+        url: () => this.getUrl(nodeContext),
+        headers: () => ({
+          Authorization: `Bearer ${nodeContext.token}`,
+        }),
+      }),
+      this.httpLink.create({}),
+    );
+
+    const link = ApolloLink.from([contextLink, splitClient]);
+    const cache = new InMemoryCache();
+
+    return {
+      link,
+      cache,
+    };
+  }
+
 
   private createApolloOptions(
     nodeContext: NodeContext,
