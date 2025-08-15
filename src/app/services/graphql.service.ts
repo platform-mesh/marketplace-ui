@@ -6,9 +6,10 @@ import {
   ProviderMetadataFilter,
   UpdateProviderInput,
 } from 'models/provider-metadata';
-import { Observable, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap, tap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApolloFactory } from 'services/apollo-factory';
+import { LuigiClient } from 'services/luigi';
 import { luigiContextSelector } from 'services/luigi/state';
 import {
   createAPIBindingMutation,
@@ -18,12 +19,11 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class GraphqlService {
-  private store = inject<Store>(Store);
-  private apolloFactory = inject<ApolloFactory>(ApolloFactory);
+  private luigiClient = inject(LuigiClient);
+  private store = inject(Store);
+  private apolloFactory = inject(ApolloFactory);
 
-  getMarketplaceEntry(
-    providerName: string,
-  ): Observable<MarketplaceEntry> {
+  getMarketplaceEntry(providerName: string): Observable<MarketplaceEntry> {
     return this.store.select(luigiContextSelector).pipe(
       filter((x) => !!x),
       switchMap((context) => {
@@ -35,20 +35,20 @@ export class GraphqlService {
           })
           .pipe(
             map((apolloResponse: any) => {
-              return apolloResponse.data.marketplace_platform_mesh_io.MarketplaceEntries;
+              return apolloResponse.data.marketplace_platform_mesh_io
+                .MarketplaceEntries;
             }),
             map((entries: MarketplaceEntry[]) => {
-                const res = entries.filter(entry => {
-                  return entry.metadata.name === providerName;
-                });
-                console.log(res);
-                return res;
-              },
-            ),
-            map((entries:MarketplaceEntry[])=> entries[0] || null)
-          )
-      }
-    ))
+              const res = entries.filter((entry) => {
+                return entry.metadata.name === providerName;
+              });
+              console.log(res);
+              return res;
+            }),
+            map((entries: MarketplaceEntry[]) => entries[0] || null),
+          );
+      }),
+    );
   }
 
   createExtFilter(installableIn?: string[]): ProviderMetadataFilter {
@@ -91,8 +91,8 @@ export class GraphqlService {
   installProviderInstance(entry: MarketplaceEntry): Observable<unknown> {
     const name = entry.metadata.name;
     const metadata = JSON.parse(entry.spec.apiExport.metadata);
-    const apiExportPath = metadata.annotations["kcp.io/path"]
-    const apiExportName = name
+    const apiExportPath = metadata.annotations['kcp.io/path'];
+    const apiExportName = name;
 
     return this.store.select(luigiContextSelector).pipe(
       filter((x) => !!x),
@@ -105,11 +105,22 @@ export class GraphqlService {
               name: name,
               apiExportName: apiExportName,
               apiExportPath: apiExportPath,
-            }})
-      ));
+            },
+          })
+          .pipe(
+            tap(() => {
+              this.luigiClient.sendCustomMessage({
+                origin: 'Marketplace',
+                action: 'installProviderInstance',
+                id: 'openmfp.reload-luigi-config',
+                entity: 'account',
+                context: { account: context.accountId, user: context.userId },
+              });
+            }),
+          ),
+      ),
+    );
   }
-
-
 
   unInstallExtension(name: string): Observable<unknown> {
     return this.store.select(luigiContextSelector).pipe(
@@ -120,9 +131,22 @@ export class GraphqlService {
           .mutate({
             mutation: deleteAPIBindingMutation,
             variables: {
-              name: name
-            }})
-      ));
+              name: name,
+            },
+          })
+          .pipe(
+            tap(() => {
+              this.luigiClient.sendCustomMessage({
+                origin: 'Marketplace',
+                action: 'unInstallExtension',
+                id: 'openmfp.reload-luigi-config',
+                entity: 'account',
+                context: { account: context.accountId, user: context.userId },
+              });
+            }),
+          ),
+      ),
+    );
   }
 
   updateProviderInstance(input: UpdateProviderInput): Observable<unknown> {
