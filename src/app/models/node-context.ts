@@ -8,7 +8,8 @@ export interface EntityConfig {
 // eslint-disable-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
   token: string;
-  userid: string;
+  accountId: string;
+  userId: string;
   tenantId: string;
   organization: string;
   organizationId: string; // to be removed once migrated to the organizationId
