@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { MarketplaceEntry } from 'models/index';
+import { MarketplaceEntry, NodeContext } from 'models/index';
 import {
   Account,
   ProviderMetadataFilter,
@@ -109,13 +109,10 @@ export class GraphqlService {
           })
           .pipe(
             tap(() => {
-              this.luigiClient.sendCustomMessage({
-                origin: 'Marketplace',
-                action: 'installProviderInstance',
-                id: 'openmfp.reload-luigi-config',
-                entity: 'account',
-                context: { account: context.accountId, user: context.userId },
-              });
+              this.sendReloadConfigCustomMessage(
+                'installProviderInstance',
+                context,
+              );
             }),
           ),
       ),
@@ -136,17 +133,21 @@ export class GraphqlService {
           })
           .pipe(
             tap(() => {
-              this.luigiClient.sendCustomMessage({
-                origin: 'Marketplace',
-                action: 'unInstallExtension',
-                id: 'openmfp.reload-luigi-config',
-                entity: 'account',
-                context: { account: context.accountId, user: context.userId },
-              });
+              this.sendReloadConfigCustomMessage('unInstallExtension', context);
             }),
           ),
       ),
     );
+  }
+
+  private sendReloadConfigCustomMessage(action: string, context: NodeContext) {
+    this.luigiClient.sendCustomMessage({
+      origin: 'Marketplace',
+      action,
+      id: 'openmfp.reload-luigi-config',
+      entity: context.accountId ? 'account' : '',
+      context: { account: context.accountId, user: context.userId },
+    });
   }
 
   updateProviderInstance(input: UpdateProviderInput): Observable<unknown> {
