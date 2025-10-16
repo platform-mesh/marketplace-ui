@@ -92,7 +92,7 @@ export class GraphqlService {
     const name = entry.metadata.name;
     const metadata = JSON.parse(entry.spec.apiExport.metadata);
     const apiExportPath = metadata.annotations['kcp.io/path'];
-    const apiExportName = name;
+    const apiExportName = metadata.name;
 
     return this.store.select(luigiContextSelector).pipe(
       filter((x) => !!x),
