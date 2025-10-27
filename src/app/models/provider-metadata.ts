@@ -206,6 +206,7 @@ export interface MarketplaceEntry {
           group: string;
           identityHash: string;
           resource: string;
+          verbs: string[];
         }[];
       };
     };

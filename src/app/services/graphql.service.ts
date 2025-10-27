@@ -94,6 +94,16 @@ export class GraphqlService {
     const apiExportPath = metadata.annotations['kcp.io/path'];
     const apiExportName = metadata.name;
 
+    const acceptedPermissionClaims = entry.spec?.apiExport?.spec?.permissionClaims?.map((claim) => {
+      return {
+        state: 'Accepted',
+        group: claim.group,
+        resource: claim.resource,
+        identityHash: claim.identityHash,
+        verbs: claim.all ? ['*'] : [],
+      }
+    });
+
     return this.store.select(luigiContextSelector).pipe(
       filter((x) => !!x),
       switchMap((context) =>
@@ -105,6 +115,7 @@ export class GraphqlService {
               name: name,
               apiExportName: apiExportName,
               apiExportPath: apiExportPath,
+              permissionClaims: acceptedPermissionClaims,
             },
           })
           .pipe(
