@@ -97,10 +97,10 @@ export class GraphqlService {
     const acceptedPermissionClaims = entry.spec?.apiExport?.spec?.permissionClaims?.map((claim) => {
       return {
         state: 'Accepted',
-        group: claim.group,
+        group: claim.group ?? '',
         resource: claim.resource,
         identityHash: claim.identityHash,
-        verbs: claim.all ? ['*'] : [],
+        all: claim.all,
       }
     });
 
