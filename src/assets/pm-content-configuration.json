@@ -1,93 +1,56 @@
 {
-  "name": "extension-manager",
-  "luigiConfigFragment": {
-    "data": {
-      "viewGroup": {
-        "preloadSuffix": "/#/preload"
-      },
-      "nodes": [
-        {
-          "pathSegment": "marketplace",
-          "entityType": "main",
-          "label": "{{marketplace}}",
-          "icon": "retail-store",
-          "hideFromNav": false,
-          "urlSuffix": "/#/entity/org/marketplace",
-          "order": 4,
-          "context": {
-            "entityContext": {
-              "account": {
-                "policies": ["providerAdmin", "projectAdmin", "projectMember"]
+        "name": "marketplace-local",
+        "luigiConfigFragment": {
+          "data": {
+            "nodes": [
+              {
+                "pathSegment": "marketplace-local",
+                "entityType": "main.core_platform-mesh_io_account",
+                "order": 700,
+                "label": "Marketplace (local)",
+                "icon": "retail-store",
+                "url": "http://localhost:4200/ui/marketplace/ui/#/entity/:accountId/marketplace",
+                "context": {
+                  "accountId": ":core_platform-mesh_io_accountId"
+                }
+              },
+              {
+                "pathSegment": "provider",
+                "entityType": "main.core_platform-mesh_io_account",
+                "hideFromNav": true,
+                "children": [
+                  {
+                    "pathSegment": ":providerName",
+                    "hideFromNav": true,
+                    "url": "http://localhost:4200/ui/marketplace/ui/#/provider/:providerName",
+                    "context": {
+                      "providerName": ":providerName",
+                      "accountId": ":core_platform-mesh_io_accountId"
+                    }
+                  }
+                ]
               }
-            }
-          }
-        },
-        {
-          "pathSegment": "provider",
-          "entityType": "main",
-          "hideFromNav": true,
-          "children": [
-            {
-              "pathSegment": ":providerName",
-              "hideFromNav": true,
-              "urlSuffix": "/#/provider/:providerName",
-              "context": {
-                "providerName": ":providerName"
+            ],
+            "texts": [
+              {
+                "locale": "",
+                "textDictionary": {
+                  "marketplace": "Marketplace"
+                }
+              },
+              {
+                "locale": "en",
+                "textDictionary": {
+                  "marketplace": "Marketplace"
+                }
+              },
+              {
+                "locale": "de",
+                "textDictionary": {
+                  "marketplace": "Marktplatz"
+                }
               }
-            }
-          ],
-          "context": {
-            "entityContext": {
-              "account": {
-                "policies": ["providerAdmin", "projectAdmin", "projectMember"]
-              }
-            }
-          }
-        },
-        {
-          "pathSegment": "marketplace",
-          "entityType": "main.account",
-          "label": "{{marketplace}}",
-          "icon": "retail-store",
-          "hideFromNav": false,
-          "urlSuffix": "/#/entity/:accountId/marketplace"
-        },
-        {
-          "pathSegment": "provider",
-          "entityType": "main.account",
-          "hideFromNav": true,
-          "children": [
-            {
-              "pathSegment": ":providerName",
-              "hideFromNav": true,
-              "urlSuffix": "/#/provider/:providerName",
-              "context": {
-                "providerName": ":providerName"
-              }
-            }
-          ]
-        }
-      ],
-      "texts": [
-        {
-          "locale": "",
-          "textDictionary": {
-            "marketplace": "Marketplace"
-          }
-        },
-        {
-          "locale": "en",
-          "textDictionary": {
-            "marketplace": "Marketplace"
-          }
-        },
-        {
-          "locale": "de",
-          "textDictionary": {
-            "marketplace": "Marktplatz"
+            ]
           }
         }
-      ]
-    }
-  }
-}
+      }

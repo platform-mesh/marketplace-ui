@@ -1,7 +1,7 @@
 import { gql } from 'apollo-angular';
 
 export const createAPIBindingMutation = gql`
-  mutation($name:String!, $apiExportPath:String!, $apiExportName: String!) {
+  mutation($name:String!, $apiExportPath:String!, $apiExportName: String!, $permissionClaims: [APIBindingspecspecpermissionClaimsInput]) {
     apis_kcp_io {
       createAPIBinding(object: {
         metadata: {
@@ -14,6 +14,7 @@ export const createAPIBindingMutation = gql`
               path: $apiExportPath
             }
           }
+          permissionClaims: $permissionClaims
         }
       }){metadata{name}}
     }
