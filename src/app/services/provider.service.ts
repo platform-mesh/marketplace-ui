@@ -116,9 +116,9 @@ export class ProviderService {
   ): Promise<boolean> {
     const settings: ConfirmationModalSettings = {
       type: 'warning',
-      header: $localize`Uninstall Service Provider` as string,
-      body: $localize`Are you sure you want to uninstall the Service Provider <b>${marketplaceEntry.spec.providerMetadata.spec.displayName}</b>? The API Binding and all Provider Resources will be removed` as string,
-      buttonConfirm: $localize`Uninstall` as string,
+      header: $localize`Disable Service Provider` as string,
+      body: $localize`Are you sure you want to disable the Service Provider <b>${marketplaceEntry.spec.providerMetadata.spec.displayName}</b>? The API Binding and all Provider Resources will be removed` as string,
+      buttonConfirm: $localize`Disable` as string,
       buttonDismiss: $localize`Cancel` as string,
     };
     const decision = await this.showConfirmationModal(settings);
@@ -301,7 +301,7 @@ export class ProviderService {
         ),
       )
       .subscribe(() => {
-        this.notificationService.openSuccessToast('Provider Installed');
+        this.notificationService.openSuccessToast('Provider Enabled');
         this.luigiClient.clearFrameCache();
         this.store.dispatch(loadProviders());
       });
