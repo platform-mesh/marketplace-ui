@@ -19,3 +19,4 @@ jobs:
     with:
       imageTagName: ghcr.io/platform-mesh/marketplace-ui
       componentVersionKey: marketplace-ui
+      repoVersionUpdate: 'platform-mesh/helm-charts-priv'
