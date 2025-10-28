@@ -2,13 +2,13 @@
   <div class="message-container">
     <fd-message-strip
       i18n="
-        No accounts in extension info|Message for already installed extensions
+        No accounts in extension info|Message for already enabled extensions
         without accounts
       "
       type="information"
       [dismissible]="false"
     >
-      This extension is installed, but you need an account to use it.
+      This extension is enabled, but you need an account to use it.
       <a aria-label="Accounts" fd-link (click)="visitExtension()"
         >Manage Account.
       </a>
@@ -29,7 +29,7 @@
     >
       @if (showInstalledLabel()) {
         <fdp-dynamic-page-key-info>
-          <fd-info-label color="8" label="Installed" title="Installed" />
+          <fd-info-label color="8" label="Enabled" title="Enabled" />
         </fdp-dynamic-page-key-info>
       }
       <fdp-dynamic-page-global-actions>
@@ -58,7 +58,7 @@
                 fd-button
                 fdCompact
                 fdType="emphasized"
-                label="Install"
+                label="Enable"
                 i18n-label
                 [disabled]="isChanging | async"
                 (click)="installExtension()"
@@ -72,7 +72,7 @@
                 fd-button
                 fdCompact
                 id="uninstall-btn"
-                label="Uninstall"
+                label="Disable"
                 i18n-label
                 [disabled]="isChanging | async"
                 (click)="uninstallExtension()"

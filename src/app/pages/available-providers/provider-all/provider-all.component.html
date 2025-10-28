@@ -5,7 +5,7 @@
       <app-core-catalog
         noItemsFoundTitle="No Service found"
         searchPlaceholder="Search for a service by name, category, provider, and more"
-        subtitle="From here, browse through official partner, and community Services. Select a Service to open its page for more details, installation, instructions, documentation, and support information."
+        subtitle="From here, browse through official partner, and community Services. Select a Service to open its page for more details, enabling instructions, documentation, and support information."
         [data]="extensions"
         [filterHeader]="true"
         [infoLabelFilters]="(infoLabelFilters | async) ?? undefined"
@@ -17,7 +17,7 @@
     } @else {
       <app-provider-empty
         [title]="
-          'There are no installable Services in this ' + (scope | async) + '.'
+          'There are no available Services in this ' + (scope | async) + '.'
         "
       />
     }
