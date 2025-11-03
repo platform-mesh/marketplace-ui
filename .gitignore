@@ -55,4 +55,7 @@ yalc.lock
 
 extension-manager-ui.tar.gz
 TEST-frontend.xml
+
+# AI Tools
+.claude
 CLAUDE.local.md

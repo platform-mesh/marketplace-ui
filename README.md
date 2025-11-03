@@ -4,10 +4,10 @@
 
 Terminal:
 
-Artifactory token required. Refer to the [frontend library](https://github.tools.sap/dxp/docs-core-team/blob/main/docs/development/frontend-library-setup.md) setup for the details, how to get a token.
+Common repository token required. Store your token in `.secret/common-repo` file.
 
 ```bash
-npm i
+COMMON_REPOSITORY_TOKEN=$(cat .secret/common-repo) npm i
 npm run start
 ```
 
