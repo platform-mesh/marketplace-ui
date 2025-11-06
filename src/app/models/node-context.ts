@@ -4,9 +4,15 @@ import { GoBackContext } from 'models/luigi-go-back';
 export interface EntityConfig {
   contextProperty: string;
 }
+export interface EntityDefinition {
+  id: string;
+  dynamicFetchId?: string;
+  contextKey?: string;
+}
 
-// eslint-disable-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
+  entityDefinition?: EntityDefinition;
   token: string;
   accountId: string;
   userId: string;
@@ -26,8 +32,9 @@ export interface NodeContext extends Record<string, any> {
     sections: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     sidebar: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   };
-  entityContext: {
-    [key: string]: {
+  entityContext: Record<
+    string,
+    {
       id: string;
       displayName: string;
       description?: string;
@@ -42,8 +49,8 @@ export interface NodeContext extends Record<string, any> {
           enabled: boolean;
         };
       };
-    };
-  };
+    }
+  >;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   goBackContext?: GoBackContext | any;
