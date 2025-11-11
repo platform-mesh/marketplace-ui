@@ -5,7 +5,7 @@ export interface EntityConfig {
   contextProperty: string;
 }
 
-// eslint-disable-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
   token: string;
   accountId: string;
@@ -17,6 +17,7 @@ export interface NodeContext extends Record<string, any> {
   portalBaseUrl: string;
   portalContext: PortalContext;
   serviceProviderConfig: Record<string, string>;
+  entityName: string;
   entityId: string;
   entity: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   componentId?: string;
@@ -26,8 +27,9 @@ export interface NodeContext extends Record<string, any> {
     sections: any; // eslint-disable-line @typescript-eslint/no-explicit-any
     sidebar: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   };
-  entityContext: {
-    [key: string]: {
+  entityContext: Record<
+    string,
+    {
       id: string;
       displayName: string;
       description?: string;
@@ -42,8 +44,8 @@ export interface NodeContext extends Record<string, any> {
           enabled: boolean;
         };
       };
-    };
-  };
+    }
+  >;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   goBackContext?: GoBackContext | any;
