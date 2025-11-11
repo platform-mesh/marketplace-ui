@@ -100,7 +100,10 @@ export class GraphqlService {
         group: claim.group ?? '',
         resource: claim.resource,
         identityHash: claim.identityHash,
-        all: claim.all,
+        verbs: ["*"],
+        selector: {
+          matchAll: true,
+        }
       }
     });
 

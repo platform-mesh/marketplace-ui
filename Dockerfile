@@ -1,9 +1,9 @@
-FROM node:22.17 as build
+FROM node:22.17 AS build
 
 COPY ./ /app
 
 WORKDIR /app
-RUN --mount=type=secret,id=github_token --mount=type=secret,id=common_repository_token NODE_AUTH_TOKEN=$(cat /run/secrets/github_token) COMMON_REPOSITORY_TOKEN=$(cat /run/secrets/common_repository_token) npm ci
+RUN --mount=type=secret,id=common_repository_token COMMON_REPOSITORY_TOKEN=$(cat /run/secrets/common_repository_token) npm ci
 
 RUN npm run build
 

@@ -10,10 +10,10 @@ import { ActivatedRoute } from '@angular/router';
 import {
   DxpWizardModule,
   DxpWizardNavigationButtons,
+  DxpWizardGeneratorHeader,
   ExtensionConfigurationWizardConfigSpec,
   WizardConfigError,
 } from '@dxp/ngx-core/fundamental-wizard-generator';
-import { DxpWizardGeneratorHeader } from '@dxp/ngx-core/fundamental-wizard-generator/dxp-wizard-generator/dxp-wizard-generator.component';
 import {
   DxpWizardComponent,
   RunParameter,
