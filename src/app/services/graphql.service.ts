@@ -155,16 +155,14 @@ export class GraphqlService {
   }
 
   private sendReloadConfigCustomMessage(action: string, context: NodeContext) {
-    const entity = context.entityDefinition?.dynamicFetchId
-      ? context.entityDefinition.dynamicFetchId
-      : '';
+    const entityType = context.entityType ? context.entityType : '';
 
     this.luigiClient.sendCustomMessage({
       origin: 'Marketplace',
       action,
       id: 'openmfp.reload-luigi-config',
-      entity,
-      context: { [entity]: context.accountId, user: context.userId },
+      entity: entityType,
+      context: { [entityType]: context.entityName, user: context.userId },
     });
   }
 

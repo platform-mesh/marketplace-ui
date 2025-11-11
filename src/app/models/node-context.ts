@@ -4,15 +4,9 @@ import { GoBackContext } from 'models/luigi-go-back';
 export interface EntityConfig {
   contextProperty: string;
 }
-export interface EntityDefinition {
-  id: string;
-  dynamicFetchId?: string;
-  contextKey?: string;
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
-  entityDefinition?: EntityDefinition;
   token: string;
   accountId: string;
   userId: string;
@@ -23,6 +17,7 @@ export interface NodeContext extends Record<string, any> {
   portalBaseUrl: string;
   portalContext: PortalContext;
   serviceProviderConfig: Record<string, string>;
+  entityName: string;
   entityId: string;
   entity: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   componentId?: string;
