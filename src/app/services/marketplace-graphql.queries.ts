@@ -33,62 +33,81 @@ export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {
       MarketplaceEntries {
-        metadata {
-          name
-        }
-        spec {
-          installed
-          apiExport {
-            metadata
-            spec {
-              permissionClaims {
-                all
-                group
-                identityHash
-                resource
-              }
-            }
+        items {
+          metadata {
+            name
+            __typename
           }
-          providerMetadata {
-            spec {
-              contacts {
-                displayName
-                email
-                role
-              }
-              data
-              displayName
-              description
-              documentation {
-                url
-                displayName
-              }
-              helpCenterData {
-                url
-                displayName
-              }
-              icon {
-                light {
-                  url
-                  data
+          spec {
+            installed
+            apiExport {
+              metadata
+              spec {
+                permissionClaims {
+                  all
+                  group
+                  identityHash
+                  resource
+                  __typename
                 }
-                dark {
-                  url
-                  data
-                }
+                __typename
               }
-              links {
-                url
-                displayName
-              }
-              preferredSupportChannels {
-                url
-                displayName
-              }
-              tags
+              __typename
             }
+            providerMetadata {
+              spec {
+                contacts {
+                  displayName
+                  email
+                  role
+                  __typename
+                }
+                data
+                displayName
+                description
+                documentation {
+                  url
+                  displayName
+                  __typename
+                }
+                helpCenterData {
+                  url
+                  displayName
+                  __typename
+                }
+                icon {
+                  light {
+                    url
+                    data
+                    __typename
+                  }
+                  dark {
+                    url
+                    data
+                    __typename
+                  }
+                  __typename
+                }
+                links {
+                  url
+                  displayName
+                  __typename
+                }
+                preferredSupportChannels {
+                  url
+                  displayName
+                  __typename
+                }
+                tags
+                __typename
+              }
+              __typename
+            }
+            __typename
           }
+          __typename
         }
+        __typename
       }
     }
   }
