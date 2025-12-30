@@ -81,7 +81,7 @@ export class GraphqlService {
             map(
               (apolloResponse: any) =>
                 apolloResponse.data.marketplace_platform_mesh_io
-                  .MarketplaceEntries,
+                  .MarketplaceEntries.items,
             ),
           );
       }),
