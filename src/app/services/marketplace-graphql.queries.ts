@@ -32,82 +32,56 @@ export const deleteAPIBindingMutation = gql`
 export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {
-      MarketplaceEntries {
-        items {
-          metadata {
-            name
-            __typename
-          }
-          spec {
-            installed
-            apiExport {
-              metadata
-              spec {
-                permissionClaims {
-                  all
-                  group
-                  identityHash
-                  resource
-                  __typename
-                }
-                __typename
-              }
-              __typename
+      v1alpha1 {
+        MarketplaceEntries {
+          items {
+            metadata {
+              name
             }
-            providerMetadata {
-              spec {
-                contacts {
-                  displayName
-                  email
-                  role
-                  __typename
-                }
-                data
-                displayName
-                description
-                documentation {
-                  url
-                  displayName
-                  __typename
-                }
-                helpCenterData {
-                  url
-                  displayName
-                  __typename
-                }
-                icon {
-                  light {
-                    url
-                    data
-                    __typename
+            spec {
+              installed
+              apiExport {
+                metadata
+                spec {
+                  permissionClaims {
+                    all
+                    group
+                    identityHash
+                    resource
                   }
-                  dark {
-                    url
-                    data
-                    __typename
-                  }
-                  __typename
                 }
-                links {
-                  url
-                  displayName
-                  __typename
-                }
-                preferredSupportChannels {
-                  url
-                  displayName
-                  __typename
-                }
-                tags
-                __typename
               }
-              __typename
+              providerMetadata {
+                spec {
+                  contacts {
+                    displayName
+                    email
+                    role
+                  }
+                  displayName
+                  description
+                  documentation {
+                    url
+                  }
+                  icon {
+                    light {
+                      url
+                      data
+                    }
+                    dark {
+                      url
+                      data
+                    }
+                  }
+                  preferredSupportChannels {
+                    url
+                    displayName
+                  }
+                }
+              }
             }
-            __typename
           }
-          __typename
         }
-        __typename
       }
     }
   }
