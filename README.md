@@ -46,3 +46,22 @@ To develop locally using an account configuration (e.g., jira), you need to:
         }
 ```
 
+### Updating GraphQL Schemas
+
+The application uses GraphQL schemas from two endpoints that need to be merged:
+- **Marketplace Virtual Workspace**: Contains marketplace-specific types (MarketplaceEntry, etc.)
+- **Workspace**: Contains Kubernetes API types (APIBinding, etc.)
+
+To update the schemas:
+
+1. Install the required dependencies (if not already installed):
+   ```bash
+   npm install -D @graphql-tools/merge @graphql-tools/load @graphql-tools/graphql-file-loader
+   ```
+
+2. Run the fetch script with a valid bearer token:
+   ```bash
+   ./scripts/fetch-schemas.sh <your-bearer-token>
+   ```
+
+This will fetch both schemas and merge them into `schemas/schema.graphql`.
