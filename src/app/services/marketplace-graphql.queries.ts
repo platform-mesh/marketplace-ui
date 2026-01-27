@@ -1,27 +1,34 @@
 import { gql } from 'apollo-angular';
 
+
 export const createAPIBindingMutation = gql`
-  mutation($name:String!, $apiExportPath:String!, $apiExportName: String!, $permissionClaims: [ApisKcpIoV1alpha2APIBindingspecspecpermissionClaimsInput]) {
+  mutation (
+    $name: String!
+    $apiExportPath: String!
+    $apiExportName: String!
+    $permissionClaims: [APIBindingspecspecpermissionClaimsInput]
+  ) {
     apis_kcp_io {
       v1alpha2 {
-        createAPIBinding(object: {
-          metadata: {
-            name: $name
-          }
-          spec: {
-            reference: {
-              export: {
-                name: $apiExportName
-                path: $apiExportPath
+        createAPIBinding(
+          object: {
+            metadata: { name: $name }
+            spec: {
+              reference: {
+                export: { name: $apiExportName, path: $apiExportPath }
               }
+              permissionClaims: $permissionClaims
             }
-            permissionClaims: $permissionClaims
           }
-        }){metadata{name}}
+        ) {
+          metadata {
+            name
+          }
+        }
       }
     }
   }
-`
+`;
 
 export const deleteAPIBindingMutation = gql`
   mutation($name:String!) {
