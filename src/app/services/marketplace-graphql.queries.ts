@@ -1,12 +1,11 @@
 import { gql } from 'apollo-angular';
 
-
 export const createAPIBindingMutation = gql`
   mutation (
     $name: String!
     $apiExportPath: String!
     $apiExportName: String!
-    $permissionClaims: [APIBindingspecspecpermissionClaimsInput]
+    $permissionClaims: [ApisKcpIoV1alpha2APIBindingspecspecpermissionClaimsInput]
   ) {
     apis_kcp_io {
       v1alpha2 {
@@ -31,14 +30,14 @@ export const createAPIBindingMutation = gql`
 `;
 
 export const deleteAPIBindingMutation = gql`
-  mutation($name:String!) {
+  mutation ($name: String!) {
     apis_kcp_io {
       v1alpha2 {
         deleteAPIBinding(name: $name)
       }
     }
   }
-`
+`;
 
 export const getMarketplaceEntriesQuery = gql`
   {
