@@ -94,18 +94,19 @@ export class GraphqlService {
     const apiExportPath = metadata.annotations['kcp.io/path'];
     const apiExportName = metadata.name;
 
-    const acceptedPermissionClaims = entry.spec?.apiExport?.spec?.permissionClaims?.map((claim) => {
-      return {
-        state: 'Accepted',
-        group: claim.group ?? '',
-        resource: claim.resource,
-        identityHash: claim.identityHash,
-        verbs: ["*"],
-        selector: {
-          matchAll: true,
-        }
-      }
-    });
+    const acceptedPermissionClaims =
+      entry.spec?.apiExport?.spec?.permissionClaims?.map((claim) => {
+        return {
+          state: 'Accepted',
+          group: claim.group ?? '',
+          resource: claim.resource,
+          identityHash: claim.identityHash,
+          verbs: ['*'],
+          selector: {
+            matchAll: true,
+          },
+        };
+      });
 
     return this.store.select(luigiContextSelector).pipe(
       filter((x) => !!x),
@@ -162,7 +163,11 @@ export class GraphqlService {
       action,
       id: 'openmfp.reload-luigi-config',
       entity: entityType,
-      context: { [entityType]: context.entityName, user: context.userId },
+      context: {
+        [entityType]: context.entityName,
+        accountPath: context.accountPath,
+        user: context.userId,
+      },
     });
   }
 
