@@ -96,15 +96,15 @@ export class GraphqlService {
 
     const acceptedPermissionClaims =
       entry.spec?.apiExport?.spec?.permissionClaims?.map((claim) => {
+        // Marketplace entries still expose permission claims in the
+        // marketplace service shape, so normalize them to the v1alpha2
+        // APIBinding mutation contract before sending the mutation.
         return {
           state: 'Accepted',
           group: claim.group ?? '',
           resource: claim.resource,
           identityHash: claim.identityHash,
-          verbs: ['*'],
-          selector: {
-            matchAll: true,
-          },
+          verbs: claim.verbs?.length ? claim.verbs : ['*'],
         };
       });
 

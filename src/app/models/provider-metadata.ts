@@ -202,11 +202,15 @@ export interface MarketplaceEntry {
       metadata: string;
       spec: {
         permissionClaims: {
-          all: boolean;
+          all?: boolean;
           group: string;
           identityHash: string;
           resource: string;
-          verbs: string[];
+          verbs?: string[];
+          resourceSelector?: {
+            name?: string;
+            namespace?: string;
+          }[];
         }[];
       };
     };
