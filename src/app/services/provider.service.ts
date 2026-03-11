@@ -9,11 +9,9 @@ import { ProviderConfigurationData } from 'models/provider-configuration-data';
 import {
   AccountConnection,
   ColorCategory,
-  InstallProviderInput,
   Label,
   MarketplaceEntry,
   ProviderMetadata,
-  ScopeType,
   ServiceInstance,
   ServiceLevel,
 } from 'models/provider-metadata';
@@ -22,7 +20,6 @@ import { GraphqlService } from 'services/graphql.service';
 import { triggerMatomoEvent } from 'shared/helpers';
 import { AccountNamingService } from 'state/account-naming/account-naming.service';
 import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
-import { ScopeInformation, selectScopeInfo } from 'state/luigi.selectors';
 import { loadProviders } from 'state/providers.actions';
 
 export const NEW_LABEL: Label = {
@@ -35,21 +32,12 @@ export class ProviderService {
   private readonly notificationService = inject(NotificationService);
   private readonly pmLuigiContextService = inject(PmLuigiContextService);
 
-  public scopeInfo?: ScopeInformation;
-
   constructor(
     private store: Store,
     private luigiClient: LuigiClient,
     private graphqlService: GraphqlService,
     private accountNamingService: AccountNamingService,
   ) {
-    const scopeInformationObservable = this.store.select<
-      ScopeInformation | undefined
-    >(selectScopeInfo);
-    scopeInformationObservable.subscribe(
-      (scopeInfo) => (this.scopeInfo = scopeInfo),
-    );
-
     this.handleInstallProvider();
 
     this.pmLuigiContextService.contextObservable().subscribe((ctx) => {
@@ -57,16 +45,12 @@ export class ProviderService {
     });
   }
 
-  installProviderInstance(
-    marketplaceEntry: MarketplaceEntry | undefined,
-  ) {
+  installProviderInstance(marketplaceEntry: MarketplaceEntry | undefined) {
     if (!marketplaceEntry) {
       throw new Error('Provider is undefined');
     }
 
-    return this.graphqlService.installProviderInstance(
-      marketplaceEntry,
-    );
+    return this.graphqlService.installProviderInstance(marketplaceEntry);
   }
 
   updateProviderInstance(
@@ -142,17 +126,15 @@ export class ProviderService {
   }
 
   public isUninstallable(marketplaceEntry: MarketplaceEntry): boolean {
-    const installed = marketplaceEntry.spec.installed
+    const installed = marketplaceEntry.spec.installed;
     const deletionPrevented = this.isDeletionPrevented(marketplaceEntry);
     const isMandatory = this.isProviderMandatory(marketplaceEntry);
     // && provider?.instance?.status !== ServiceStatus.IN_DELETION
 
-    return (
-      installed && !deletionPrevented && !isMandatory
-    );
+    return installed && !deletionPrevented && !isMandatory;
   }
 
-  private isDeletionPrevented(marketplaceEntry: MarketplaceEntry): boolean {
+  private isDeletionPrevented(_marketplaceEntry: MarketplaceEntry): boolean {
     return (
       // provider.instance?.providerData?.['disableProjectDeletion'] === 'true'
       false
@@ -163,10 +145,8 @@ export class ProviderService {
     return !marketplaceEntry.spec.installed;
   }
 
-  public isProviderMandatory(marketplaceEntry: MarketplaceEntry): boolean {
-    return (
-      false
-    );
+  public isProviderMandatory(_marketplaceEntry: MarketplaceEntry): boolean {
+    return false;
   }
 
   public getIcon(provider: ProviderMetadata): string {
@@ -208,7 +188,6 @@ export class ProviderService {
     const params: ProviderConfigurationData = {
       providerName: providerName ?? '',
       providerDisplayName: providerDisplayName ?? '',
-      installableIn: this.scopeInfo?.scopeType ?? ScopeType.GLOBAL,
     };
     this.luigiClient
       .linkManager()
@@ -223,11 +202,7 @@ export class ProviderService {
   }
 
   navigateToProviderDetails(marketplaceEntry: MarketplaceEntry) {
-    const context = this.luigiClient
-      .linkManager()
-      .fromContext(this.scopeInfo?.scopeType?.toLowerCase() ?? '');
-
-    context.navigate(marketplaceEntry.metadata.name);
+    this.luigiClient.linkManager().navigate(marketplaceEntry.metadata.name);
   }
 
   async openDialogForAddAccountType(account: AccountConnection): Promise<void> {

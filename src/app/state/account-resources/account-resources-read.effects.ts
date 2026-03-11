@@ -16,7 +16,6 @@ import {
   of,
   withLatestFrom,
 } from 'rxjs';
-import { parseScopeType } from 'shared/helpers';
 import { AccountNamingService } from 'state/account-naming/account-naming.service';
 import {
   openAccountResourceCreationDialog,
@@ -34,7 +33,6 @@ import { resourceViewState } from 'state/account-resources/account-resources.sel
 import { CreditDialogType } from 'state/account-resources/credit-dialog-type';
 import { requestFailed } from 'state/common.action';
 import { selectSelectedProvider } from 'state/detail-view.selectors';
-import { selectScope } from 'state/luigi.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import { selectProviderMetadata } from 'state/provider-metadata.selectors';
 import { ProviderState } from 'state/providerState';
@@ -95,14 +93,9 @@ export class AccountResourcesReadEffects {
   triggerLoadExtensionClassWhenAccountResourceSelected = createEffect(() =>
     this.actions.pipe(
       ofType(accountResourceSelected),
-      combineLatestWith(
-        this.store.select(selectScope).pipe(filter((x) => !!x)),
-      ),
-      map(([action, scopeOfCurrentView]) => {
-        const installableIn = parseScopeType(scopeOfCurrentView);
+      map((action) => {
         return loadProviderMetadata({
           providerName: action.providerName,
-          installableIn: installableIn ? [installableIn] : [],
           includeHidden: true,
         });
       }),

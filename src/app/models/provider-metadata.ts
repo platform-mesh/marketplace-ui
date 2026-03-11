@@ -222,7 +222,6 @@ export interface ProviderMetadata {
     description?: string;
     image?: string; // data:image/x;base64,
     category?: string;
-    scope: Scope;
     configurationMetadata?: string;
     instance: ServiceInstance | undefined | null;
     isChangingInstallations?: boolean;
@@ -287,18 +286,6 @@ export interface Image {
   data?: string;
 }
 
-export interface Scope {
-  type: ScopeType;
-}
-
-export enum ScopeType {
-  PROJECT = 'PROJECT',
-  TEAM = 'TEAM',
-  COMPONENT = 'COMPONENT',
-  TENANT = 'TENANT',
-  GLOBAL = 'GLOBAL',
-}
-
 export interface ServiceInstance {
   id: string;
   name: string;
@@ -309,7 +296,6 @@ export interface ServiceInstance {
   isMandatory?: boolean;
   creationTimestamp?: Date;
   status: ServiceStatus;
-  scope: Scope;
   serviceInstanceStatus?: Record<string, ServiceInstanceStatusValue>;
 }
 

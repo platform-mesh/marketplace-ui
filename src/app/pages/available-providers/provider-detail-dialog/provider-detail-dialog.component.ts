@@ -46,13 +46,11 @@ import { Observable, Subscription, combineLatest, mergeMap, tap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
-import { PolicyDirective } from 'shared/directives/policy';
-import { getInstallableScope, triggerMatomoEvent } from 'shared/helpers';
+import { triggerMatomoEvent } from 'shared/helpers';
 import { getEntityScopeFromContext } from 'shared/utils/entity-context.util';
 import { readAccountsForAccountConnectionTypes } from 'state/accounts.action';
 import { selectAccountsPerConnectionTypes } from 'state/accounts.selectors';
 import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
-import { selectScope } from 'state/luigi.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import {
   selectProviderMetadata,
@@ -88,7 +86,6 @@ import YAML from 'yaml';
     AsyncPipe,
     ContentDensityDirective,
     ProviderVerificationComponent,
-    PolicyDirective,
   ],
   templateUrl: './provider-detail-dialog.component.html',
   styleUrl: './provider-detail-dialog.component.scss',
@@ -116,15 +113,13 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
     private providerService: ProviderService,
   ) {
     this.marketplaceEntryObservable = combineLatest([
-      this.store.select(selectScope),
       this.contextService.contextObservable(),
     ]).pipe(
-      tap(([scope, contextMessage]) => {
+      tap(([contextMessage]) => {
         this.context = contextMessage.context;
         this.store.dispatch(
           loadProviderMetadata({
             providerName: this.context.providerName,
-            installableIn: getInstallableScope(scope),
           }),
         );
         this.setUserPolicies(this.context);
