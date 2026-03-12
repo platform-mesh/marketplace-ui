@@ -27,7 +27,6 @@ import {
   InfoLabelFilter,
 } from 'shared/components/catalog';
 import { triggerMatomoEvent } from 'shared/helpers';
-import { selectScope } from 'state/luigi.selectors';
 import { ProviderState } from 'state/providerState';
 import { selectAllProviders } from 'state/providers.selectors';
 
@@ -59,7 +58,6 @@ export class ProviderAllComponent implements OnInit {
   title?: string;
 
   initialFilter?: string;
-  scope: Observable<string>;
   isLoading: Subject<boolean> = new BehaviorSubject(true);
   installableProviders: Observable<ProviderCatalogDataItem[]>;
   private projectId?: string;
@@ -71,16 +69,11 @@ export class ProviderAllComponent implements OnInit {
     private luigiClient: LuigiClient,
     private pmLuigiContextService: PmLuigiContextService,
   ) {
-    this.scope = this.store
-      .select(selectScope)
-      .pipe(map((scope) => scope?.toLowerCase()));
-
     this.installableProviders = combineLatest([
       this.store.select(selectAllProviders),
-      this.scope, // assuming this.scope is an Observable
     ]).pipe(
       skip(1),
-      map(([marketplaceEntries, scope]) => {
+      map(([marketplaceEntries]) => {
         this.isLoading.next(false);
         return marketplaceEntries.reduce(
           (
@@ -97,7 +90,6 @@ export class ProviderAllComponent implements OnInit {
 
             total.push({
               id: marketplaceEntry.metadata.name,
-              scope: scope,
               testId: `app-extensions-catalog-all-card-${marketplaceEntry.metadata.name}-entity`,
               title: marketplaceEntry.spec.providerMetadata.spec.displayName,
               description:

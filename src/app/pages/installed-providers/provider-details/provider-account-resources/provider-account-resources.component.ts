@@ -59,7 +59,6 @@ import {
 import { loadAccountResourcesOfAccount } from 'state/account-resources/account-resources-read.action';
 import { customResourceOfCurrentAccount } from 'state/account-resources/account-resources.selectors';
 import { selectSelectedProvider } from 'state/detail-view.selectors';
-import { hasPolicy } from 'state/luigi.selectors';
 import { ProviderState } from 'state/providerState';
 
 @Component({
@@ -107,19 +106,16 @@ export class ProviderAccountResourcesComponent implements OnInit, OnDestroy {
         .accountNamingConfig,
     );
 
-    this.store
-      .select(hasPolicy('iamMember'))
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe((isReader) => {
-        if (!isReader) {
-          return;
-        }
-        this.store.dispatch(
-          loadAccountResourcesOfAccount({
-            accountConnection: this.accountConnection,
-          }),
-        );
-      });
+    this.store.pipe(takeUntil(this.ngUnsubscribe)).subscribe((isReader) => {
+      if (!isReader) {
+        return;
+      }
+      this.store.dispatch(
+        loadAccountResourcesOfAccount({
+          accountConnection: this.accountConnection,
+        }),
+      );
+    });
 
     this.store
       .select(customResourceOfCurrentAccount)

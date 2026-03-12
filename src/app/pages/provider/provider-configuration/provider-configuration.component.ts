@@ -8,9 +8,9 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
+  DxpWizardGeneratorHeader,
   DxpWizardModule,
   DxpWizardNavigationButtons,
-  DxpWizardGeneratorHeader,
   ExtensionConfigurationWizardConfigSpec,
   WizardConfigError,
 } from '@dxp/ngx-core/fundamental-wizard-generator';
@@ -275,7 +275,9 @@ export class ProviderConfigurationComponent {
         this.store.dispatch(
           loadProviderMetadata({
             providerName: configurationData.providerName,
-            installableIn: [configurationData.installableIn],
+            installableIn: configurationData.installableIn
+              ? [configurationData.installableIn]
+              : undefined,
           }),
         );
       },

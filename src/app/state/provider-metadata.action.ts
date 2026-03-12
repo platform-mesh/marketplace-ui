@@ -10,7 +10,7 @@ export const loadProviderMetadata = createAction(
   '[Provider Metadata/API] Load ProviderMetadata',
   props<{
     providerName?: string;
-    installableIn: string[];
+    installableIn?: string[];
     includeHidden?: boolean;
   }>(),
 );

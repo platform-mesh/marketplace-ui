@@ -52,9 +52,8 @@ import {
   AccountType,
   MarketplaceEntry,
   MessageStripConfig,
-  ScopeType,
 } from 'models/provider-metadata';
-import { Observable, Subject, filter, map } from 'rxjs';
+import { Observable, Subject, map } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BtpSecretService } from 'services/btp-secret-service';
 import { ProviderService } from 'services/provider.service';
@@ -62,11 +61,6 @@ import { AccountNamingService } from 'state/account-naming/account-naming.servic
 import { openAccountResourceCreationDialog } from 'state/account-resources/account-resources-edit.action';
 import { customResourceOfCurrentAccount } from 'state/account-resources/account-resources.selectors';
 import { selectAccountsPerConnectionTypes } from 'state/accounts.selectors';
-import {
-  ScopeInformation,
-  hasPolicy,
-  selectScopeInfo,
-} from 'state/luigi.selectors';
 import { ProviderState } from 'state/providerState';
 
 @Component({
@@ -128,8 +122,6 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
   protected githubRegistrations: Observable<GithubRegistration[]> | undefined;
 
   public accountHasCustomResources: Observable<boolean>;
-  public userIsExtensionReader: Observable<boolean>;
-  public scopeTypeText: Observable<string>;
 
   constructor(
     private providerService: ProviderService,
@@ -151,31 +143,10 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userIsExtensionReader = this.store
-      .select(hasPolicy('iamMember'))
-      .pipe(takeUntil(this.ngUnsubscribe));
-
     this.accountHasCustomResources = this.store
       .select(customResourceOfCurrentAccount)
       .pipe(takeUntil(this.ngUnsubscribe))
       .pipe(map((resources) => !!resources.length));
-
-    this.scopeTypeText = this.store.select(selectScopeInfo).pipe(
-      filter(
-        (scopeInfo): scopeInfo is ScopeInformation => scopeInfo !== undefined,
-      ),
-      map((scopeInfo: ScopeInformation): string => {
-        switch (scopeInfo.scopeType) {
-          case ScopeType.PROJECT:
-            return 'Product/Experiment';
-          case ScopeType.TEAM:
-            return 'Team';
-          default:
-            return '';
-        }
-      }),
-      takeUntil(this.ngUnsubscribe),
-    );
   }
 
   ngOnInit(): void {
@@ -327,15 +298,10 @@ export class ProviderAccountsTableComponent implements OnInit, OnDestroy {
     );
   }
 
-  showAddAccountMessage(
-    accountHasCustomResources: boolean,
-    userIsExtensionReader: boolean,
-  ): boolean {
+  showAddAccountMessage(accountHasCustomResources: boolean): boolean {
     return (
       this.hasNoAccountsAdded() &&
-      (!this.hasApiResourcesAccConnectionType() ||
-        !accountHasCustomResources) &&
-      userIsExtensionReader
+      (!this.hasApiResourcesAccConnectionType() || !accountHasCustomResources)
     );
   }
 

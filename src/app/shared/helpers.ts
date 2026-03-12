@@ -1,9 +1,4 @@
-import {
-  MarketplaceEntry,
-  ScopeType,
-  ServiceInstance,
-  ServiceInstanceStatusValue,
-} from 'models/index';
+import { MarketplaceEntry, ServiceInstanceStatusValue } from 'models/index';
 
 export function getExtensionClassStatusValue(
   e: MarketplaceEntry,
@@ -12,48 +7,7 @@ export function getExtensionClassStatusValue(
     return undefined;
   }
 
-  // return getExtensionInstanceStatusValue(e.instance); todo gkr
   return undefined;
-}
-
-function getExtensionInstanceStatusValue(
-  e: ServiceInstance,
-): ServiceInstanceStatusValue | undefined {
-  if (!e.serviceInstanceStatus) {
-    return undefined;
-  }
-
-  const status = Object.values(e.serviceInstanceStatus);
-  if (status.length === 0) {
-    return undefined;
-  }
-
-  return status[0];
-}
-
-// todo gkr remove
-export function parseScopeType(scope: string): ScopeType | undefined {
-  switch (scope.toUpperCase()) {
-    case 'PROJECT':
-      return ScopeType.PROJECT;
-    case 'TEAM':
-      return ScopeType.TEAM;
-    case 'COMPONENT':
-      return ScopeType.COMPONENT;
-    case 'TENANT':
-      return ScopeType.TENANT;
-    case 'GLOBAL':
-      return ScopeType.GLOBAL;
-    default:
-      return undefined;
-  }
-}
-
-export function getInstallableScope(scope: ScopeType | string): ScopeType[] {
-  if ((scope as ScopeType) === ScopeType.TENANT) {
-    return [ScopeType.TENANT, ScopeType.PROJECT, ScopeType.TEAM];
-  }
-  return [scope as ScopeType];
 }
 
 export function parseNestedFields(field: string): string {

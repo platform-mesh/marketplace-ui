@@ -38,7 +38,6 @@ import { Store } from '@ngrx/store';
 import axios from 'axios';
 import { GoBackContext, LuigiGoBackAction } from 'models/luigi-go-back';
 import { NodeContext } from 'models/node-context';
-import { ScopeType } from 'models/provider-metadata';
 import { Subscription, take } from 'rxjs';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { set } from 'shared/helpers';
@@ -97,7 +96,6 @@ export class ImportAccountsComponent implements OnInit, OnDestroy {
         this.store.dispatch(
           loadProviderMetadata({
             providerName: this.context.providerName,
-            installableIn: [ScopeType.PROJECT],
             includeHidden: false,
           }),
         );

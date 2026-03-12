@@ -11,8 +11,6 @@ export interface NodeContext extends Record<string, any> {
   accountId: string;
   userId: string;
   tenantId: string;
-  organization: string;
-  organizationId: string; // to be removed once migrated to the organizationId
   entityType: string;
   portalBaseUrl: string;
   portalContext: PortalContext;
