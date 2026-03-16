@@ -81,7 +81,11 @@
           />
         </fd-facet>
         <fd-facet>
-          <app-provider-verification [verification]="" />
+          <app-provider-verification
+            [verification]="
+              marketplaceEntry?.spec?.providerMetadata?.spec?.verification
+            "
+          />
         </fd-facet>
 
         <fd-facet class="label-container" type="custom">
