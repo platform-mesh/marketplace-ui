@@ -44,11 +44,13 @@ import {
   SelectComponent,
 } from '@fundamental-ngx/platform/form';
 import { SearchFieldComponent } from '@fundamental-ngx/platform/search-field';
+import { ProvidersUtils } from 'shared/components/catalog/services/providers.utils';
 
 export interface CardFilter {
   category?: string;
   providers: Filter[];
 }
+
 interface Filter {
   label: string;
   id: string;
@@ -193,6 +195,7 @@ export class CoreCatalogComponent implements OnInit, OnChanges {
     }
     if (this.filterHeader) {
       this.categories = CategoriesUtils.getCategories(this.data);
+      this.providers = ProvidersUtils.getProviders();
     }
   }
 
@@ -235,8 +238,10 @@ export class CoreCatalogComponent implements OnInit, OnChanges {
   }
 
   filterCards(): void {
-    this.filteredData = this.filteredData.filter((el) =>
-      CategoriesUtils.filterByCategory(this.filter, el),
+    this.filteredData = this.filteredData.filter(
+      (el) =>
+        CategoriesUtils.filterByCategory(this.filter, el) &&
+        ProvidersUtils.filterByProviders(this.filter, el),
     );
   }
 
