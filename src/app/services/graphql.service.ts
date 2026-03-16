@@ -1,12 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { MarketplaceEntry, NodeContext } from 'models/index';
-import {
-  Account,
-  ProviderMetadataFilter,
-  UpdateProviderInput,
-} from 'models/provider-metadata';
-import { Observable, of, switchMap, tap } from 'rxjs';
+import { ProviderMetadataFilter } from 'models/provider-metadata';
+import { Observable, switchMap, tap } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApolloFactory } from 'services/apollo-factory';
 import { LuigiClient } from 'services/luigi';
@@ -169,120 +165,5 @@ export class GraphqlService {
         user: context.userId,
       },
     });
-  }
-
-  updateProviderInstance(input: UpdateProviderInput): Observable<unknown> {
-    return of(true);
-    // return combineLatest([
-    //   this.extensionApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     if (!scopeInfo || !input) {
-    //       throw new Error('scopeInfo is undefined');
-    //     }
-    //     return apollo.mutate({
-    //       mutation: UPDATE_EXTENSION_INSTANCE,
-    //       variables: {
-    //         tenantId: context.tenantid,
-    //         scope: scopeInfo.scopeId,
-    //         entity: scopeInfo.scopeType.toLowerCase(),
-    //         input,
-    //       },
-    //     });
-    //   }),
-    // );
-  }
-
-  public getAccounts(accountConnectionTypes: string[]): Observable<Account[]> {
-    return of([]);
-
-    // return combineLatest([
-    //   this.accountsApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     return apollo
-    //       .query<{ accountConnectionsForScope: Account[] }>({
-    //         query: ACCOUNT_CONNECTIONS,
-    //         variables: {
-    //           tenantId: context.tenantid,
-    //           scope: scopeInfo?.scopeId,
-    //           entity: scopeInfo?.scopeType.toLowerCase(),
-    //           accountConnectionTypes,
-    //         },
-    //         fetchPolicy: 'no-cache',
-    //       })
-    //       .pipe(
-    //         map(
-    //           (apolloResponse) =>
-    //             apolloResponse.data.accountConnectionsForScope,
-    //         ),
-    //       );
-    //   }),
-    // );
-  }
-
-  public deleteAccountConnection(id: string): Observable<boolean> {
-    return of(true);
-
-    // return combineLatest([
-    //   this.accountsApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     return apollo
-    //       .mutate<{ deleteAccountConnectionForScope: boolean }>({
-    //         mutation: DELETE_ACCOUNT_CONNECTION,
-    //         variables: {
-    //           tenantId: context.tenantid,
-    //           scope: scopeInfo?.scopeId,
-    //           entity: scopeInfo?.scopeType.toLowerCase(),
-    //           id,
-    //         },
-    //       })
-    //       .pipe(
-    //         map(
-    //           (apolloResponse) =>
-    //             apolloResponse.data?.deleteAccountConnectionForScope ?? false,
-    //         ),
-    //       );
-    //   }),
-    // );
-  }
-
-  public setDefaultAccount(accountName: string): Observable<boolean> {
-    return of(true);
-    // return combineLatest([
-    //   this.accountsApolloClientService.apollo(),
-    //   this.store.select(luigiContextSelector).pipe(filter((x) => !!x)),
-    //   this.store.select(selectScopeInfo).pipe(filter((x) => !!x)),
-    // ]).pipe(
-    //   first(),
-    //   mergeMap(([apollo, context, scopeInfo]) => {
-    //     return apollo
-    //       .mutate<{ setDefaultAccount: boolean }>({
-    //         mutation: SET_DEFAULT_ACCOUNT,
-    //         variables: {
-    //           tenantId: context.tenantid,
-    //           scope: scopeInfo?.scopeId,
-    //           entity: scopeInfo?.scopeType.toLowerCase(),
-    //           accountName,
-    //         },
-    //       })
-    //       .pipe(
-    //         map(
-    //           (apolloResponse) =>
-    //             apolloResponse.data?.setDefaultAccount ?? false,
-    //         ),
-    //       );
-    //   }),
-    // );
   }
 }

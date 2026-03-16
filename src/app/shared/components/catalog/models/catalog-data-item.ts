@@ -1,7 +1,8 @@
 import { AdditionalInfo } from './additional-info';
 import { Badge } from './badge';
 import { Label } from './label';
-import { Verification } from 'models/verification';
+
+export interface Verification extends Record<string, any> {}
 
 export interface CatalogDataItem {
   title?: string;

@@ -34,18 +34,11 @@ import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideNamedApollo } from 'apollo-angular';
 import { WizardConfigService } from 'services/wizard-config.service';
-import { AccountResourcesEditEffects } from 'state/account-resources/account-resources-edit.effects';
-import { AccountResourcesReadEffects } from 'state/account-resources/account-resources-read.effects';
-import { accountResourcesReducer } from 'state/account-resources/account-resources.reducer';
-import { AccountsEffects } from 'state/accounts.effects';
-import { accountTypesReducer } from 'state/accounts.reducer';
-import { BtpAccountEffects } from 'state/btp-account/btp-account.effects';
 import { ProviderInstanceEffects } from 'state/changing-provider-instance.effects';
 import { changingProviderInstanceReducer } from 'state/changing-provider-instance.reducer';
 import { CommonEffects } from 'state/common.effects';
 import { DetailViewEffect } from 'state/detail-view.effect';
 import { detailViewReducer } from 'state/detail-view.reducer';
-import { LuigiGoBackEffect } from 'state/luigi-go-back.effect';
 import { ProviderMetadataEffects } from 'state/provider-metadata.effects';
 import { providerMetadataReducer } from 'state/provider-metadata.reducers';
 import { ProviderState } from 'state/providerState';
@@ -70,24 +63,17 @@ export const appConfig: ApplicationConfig = {
     NotificationService,
     provideLuigiState(),
     provideStore<ProviderState>({
-      accounts: accountTypesReducer,
       marketplaceEntries: providersReducer,
       marketplaceEntry: providerMetadataReducer,
       changingProviderNames: changingProviderInstanceReducer,
       detailView: detailViewReducer,
-      accountResources: accountResourcesReducer,
     }),
     provideEffects([
-      AccountsEffects,
-      AccountResourcesReadEffects,
-      AccountResourcesEditEffects,
       DetailViewEffect,
       ProviderMetadataEffects,
       ProvidersEffects,
       ProviderInstanceEffects,
       CommonEffects,
-      LuigiGoBackEffect,
-      BtpAccountEffects,
     ]),
     provideStoreDevtools({
       maxAge: 25,

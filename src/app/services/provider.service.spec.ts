@@ -5,14 +5,7 @@ import { NotificationService } from '@dxp/ngx-core/notification';
 import { DialogService } from '@fundamental-ngx/core';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { mock } from 'jest-mock-extended';
-import {
-  AccountConnection,
-  Label,
-  ProviderMetadata,
-  ScopeType,
-  ServiceInstance,
-  ServiceStatus,
-} from 'models/index';
+import { Label, ProviderMetadata, ServiceStatus } from 'models/index';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
 import { firstValueFrom, of } from 'rxjs';
