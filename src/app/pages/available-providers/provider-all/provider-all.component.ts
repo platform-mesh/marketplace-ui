@@ -1,11 +1,6 @@
 import { ProviderEmptyComponent } from '../../provider/provider-empty/provider-empty.component';
 import { AsyncPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LinkComponent } from '@fundamental-ngx/platform/link';
 import { ModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
@@ -24,7 +19,6 @@ import {
   AdditionalInfo,
   CatalogDataItem,
   CoreCatalogComponent,
-  InfoLabelFilter,
 } from 'shared/components/catalog';
 import { triggerMatomoEvent } from 'shared/helpers';
 import { ProviderState } from 'state/providerState';
@@ -48,20 +42,11 @@ export interface ProviderCatalogDataItem extends CatalogDataItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProviderAllComponent implements OnInit {
-  @Input({ required: true })
-  isFeatureMode = false;
-
-  @Input()
-  infoLabelFilters?: Observable<InfoLabelFilter[] | undefined>;
-
-  @Input()
-  title?: string;
-
   initialFilter?: string;
   isLoading: Subject<boolean> = new BehaviorSubject(true);
   installableProviders: Observable<ProviderCatalogDataItem[]>;
-  private projectId?: string;
-  private projectType?: string;
+  private entityId?: string;
+  private entityType?: string;
 
   constructor(
     private store: Store<ProviderState>,
@@ -81,7 +66,7 @@ export class ProviderAllComponent implements OnInit {
             marketplaceEntry: MarketplaceEntry,
           ) => {
             let badge = '';
-            if (marketplaceEntry.spec.installed && !this.isFeatureMode) {
+            if (marketplaceEntry.spec.installed) {
               badge = 'INSTALLED';
             }
             const labels = this.providerService.buildLabels(
@@ -123,8 +108,8 @@ export class ProviderAllComponent implements OnInit {
       .contextObservable()
       .pipe(take(1))
       .subscribe((ctx) => {
-        this.projectId = ctx.context.projectId;
-        this.projectType = ctx.context.entityContext?.project?.type;
+        this.entityId = ctx.context.entityId;
+        this.entityType = ctx.context.entityType;
         this.initialFilter = this.luigiClient.getNodeParams(true)['q'] || '';
       });
   }
@@ -132,44 +117,24 @@ export class ProviderAllComponent implements OnInit {
   private triggerMatomoAnalyticsEvent(
     catalogDataItem: ProviderCatalogDataItem,
   ) {
-    if (!this.title) {
-      // If the title is undefined then trigger the catalog view item trigger, with the corresponding values
-      triggerMatomoEvent('ViewExtensionItem', {
-        extensionName: catalogDataItem.title,
-        extensionProvider: catalogDataItem.provider,
-      });
-    } else if (this.title == 'Marketplace') {
-      // If the title is Marketplace then trigger the marketplace view item trigger, with the corresponding values
-      triggerMatomoEvent('ViewExtensionItem', {
-        extensionName: catalogDataItem.title,
-        extensionProvider: catalogDataItem.provider,
-        projectId: this.projectId,
-        projectType: this.projectType,
-      });
-    }
+    triggerMatomoEvent('ViewExtensionItem', {
+      extensionName: catalogDataItem.title,
+      extensionProvider: catalogDataItem.provider,
+      entityId: this.entityId,
+      entityType: this.entityType,
+    });
   }
 
   navigate(catalogDataItem: ProviderCatalogDataItem) {
     this.triggerMatomoAnalyticsEvent(catalogDataItem);
     const title = `Provider Details - ${catalogDataItem.title}`;
-    if (this.isFeatureMode) {
-      void this.luigiClient
-        .linkManager()
-        .openAsModal(`/provider/${catalogDataItem.id}`, {
-          title,
-        });
-    } else {
-      void this.luigiClient
-        .linkManager()
-        .fromParent()
-        .withParams({
-          scope: catalogDataItem.scope || '',
-        })
-        .openAsModal(`provider/${catalogDataItem.id}`, {
-          title,
-          keepPrevious: true,
-        } as ModalSettings);
-    }
+    void this.luigiClient
+      .linkManager()
+      .fromParent()
+      .openAsModal(`provider/${catalogDataItem.id}`, {
+        title,
+        keepPrevious: true,
+      } as ModalSettings);
   }
 
   writeQueryParam(query: string): void {

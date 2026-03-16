@@ -8,9 +8,7 @@
         subtitle="From here, browse through official partner, and community Services. Select a Service to open its page for more details, enabling instructions, documentation, and support information."
         [data]="extensions"
         [filterHeader]="true"
-        [infoLabelFilters]="(infoLabelFilters | async) ?? undefined"
         [initialFilter]="initialFilter ?? ''"
-        [title]="title"
         (inputChanged)="writeQueryParam($event)"
         (itemClicked)="navigate($event)"
       />

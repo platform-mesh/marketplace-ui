@@ -21,6 +21,8 @@ import {
   SimpleChanges,
   input,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { FormLabelComponent } from '@fundamental-ngx/core/form';
 import {
   LayoutPanelBodyComponent,
@@ -143,6 +145,28 @@ export class CoreCatalogComponent implements OnInit, OnChanges {
    * The event payload is the updated search term.
    */
   @Output() readonly inputChanged = new EventEmitter<string>();
+
+  constructor(private route: ActivatedRoute) {
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed())
+      .subscribe((queryParams: ParamMap) => {
+        this.infoLabelFilters = this.buildInfoLabelFilters(queryParams);
+      });
+  }
+
+  buildInfoLabelFilters(queryParams?: ParamMap): InfoLabelFilter[] | undefined {
+    if (!queryParams?.keys.length) {
+      return undefined;
+    }
+
+    return queryParams.keys.map((label) => {
+      const stringValues = decodeURIComponent(queryParams.get(label) || '');
+      return {
+        label,
+        values: stringValues.split(',').map((v) => v.trim()),
+      };
+    });
+  }
 
   filteredData: CatalogDataItem[] = [];
   categories: string[] = [];

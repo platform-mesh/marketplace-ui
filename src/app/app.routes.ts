@@ -7,17 +7,16 @@ import { ProviderDetailsComponent } from './pages/installed-providers/provider-d
 import { ProviderConfigurationComponent } from './pages/provider/provider-configuration/provider-configuration.component';
 import { ProviderMissingMandatoryDataComponent } from './pages/provider/provider-missing-mandatory-data/provider-missing-mandatory-data.component';
 import { Routes } from '@angular/router';
-import { LuigiPreloadComponent } from '@luigi-project/client-support-angular';
 import { CreditDialogType } from 'state/account-resources/credit-dialog-type';
 
 export const routes: Routes = [
   {
-    path: 'global-catalog',
+    path: 'marketplace',
     component: CatalogComponent,
   },
   {
-    path: 'preload',
-    component: LuigiPreloadComponent,
+    path: 'provider/:providerName',
+    component: ProviderDetailDialogComponent,
   },
   {
     path: 'configurations/:providerName',
@@ -45,23 +44,12 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'provider/:providerName',
-    component: ProviderDetailDialogComponent,
-  },
-  {
     path: `provider-missing-mandatory-data/:providerName`,
     component: ProviderMissingMandatoryDataComponent,
   },
   {
     path: `import/:providerName`,
     component: ImportAccountsComponent,
-  },
-  {
-    path: 'entity/:entityId/marketplace',
-    component: CatalogComponent,
-    data: {
-      isFeatureMode: false,
-    },
   },
   {
     path: 'provider-configuration',

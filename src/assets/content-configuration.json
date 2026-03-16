@@ -13,7 +13,7 @@
           "icon": "retail-store",
           "testId": "dxp-frame-navigation-project-marketplace",
           "hideFromNav": false,
-          "urlSuffix": "/#/entity/:projectId/marketplace",
+          "urlSuffix": "/#/marketplace",
           "order": 4,
           "dxpOrder": 4
         },

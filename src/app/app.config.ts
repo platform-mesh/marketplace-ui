@@ -7,7 +7,6 @@ import {
 } from '@angular/common/http';
 import {
   ApplicationConfig,
-  ErrorHandler,
   isDevMode,
   provideAppInitializer,
 } from '@angular/core';
@@ -33,7 +32,6 @@ import { provideDialogService } from '@fundamental-ngx/core/dialog';
 import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { createErrorHandler } from '@sentry/angular';
 import { provideNamedApollo } from 'apollo-angular';
 import { WizardConfigService } from 'services/wizard-config.service';
 import { AccountResourcesEditEffects } from 'state/account-resources/account-resources-edit.effects';
@@ -100,13 +98,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ENV, useValue: environment },
     provideHttpClient(withInterceptorsFromDi()),
     provideNoopAnimations(),
-    {
-      provide: ErrorHandler,
-      useValue: createErrorHandler({
-        showDialog: false,
-        logErrors: true,
-      }),
-    },
     provideAppInitializer(() => {
       initializeMatomo();
     }),
