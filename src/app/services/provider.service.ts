@@ -180,6 +180,7 @@ export class ProviderService {
     return provider.spec.image ?? '';
   }
 
+  // todo gkr delete
   public openConfigurationWizard(
     providerName: string | undefined,
     providerDisplayName: string | undefined,

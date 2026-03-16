@@ -1,8 +1,0 @@
-@if (!!wizardDefinition) {
-  <dxp-wizard
-    [wizardDefinition]="wizardDefinition"
-    (cancel)="wizardCanceled()"
-    (resultParameters)="finish($event)"
-    (wizardError)="wizardError($event)"
-  />
-}
