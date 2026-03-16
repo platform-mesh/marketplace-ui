@@ -1,6 +1,5 @@
 import { CatalogDataItem, InfoLabelFilter } from '../../models';
 import { CategoriesUtils } from '../../services/categories.utils';
-import { ProvidersUtils } from '../../services/providers.utils';
 import { CatalogItemComponent } from '../catalog-item/catalog-item.component';
 import {
   getFilteredDataByInfoLabels,
@@ -194,7 +193,6 @@ export class CoreCatalogComponent implements OnInit, OnChanges {
     }
     if (this.filterHeader) {
       this.categories = CategoriesUtils.getCategories(this.data);
-      this.providers = ProvidersUtils.getProviders();
     }
   }
 
@@ -237,10 +235,8 @@ export class CoreCatalogComponent implements OnInit, OnChanges {
   }
 
   filterCards(): void {
-    this.filteredData = this.filteredData.filter(
-      (el) =>
-        CategoriesUtils.filterByCategory(this.filter, el) &&
-        ProvidersUtils.filterByProviders(this.filter, el),
+    this.filteredData = this.filteredData.filter((el) =>
+      CategoriesUtils.filterByCategory(this.filter, el),
     );
   }
 

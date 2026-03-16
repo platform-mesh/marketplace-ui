@@ -1,6 +1,4 @@
-import { Verification } from '../../models/verification';
 import { VerificationInfo } from '../../models/verification-info';
-import { VerificationType } from '../../models/verification-type';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,6 +9,7 @@ import {
 import { ObjectStatusComponent } from '@fundamental-ngx/core';
 import { AvatarComponent } from '@fundamental-ngx/core/avatar';
 import { InlineHelpDirective } from '@fundamental-ngx/core/inline-help';
+import { Verification } from 'shared/components/catalog';
 
 @Component({
   selector: 'app-provider-verification',
@@ -36,28 +35,7 @@ export class ProviderVerificationComponent implements OnChanges {
     objectStatus: 'neutral',
   };
 
-  hyperspaceVerificationInfo: VerificationInfo = {
-    showIcon: true,
-    label: 'Hyperspace',
-    objectStatus: 'informative',
-    inlineHelp: 'Official Hyperspace Offering',
-  };
-
-  hyperspacePartnerVerificationInfo: VerificationInfo = {
-    showIcon: true,
-    label: 'Hyperspace Partner',
-    objectStatus: 'informative',
-    inlineHelp: 'Verified Hyperspace Partner Offering',
-  };
-
   mapVerificationInfo(): VerificationInfo {
-    switch (this.verification?.type) {
-      case VerificationType.Hyperspace:
-        return this.hyperspaceVerificationInfo;
-      case VerificationType.HyperspacePartner:
-        return this.hyperspacePartnerVerificationInfo;
-      default:
-        return this.communityVerificationInfo;
-    }
+    return this.communityVerificationInfo;
   }
 }

@@ -5,20 +5,16 @@ import { ConfirmationModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { ConfirmationDialogDecision } from 'models/dialog';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
-import { ProviderConfigurationData } from 'models/provider-configuration-data';
 import {
-  AccountConnection,
   ColorCategory,
   Label,
   MarketplaceEntry,
   ProviderMetadata,
-  ServiceInstance,
   ServiceLevel,
 } from 'models/provider-metadata';
 import { filter, take } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
 import { triggerMatomoEvent } from 'shared/helpers';
-import { AccountNamingService } from 'state/account-naming/account-naming.service';
 import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
 import { loadProviders } from 'state/providers.actions';
 
@@ -36,7 +32,6 @@ export class ProviderService {
     private store: Store,
     private luigiClient: LuigiClient,
     private graphqlService: GraphqlService,
-    private accountNamingService: AccountNamingService,
   ) {
     this.handleInstallProvider();
 
@@ -51,23 +46,6 @@ export class ProviderService {
     }
 
     return this.graphqlService.installProviderInstance(marketplaceEntry);
-  }
-
-  updateProviderInstance(
-    marketplaceEntry: MarketplaceEntry,
-    providerInstance: ServiceInstance,
-    installationData: Record<string, unknown>,
-  ) {
-    const updateProviderInstanceInput = {
-      installationData,
-      instanceId: providerInstance.id,
-      providerInput: {
-        id: marketplaceEntry.metadata.name,
-      },
-    };
-    return this.graphqlService.updateProviderInstance(
-      updateProviderInstanceInput,
-    );
   }
 
   uninstallProviderInstance(marketplaceEntry: MarketplaceEntry): void {
@@ -126,27 +104,11 @@ export class ProviderService {
   }
 
   public isUninstallable(marketplaceEntry: MarketplaceEntry): boolean {
-    const installed = marketplaceEntry.spec.installed;
-    const deletionPrevented = this.isDeletionPrevented(marketplaceEntry);
-    const isMandatory = this.isProviderMandatory(marketplaceEntry);
-    // && provider?.instance?.status !== ServiceStatus.IN_DELETION
-
-    return installed && !deletionPrevented && !isMandatory;
-  }
-
-  private isDeletionPrevented(_marketplaceEntry: MarketplaceEntry): boolean {
-    return (
-      // provider.instance?.providerData?.['disableProjectDeletion'] === 'true'
-      false
-    );
+    return marketplaceEntry.spec.installed;
   }
 
   public isInstallable(marketplaceEntry: MarketplaceEntry): boolean {
     return !marketplaceEntry.spec.installed;
-  }
-
-  public isProviderMandatory(_marketplaceEntry: MarketplaceEntry): boolean {
-    return false;
   }
 
   public getIcon(provider: ProviderMetadata): string {
@@ -180,45 +142,8 @@ export class ProviderService {
     return provider.spec.image ?? '';
   }
 
-  // todo gkr delete
-  public openConfigurationWizard(
-    providerName: string | undefined,
-    providerDisplayName: string | undefined,
-    modalSize?: 'l' | 'm' | 's',
-  ) {
-    const params: ProviderConfigurationData = {
-      providerName: providerName ?? '',
-      providerDisplayName: providerDisplayName ?? '',
-    };
-    this.luigiClient
-      .linkManager()
-      .fromClosestContext()
-      .withParams(params)
-      .openAsModal('/provider-configuration', {
-        size: modalSize,
-      })
-      .catch((error: unknown) => {
-        console.error(error);
-      });
-  }
-
   navigateToProviderDetails(marketplaceEntry: MarketplaceEntry) {
     this.luigiClient.linkManager().navigate(marketplaceEntry.metadata.name);
-  }
-
-  async openDialogForAddAccountType(account: AccountConnection): Promise<void> {
-    const linkManager = this.luigiClient.linkManager();
-    const route = await linkManager.getCurrentRoute();
-    const resultingRoute = route.replace(/(\/projects\/.*)\/.*$/, '$1');
-    linkManager
-      .withParams({
-        type: account.name,
-      })
-      .navigate(`${resultingRoute}/${account.type.name}`, undefined, true, {
-        title:
-          $localize`Connect an ${this.accountNamingService.accountNamingConfig().singular}` as string,
-        size: 's',
-      });
   }
 
   buildLabels(elem: ProviderMetadata): Label[] {

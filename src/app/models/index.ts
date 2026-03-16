@@ -7,7 +7,6 @@ export * from './portal-context';
 export * from './custom.resource';
 export * from './provider-metadata';
 export * from './verification-info';
-export * from './verification-type';
 export * from './provider-configuration-data';
 export * from './wizard-configuration';
 export * from './env.token';

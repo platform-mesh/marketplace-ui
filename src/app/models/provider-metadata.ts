@@ -1,73 +1,6 @@
 import { MessageStripType } from '@fundamental-ngx/core';
 import { Verification } from 'models/verification';
 
-export interface Account {
-  id: string;
-  name: string;
-  displayName: string;
-  type: AccountType;
-  subType?: string;
-  ref: string;
-  link?: string;
-}
-
-export interface AccountConnection {
-  description: string;
-  displayName: string;
-  name: string;
-  image: {
-    url: string;
-  };
-  type: AccountConnectionType;
-  subType?: string;
-}
-
-export interface AccountConnectionType {
-  context: string;
-  name: string;
-  apiResourceConfig: APIResourceConfig;
-}
-
-export interface APIResourceConfig {
-  wizardConfig: ProviderWizardConfig;
-  displayConfig: APIResourceDisplayConfig;
-}
-
-export interface APIResourceDisplayConfig {
-  apiServerConfig: APIServerConfig;
-  resourceConfig: ResourceConfig;
-  tableConfig: TableConfig;
-  accountAssignmentConfig?: AccountAssignmentConfig;
-  accountNamingConfig?: AccountNamingConfig;
-}
-
-export interface AccountNamingConfig {
-  singular: string;
-  plural: string;
-}
-
-export interface AccountAssignmentConfig {
-  nameDataPath: string;
-  addAccountTitle?: string;
-  noAccountsFoundTitle?: string;
-}
-
-export interface ResourceConfig {
-  groupVersion: string;
-  kind: string;
-}
-
-export interface APIServerConfig {
-  host: string;
-  namespaceRetrievalStrategy: string;
-}
-
-export interface TableConfig {
-  columns: ColumnConfig[];
-  actions?: ActionsConfig;
-  messageStrip?: MessageStripConfig[];
-}
-
 export interface MessageStripConfig {
   type: MessageStripType;
   text: string;
@@ -104,6 +37,7 @@ export interface GlobalActionConfig {
   type: string;
   path: string;
 }
+
 export interface ActionPopupConfig {
   title: string;
   text: string;
@@ -157,17 +91,6 @@ export interface LinkConfig {
   url?: string;
 }
 
-export interface AccountType {
-  id: string;
-  defaultAccount?: Account;
-  displayName: string;
-  description?: string;
-  image?: string;
-  type: {
-    Name: string;
-  };
-}
-
 export interface Contact {
   displayName: string;
   email?: string;
@@ -216,38 +139,30 @@ export interface MarketplaceEntry {
 
 export interface ProviderMetadata {
   spec: {
-    name: string;
-    displayName: string;
     tags?: string[];
+
+    displayName: string;
     description?: string;
+
+    data?: string;
+    contacts?: Contact[];
+    documentation?: Documentation[];
+    icon?: Icon;
+
+    links?: Link[];
+    preferredSupportChannels?: Link[];
+    helpCenterData?: Documentation[];
+
+    // not supported yet
     image?: string; // data:image/x;base64,
     category?: string;
-    configurationMetadata?: string;
-    instance: ServiceInstance | undefined | null;
-    isChangingInstallations?: boolean;
-    icon?: Icon;
-    wizardConfig?: ProviderWizardConfig;
-    documentation?: Documentation[];
-    helpCenterData?: Documentation[];
     creationTimestamp?: string;
-    accountConnections?: AccountConnection[];
-    contacts?: Contact[];
     labels?: Label[];
-    links?: Link[];
     mainLink?: Link;
-    preferredSupportChannels?: Link[];
     provider?: string;
-    network?: string;
-    verification?: Verification;
     serviceLevel?: ServiceLevel;
-    template?: TemplateSpec;
-    isMandatory?: boolean;
+    verification?: Verification;
   };
-}
-
-export interface TemplateSpec {
-  name: string;
-  version: string;
 }
 
 export interface Link {
@@ -265,12 +180,6 @@ export enum ServiceLevel {
   Low = 'low8x5',
 }
 
-export interface ProviderWizardConfig {
-  name: string;
-  configData: string;
-  wizardDefinition: string;
-}
-
 export interface Documentation {
   name: string;
   url?: string;
@@ -284,19 +193,6 @@ export interface Icon {
 export interface Image {
   url?: string;
   data?: string;
-}
-
-export interface ServiceInstance {
-  id: string;
-  name: string;
-  providerMetadata: ProviderMetadata;
-  configurationMetadata?: unknown;
-  installationData?: Record<string, string>;
-  providerData?: Record<string, string>;
-  isMandatory?: boolean;
-  creationTimestamp?: Date;
-  status: ServiceStatus;
-  serviceInstanceStatus?: Record<string, ServiceInstanceStatusValue>;
 }
 
 export interface ServiceInstanceStatusValue {

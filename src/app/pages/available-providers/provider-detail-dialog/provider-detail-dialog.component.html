@@ -1,21 +1,3 @@
-@if (isUnaccounted | async) {
-  <div class="message-container">
-    <fd-message-strip
-      i18n="
-        No accounts in extension info|Message for already enabled extensions
-        without accounts
-      "
-      type="information"
-      [dismissible]="false"
-    >
-      This extension is enabled, but you need an account to use it.
-      <a aria-label="Accounts" fd-link (click)="visitExtension()"
-        >Manage Account.
-      </a>
-    </fd-message-strip>
-  </div>
-}
-
 @let marketplaceEntry = marketplaceEntryObservable | async;
 @if (marketplaceEntry) {
   <fdp-dynamic-page
@@ -99,11 +81,7 @@
           />
         </fd-facet>
         <fd-facet>
-          <app-provider-verification
-            [verification]="
-              marketplaceEntry?.spec?.providerMetadata?.spec?.verification
-            "
-          />
+          <app-provider-verification [verification]="" />
         </fd-facet>
 
         <fd-facet class="label-container" type="custom">

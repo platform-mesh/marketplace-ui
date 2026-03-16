@@ -8,7 +8,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { DxpProviderVerificationModule } from '@dxp/ngx-core/provider-verification';
-import { WizardDefinition } from '@dxp/ngx-core/wizard';
 import {
   ButtonComponent,
   ContentDensityDirective,
@@ -22,7 +21,6 @@ import {
 } from '@fundamental-ngx/core/facets';
 import { FormLabelComponent } from '@fundamental-ngx/core/form';
 import { InfoLabelComponent } from '@fundamental-ngx/core/info-label';
-import { MessageStripComponent } from '@fundamental-ngx/core/message-strip';
 import { TextComponent } from '@fundamental-ngx/core/text';
 import { TitleComponent } from '@fundamental-ngx/core/title';
 import { ToolbarComponent } from '@fundamental-ngx/core/toolbar';
@@ -43,13 +41,11 @@ import {
   ServiceLevel,
 } from 'models/provider-metadata';
 import { Observable, Subscription, combineLatest, mergeMap, tap } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { triggerMatomoEvent } from 'shared/helpers';
 import { getEntityScopeFromContext } from 'shared/utils/entity-context.util';
-import { readAccountsForAccountConnectionTypes } from 'state/accounts.action';
-import { selectAccountsPerConnectionTypes } from 'state/accounts.selectors';
 import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import {
@@ -59,12 +55,10 @@ import {
   selectProviderMetadataSupportLinks,
 } from 'state/provider-metadata.selectors';
 import { ProviderState } from 'state/providerState';
-import YAML from 'yaml';
 
 @Component({
   selector: 'app-provider-detail-dialog',
   imports: [
-    MessageStripComponent,
     DynamicPageComponent,
     LinkComponent,
     DynamicPageTitleComponent,
@@ -96,7 +90,6 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   providerSubscription?: Subscription;
 
   isChanging?: Observable<boolean>;
-  isUnaccounted: Observable<boolean | undefined> | undefined;
   productOwners: Observable<Contact[]> | undefined;
   communityChannels: Observable<Link[]> | undefined;
   supportChannels: Observable<Link[]> | undefined;
@@ -146,29 +139,6 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
         this.supportChannels = this.store.select<Link[]>(
           selectProviderMetadataSupportLinks,
         );
-        this.isUnaccounted = this.store
-          .select(selectAccountsPerConnectionTypes)
-          .pipe(
-            map(
-              (accounts) =>
-                this.marketplaceEntry?.spec.installed &&
-                !!this.marketplaceEntry?.spec.providerMetadata.spec
-                  .accountConnections &&
-                accounts.length === 0,
-            ),
-          );
-        if (
-          this.marketplaceEntry?.spec.providerMetadata.spec.accountConnections
-        ) {
-          this.store.dispatch(
-            readAccountsForAccountConnectionTypes({
-              accountConnectionTypes:
-                this.marketplaceEntry.spec.providerMetadata.spec.accountConnections.map(
-                  (e) => e.name,
-                ),
-            }),
-          );
-        }
       },
     );
   }
@@ -182,27 +152,14 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   }
 
   protected installExtension(): void {
-    if (this.providerMetadata?.spec.wizardConfig) {
-      const wizardDefinition: WizardDefinition | undefined = YAML.parse(
-        this.providerMetadata?.spec.wizardConfig?.wizardDefinition,
-      );
-      const wizardDefinitionSize = wizardDefinition?.modalSize;
-
-      this.providerService.openConfigurationWizard(
-        this.providerMetadata?.spec.name,
-        this.providerMetadata?.spec.displayName,
-        wizardDefinitionSize,
-      );
-    } else {
-      this.providerService
-        .installProviderInstance(this.marketplaceEntry)
-        .subscribe(() => {
-          this.luigiClient.linkManager().goBack(PROVIDER_INSTANCE_INSTALLED);
-          if (this.marketplaceEntry) {
-            triggerMatomoEvent('InstallExtension', this.getMatomoEventObject());
-          }
-        });
-    }
+    this.providerService
+      .installProviderInstance(this.marketplaceEntry)
+      .subscribe(() => {
+        this.luigiClient.linkManager().goBack(PROVIDER_INSTANCE_INSTALLED);
+        if (this.marketplaceEntry) {
+          triggerMatomoEvent('InstallExtension', this.getMatomoEventObject());
+        }
+      });
   }
 
   private getMatomoEventObject() {

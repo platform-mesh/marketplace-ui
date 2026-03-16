@@ -82,8 +82,7 @@ export class ProviderAllComponent implements OnInit {
               image: this.providerService.getIcon(
                 marketplaceEntry.spec.providerMetadata,
               ),
-              verification:
-                marketplaceEntry.spec.providerMetadata.spec.verification,
+              verification: undefined,
               category: marketplaceEntry.spec.providerMetadata.spec.category,
               provider: marketplaceEntry.spec.providerMetadata.spec.provider,
               badge: {
