@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { AnalyticsTrackerService } from '@dxp/ngx-core/analytics-tracker';
+import { AnalyticsTrackerService } from 'services/analytics-tracker.service';
 
 export function initializeMatomo(): () => void {
   const analyticsTrackerService = inject(AnalyticsTrackerService);

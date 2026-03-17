@@ -16,7 +16,6 @@ import {
   DxpFundamentalDialogServiceReplacer,
   DxpFundamentalMessageBoxServiceReplacer,
 } from '@dxp/ngx-core/fundamental';
-import { LuigiClient } from '@dxp/ngx-core/luigi';
 import { provideLuigiState } from '@dxp/ngx-core/state';
 import {
   ContentDensityMode,
@@ -32,6 +31,7 @@ import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideNamedApollo } from 'apollo-angular';
 import { ENV } from 'models/env.token';
+import { LuigiClient } from 'services/luigi';
 import { ProviderInstanceEffects } from 'state/changing-provider-instance.effects';
 import { changingProviderInstanceReducer } from 'state/changing-provider-instance.reducer';
 import { CommonEffects } from 'state/common.effects';
