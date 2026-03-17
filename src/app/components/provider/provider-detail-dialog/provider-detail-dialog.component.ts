@@ -1,5 +1,5 @@
 import { MarketplaceEntry, NodeContext } from '../../../models';
-import { ProviderVerificationComponent } from '../../provider-verification/provider-verification.component';
+import { ProviderVerificationComponent } from '../provider-verification/provider-verification.component';
 import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -45,7 +45,6 @@ import { filter } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { triggerMatomoEvent } from 'shared/helpers';
-import { getEntityScopeFromContext } from 'shared/utils/entity-context.util';
 import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import {
@@ -166,8 +165,8 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
     return {
       provider: this.marketplaceEntry?.spec.providerMetadata.spec.displayName,
       providerName: this.marketplaceEntry?.metadata.name,
-      entityType: getEntityScopeFromContext(this.context).entityType,
-      entitytId: getEntityScopeFromContext(this.context).entityId,
+      entityType: this.context?.entityType,
+      entityId: this.context?.entityId,
     };
   }
 

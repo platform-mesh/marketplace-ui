@@ -33,7 +33,6 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideNamedApollo } from 'apollo-angular';
-import { WizardConfigService } from 'services/wizard-config.service';
 import { ProviderInstanceEffects } from 'state/changing-provider-instance.effects';
 import { changingProviderInstanceReducer } from 'state/changing-provider-instance.reducer';
 import { CommonEffects } from 'state/common.effects';
@@ -52,7 +51,6 @@ export const appConfig: ApplicationConfig = {
     DxpFundamentalMessageBoxServiceReplacer,
     LuigiClient,
     RtlService,
-    WizardConfigService,
     provideNamedApollo(() => ({})),
     provideRouter(routes, withHashLocation()),
     provideContentDensity({

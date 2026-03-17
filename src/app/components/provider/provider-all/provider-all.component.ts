@@ -1,3 +1,8 @@
+import {
+  AdditionalInfo,
+  CatalogDataItem,
+  CoreCatalogComponent,
+} from '../../catalog';
 import { ProviderEmptyComponent } from '../../provider/provider-empty/provider-empty.component';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
@@ -15,11 +20,6 @@ import {
 import { map, take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
-import {
-  AdditionalInfo,
-  CatalogDataItem,
-  CoreCatalogComponent,
-} from 'shared/components/catalog';
 import { triggerMatomoEvent } from 'shared/helpers';
 import { ProviderState } from 'state/providerState';
 import { selectAllProviders } from 'state/providers.selectors';

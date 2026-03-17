@@ -1,4 +1,4 @@
-import { ProviderVerificationComponent } from '../../../../../pages/provider-verification/provider-verification.component';
+import { ProviderVerificationComponent } from '../../../provider/provider-verification/provider-verification.component';
 import { CatalogDataItem } from '../../models/catalog-data-item';
 import {
   AfterViewInit,

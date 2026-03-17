@@ -5,7 +5,6 @@ export interface EntityConfig {
   contextProperty: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
   token: string;
   accountId: string;

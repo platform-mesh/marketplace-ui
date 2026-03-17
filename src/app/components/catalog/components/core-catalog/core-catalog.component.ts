@@ -1,5 +1,6 @@
 import { CatalogDataItem, InfoLabelFilter } from '../../models';
 import { CategoriesUtils } from '../../services/categories.utils';
+import { ProvidersUtils } from '../../services/providers.utils';
 import { CatalogItemComponent } from '../catalog-item/catalog-item.component';
 import {
   getFilteredDataByInfoLabels,
@@ -44,7 +45,6 @@ import {
   SelectComponent,
 } from '@fundamental-ngx/platform/form';
 import { SearchFieldComponent } from '@fundamental-ngx/platform/search-field';
-import { ProvidersUtils } from 'shared/components/catalog/services/providers.utils';
 
 export interface CardFilter {
   category?: string;

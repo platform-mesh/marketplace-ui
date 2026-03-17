@@ -7,7 +7,7 @@ export class ProvidersUtils {
     { label: 'Community', id: this.providerFallbackId },
   ];
 
-  static isCommunityVerification = (providerId: string, el: CatalogDataItem) =>
+  static isCommunityVerification = (providerId: string, _el: CatalogDataItem) =>
     providerId === this.providerFallbackId;
 
   static filterByProviders = (filter: CardFilter, el: CatalogDataItem) =>

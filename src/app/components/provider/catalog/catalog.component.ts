@@ -1,4 +1,4 @@
-import { ProviderAllComponent } from '../../available-providers/provider-all/provider-all.component';
+import { ProviderAllComponent } from '../provider-all/provider-all.component';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   DynamicPageComponent as DynamicPageComponent_1,

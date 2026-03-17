@@ -1,4 +1,4 @@
-import { VerificationInfo } from '../../models/verification-info';
+import { Verification } from '../../catalog';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,7 +9,7 @@ import {
 import { ObjectStatusComponent } from '@fundamental-ngx/core';
 import { AvatarComponent } from '@fundamental-ngx/core/avatar';
 import { InlineHelpDirective } from '@fundamental-ngx/core/inline-help';
-import { Verification } from 'shared/components/catalog';
+import { VerificationInfo } from 'models/verification-info';
 
 @Component({
   selector: 'app-provider-verification',
