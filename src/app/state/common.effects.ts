@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LuigiClient } from '@dxp/ngx-core/luigi';
-import { NotificationService } from '@dxp/ngx-core/notification';
 import { MessageBoxRef, MessageBoxService } from '@fundamental-ngx/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { GoBackContext, LuigiGoBackAction } from 'models/luigi-go-back';
 import { map } from 'rxjs/operators';
+import { NotificationService } from 'services/notification.service';
 import {
   goBackAction,
   requestFailed,

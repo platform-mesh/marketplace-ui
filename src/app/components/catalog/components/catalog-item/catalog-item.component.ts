@@ -1,5 +1,3 @@
-import { ProviderVerificationComponent } from '../../../provider/provider-verification/provider-verification.component';
-import { CatalogDataItem } from '../../models/catalog-data-item';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -19,6 +17,8 @@ import { AvatarComponent } from '@fundamental-ngx/core/avatar';
 import { FormLabelComponent } from '@fundamental-ngx/core/form';
 import { InfoLabelComponent } from '@fundamental-ngx/core/info-label';
 import { TextComponent } from '@fundamental-ngx/core/text';
+import { CatalogDataItem } from 'components/catalog';
+import { ProviderVerificationComponent } from 'components/provider/provider-verification/provider-verification.component';
 import { Md5 } from 'ts-md5';
 
 @Component({

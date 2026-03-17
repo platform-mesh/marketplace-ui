@@ -7,7 +7,6 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { DxpProviderVerificationModule } from '@dxp/ngx-core/provider-verification';
 import {
   ButtonComponent,
   ContentDensityDirective,
@@ -70,7 +69,6 @@ import { triggerMatomoEvent } from 'utils/helpers';
     FacetGroupComponent,
     FacetComponent,
     AvatarComponent,
-    DxpProviderVerificationModule,
     DynamicPageContentComponent,
     TitleComponent,
     FacetContentComponent,

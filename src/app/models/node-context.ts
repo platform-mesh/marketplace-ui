@@ -9,7 +9,6 @@ export interface NodeContext extends Record<string, any> {
   token: string;
   accountId: string;
   userId: string;
-  tenantId: string;
   entityType: string;
   portalBaseUrl: string;
   portalContext: PortalContext;
@@ -53,5 +52,4 @@ export interface NodeContext extends Record<string, any> {
 export interface AnalyzerTrackingConfig {
   siteUrl?: string;
   jukeboxMatomoContainerId?: string;
-  tenantIds?: string[];
 }

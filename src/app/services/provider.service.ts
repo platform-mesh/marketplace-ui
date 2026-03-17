@@ -1,6 +1,5 @@
 import { LuigiClient, PmLuigiContextService } from './luigi';
 import { Injectable, inject } from '@angular/core';
-import { NotificationService } from '@dxp/ngx-core/notification';
 import { ConfirmationModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { ConfirmationDialogDecision } from 'models/dialog';
@@ -14,6 +13,7 @@ import {
 } from 'models/provider-metadata';
 import { filter, take } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
+import { NotificationService } from 'services/notification.service';
 import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
 import { loadProviders } from 'state/providers.actions';
 import { triggerMatomoEvent } from 'utils/helpers';

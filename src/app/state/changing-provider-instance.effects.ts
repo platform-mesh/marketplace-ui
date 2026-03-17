@@ -1,4 +1,3 @@
-import { LuigiGoBackAction } from '../models/luigi-go-back';
 import {
   unInstallProviderInstance,
   uninstalledProviderInstanceSuccessfully,
@@ -6,10 +5,11 @@ import {
 import { loadProviders } from './providers.actions';
 import { Injectable } from '@angular/core';
 import { LuigiClient } from '@dxp/ngx-core/luigi';
-import { NotificationService } from '@dxp/ngx-core/notification';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { LuigiGoBackAction } from 'models/luigi-go-back';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
+import { NotificationService } from 'services/notification.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProviderInstanceEffects {
