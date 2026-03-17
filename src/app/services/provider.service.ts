@@ -14,9 +14,9 @@ import {
 } from 'models/provider-metadata';
 import { filter, take } from 'rxjs/operators';
 import { GraphqlService } from 'services/graphql.service';
-import { triggerMatomoEvent } from 'shared/helpers';
 import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
 import { loadProviders } from 'state/providers.actions';
+import { triggerMatomoEvent } from 'utils/helpers';
 
 export const NEW_LABEL: Label = {
   title: 'New',

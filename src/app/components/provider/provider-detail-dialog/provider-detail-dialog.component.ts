@@ -44,7 +44,6 @@ import { Observable, Subscription, combineLatest, mergeMap, tap } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
-import { triggerMatomoEvent } from 'shared/helpers';
 import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
 import {
@@ -54,6 +53,7 @@ import {
   selectProviderMetadataSupportLinks,
 } from 'state/provider-metadata.selectors';
 import { ProviderState } from 'state/providerState';
+import { triggerMatomoEvent } from 'utils/helpers';
 
 @Component({
   selector: 'app-provider-detail-dialog',

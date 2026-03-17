@@ -20,9 +20,9 @@ import {
 import { map, take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
-import { triggerMatomoEvent } from 'shared/helpers';
 import { ProviderState } from 'state/providerState';
 import { selectAllProviders } from 'state/providers.selectors';
+import { triggerMatomoEvent } from 'utils/helpers';
 
 export interface ProviderCatalogDataItem extends CatalogDataItem {
   id?: string;
