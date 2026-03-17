@@ -35,8 +35,8 @@
           <ng-container>
             @if (showInstallButton()) {
               <button
-                data-analytics-id="dxp-extension-details-dialog-install-button"
-                data-testid="dxp-extension-details-dialog-install-button"
+                data-analytics-id="extension-details-dialog-install-button"
+                data-testid="extension-details-dialog-install-button"
                 fd-button
                 fdCompact
                 fdType="emphasized"
@@ -49,8 +49,8 @@
 
             @if (showUninstallButton()) {
               <button
-                data-analytics-id="dxp-extension-details-dialog-uninstall-button"
-                data-testid="dxp-extension-details-dialog-uninstall-button"
+                data-analytics-id="extension-details-dialog-uninstall-button"
+                data-testid="extension-details-dialog-uninstall-button"
                 fd-button
                 fdCompact
                 id="uninstall-btn"
@@ -179,7 +179,7 @@
                 <fd-facet-content style="flex-wrap: wrap">
                   @if (_communityChannels?.length) {
                     <label
-                      data-testid="dxp-extension-community-links"
+                      data-testid="extension-community-links"
                       fd-form-label
                       [colon]="true"
                       >Ask the community</label
@@ -199,7 +199,7 @@
                   <div style="width: 100%"></div>
                   @if (_supportChannels?.length) {
                     <label
-                      data-testid="dxp-extension-issue-links"
+                      data-testid="extension-issue-links"
                       fd-form-label
                       [colon]="true"
                       >Report an issue</label
@@ -221,7 +221,7 @@
               @if (_productOwners?.length) {
                 <fd-facet-content class="fd-margin-top--sm">
                   <label
-                    data-testid="dxp-extension-product-owners"
+                    data-testid="extension-product-owners"
                     fd-form-label
                     [colon]="true"
                     >Product Owners</label
@@ -255,13 +255,13 @@
               @if (marketplaceEntry.spec.providerMetadata.spec.serviceLevel) {
                 <fd-facet-content>
                   <label
-                    data-testid="dxp-extension-details-serviceLevel"
+                    data-testid="extension-details-serviceLevel"
                     fd-form-label
                     [colon]="true"
                     >Service Level</label
                   >
                   <fd-text
-                    data-testid="dxp-extension-details-serviceLevel"
+                    data-testid="extension-details-serviceLevel"
                     id="service-level"
                     [text]="
                       mapServiceLevel(
