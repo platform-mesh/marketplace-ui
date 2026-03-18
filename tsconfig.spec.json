@@ -2,8 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "module": "CommonJs",
-    "types": ["jest", "node", "@angular/localize"]
+    "types": ["vitest/globals", "node", "@angular/localize"]
   },
   "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
 }

@@ -1,103 +1,133 @@
-import { NodeContext } from '../../models';
-import { IContextMessage, IamLuigiContextService } from '../luigi';
+import { NodeContext } from '../models';
+import { IContextMessage, PmLuigiContextService } from './luigi';
 import { AnalyticsTrackerService } from './analytics-tracker.service';
 import { TestBed } from '@angular/core/testing';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { mock } from 'jest-mock-extended';
+import { mock } from 'vitest-mock-extended';
 import { MockProvider } from 'ng-mocks';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { ILuigiContextTypes } from '@luigi-project/client-support-angular';
 
 describe('AnalyticsTrackerService', () => {
-  let analyticsTrackingService: AnalyticsTrackerService;
-  let ctxSrv: IamLuigiContextService;
+  let service: AnalyticsTrackerService;
+  let ctxSrv: PmLuigiContextService;
 
-  const testLuigiContext = new BehaviorSubject<IContextMessage>({
-    contextType: 0,
-    context: mock<NodeContext>({}),
+  const makeContextMessage = (contextOverrides: Record<string, any> = {}): IContextMessage => ({
+    contextType: ILuigiContextTypes.UPDATE,
+    context: mock<NodeContext>({
+      userId: 'user-123',
+      tenantId: 'tenant-1',
+      ...contextOverrides,
+    }),
   });
+
+  const testLuigiContext = new BehaviorSubject<IContextMessage>(
+    makeContextMessage(),
+  );
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      teardown: {
-        destroyAfterEach: true,
-        rethrowErrors: true,
-      },
       providers: [
         AnalyticsTrackerService,
-        MockProvider(IamLuigiContextService, {
+        MockProvider(PmLuigiContextService, {
           contextObservable(): Observable<IContextMessage> {
             return testLuigiContext;
           },
         }),
       ],
-      imports: [BrowserDynamicTestingModule],
     }).compileComponents();
-    analyticsTrackingService = TestBed.inject(AnalyticsTrackerService);
-    ctxSrv = TestBed.inject(IamLuigiContextService);
+
+    service = TestBed.inject(AnalyticsTrackerService);
+    ctxSrv = TestBed.inject(PmLuigiContextService);
   });
 
   afterEach(() => {
-    tearDown();
+    const script = document.querySelector('script');
+    if (script) {
+      script.remove();
+    }
   });
 
-  it('test component should not have a script by default', () => {
-    const script = getScript();
-    expect(script).toBeNull();
-  });
-
-  it.each([
-    {
-      analyticsTrackerConfig: {},
-    },
-    {
-      analyticsTrackerConfig: undefined,
-    },
-  ])(
-    'test component should  not have script if luigi context does not have correct analytics tracker config',
-    (context) => {
-      const testLuigiContext = new BehaviorSubject<IContextMessage>({
-        contextType: 0,
-        context: mock<NodeContext>({ context }),
-      });
-      ctxSrv.contextObservable = () => testLuigiContext;
-
-      analyticsTrackingService.injectScript().catch((e) => {
-        throw new Error(e);
-      });
-
-      expect(getScript()).toBeNull();
-    },
-  );
-
-  it('test component should have script after analytics tracker injection', async () => {
-    const testLuigiContext = new BehaviorSubject<IContextMessage>({
-      contextType: 0,
-      context: mock<NodeContext>({
-        tenantId: 'tenantId',
-        analyticsTrackerConfig: {
-          siteUrl: 'site-url',
-          tenantIds: ['tenantId'],
-        },
-        serviceProviderConfig: { matomoContainerId: 'matomo-container-id' },
-        userid: 'user-id',
-      }),
+  describe('digestMessage', () => {
+    it('should return a hex string of length 64 for a given message', async () => {
+      const result = await service.digestMessage('hello');
+      expect(result).toMatch(/^[0-9a-f]{64}$/);
     });
-    ctxSrv.contextObservable = () => testLuigiContext;
-    await analyticsTrackingService.injectScript();
 
-    const script = getScript();
+    it('should return consistent hash for the same input', async () => {
+      const result1 = await service.digestMessage('test-user');
+      const result2 = await service.digestMessage('test-user');
+      expect(result1).toBe(result2);
+    });
 
-    expect(script).not.toBeNull();
+    it('should return different hashes for different inputs', async () => {
+      const result1 = await service.digestMessage('user-a');
+      const result2 = await service.digestMessage('user-b');
+      expect(result1).not.toBe(result2);
+    });
+  });
+
+  describe('injectScript', () => {
+    it('should not inject a script when analyticsTrackerConfig is missing', async () => {
+      ctxSrv.contextObservable = () =>
+        new BehaviorSubject<IContextMessage>(
+          makeContextMessage({ analyticsTrackerConfig: undefined }),
+        );
+      await service.injectScript(true);
+      expect(document.querySelector('script')).toBeNull();
+    });
+
+    it('should not inject a script when matomoContainerId is missing from serviceProviderConfig', async () => {
+      ctxSrv.contextObservable = () =>
+        new BehaviorSubject<IContextMessage>(
+          makeContextMessage({
+            serviceProviderConfig: {},
+            analyticsTrackerConfig: { siteUrl: 'https://matomo.example.com/' },
+          }),
+        );
+      await service.injectScript(false);
+      expect(document.querySelector('script')).toBeNull();
+    });
+
+    it('should inject a script when full config is provided (useMatomoId=false)', async () => {
+      ctxSrv.contextObservable = () =>
+        new BehaviorSubject<IContextMessage>(
+          makeContextMessage({
+            tenantId: 'tenantId',
+            analyticsTrackerConfig: {
+              siteUrl: 'https://matomo.example.com/',
+              matomoContainerId: 'analytics-container-id',
+            },
+            serviceProviderConfig: { matomoContainerId: 'svc-container-id' },
+            userId: 'user-id',
+          }),
+        );
+
+      await service.injectScript(false);
+
+      const script = document.querySelector('script');
+      expect(script).not.toBeNull();
+      expect(script!.text).toContain('svc-container-id');
+      expect(script!.text).toContain('https://matomo.example.com/');
+    });
+
+    it('should use analyticsTrackerConfig matomoContainerId when useMatomoId=true', async () => {
+      ctxSrv.contextObservable = () =>
+        new BehaviorSubject<IContextMessage>(
+          makeContextMessage({
+            analyticsTrackerConfig: {
+              siteUrl: 'https://matomo.example.com/',
+              matomoContainerId: 'analytics-container-id',
+            },
+            serviceProviderConfig: { matomoContainerId: 'svc-container-id' },
+            userId: 'user-id',
+          }),
+        );
+
+      await service.injectScript(true);
+
+      const script = document.querySelector('script');
+      expect(script).not.toBeNull();
+      expect(script!.text).toContain('analytics-container-id');
+    });
   });
 });
-
-function getScript(): HTMLScriptElement {
-  return document.querySelector('script')!;
-}
-
-function tearDown(): void {
-  const script = getScript();
-  if (script) {
-    script.remove();
-  }
-}

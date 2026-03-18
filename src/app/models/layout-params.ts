@@ -1,4 +1,4 @@
-import { FlexibleColumnLayout } from '@fundamental-ngx/core/flexible-column-layout/constants';
+import { FlexibleColumnLayout } from '@fundamental-ngx/core/flexible-column-layout';
 
 export interface LayoutParams {
   providerName?: string;

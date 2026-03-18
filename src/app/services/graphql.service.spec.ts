@@ -1,568 +1,267 @@
 import { GraphqlService } from './graphql.service';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import {
-  AccountsApolloClientService,
-  ExtensionApolloClientService,
-} from '@dxp/ngx-core/apollo';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import {
-  Account,
-  InstallProviderInput,
-  NodeContext,
-  ProviderMetadata,
-  ProviderMetadataFilter,
-  ScopeType,
-  UpdateProviderInput,
-} from 'models/index';
+import { NodeContext, MarketplaceEntry, ProviderMetadataFilter } from 'models/index';
 import { of } from 'rxjs';
 import { luigiContextSelector } from 'services/luigi/state';
-import { selectScopeInfo } from 'state/luigi.selectors';
+import { ApolloFactory } from 'services/apollo-factory';
+import { LuigiClient } from 'services/luigi';
+import { type Mock } from 'vitest';
+import { mock } from 'vitest-mock-extended';
+import { MockProvider } from 'ng-mocks';
 
-const mockExtensionClass: ProviderMetadata = {
-  name: 'test-extension',
-  displayName: 'Test Extension',
-  scope: {
-    type: ScopeType.PROJECT,
-  },
-  configurationMetadata: '',
-  instance: null,
-  isChangingInstallations: false,
-};
-
-const mockInstalledExtension = {
-  id: 'ext-id-123',
-  name: 'installed-ext-name',
-};
-
-const mockAccount: Account = {
-  id: 'acc-123',
-  name: 'mockAccountName',
-  displayName: 'Mock Account Display Name',
-  type: {
-    id: 'type-id',
-    defaultAccount: {
-      id: 'default-acc-id',
-      displayName: 'Default Account Display Name',
-      name: '',
-      type: {
-        id: '',
-        displayName: '',
-        type: {
-          Name: '',
-        },
+const mockMarketplaceEntry: MarketplaceEntry = {
+  metadata: { name: 'test-provider' },
+  spec: {
+    installed: false,
+    apiExport: {
+      metadata: JSON.stringify({
+        annotations: { 'kcp.io/path': '/workspaces/test' },
+        name: 'test-api-export',
+      }),
+      spec: {
+        permissionClaims: [
+          {
+            all: false,
+            group: 'example.io',
+            identityHash: 'abc123',
+            resource: 'configs',
+            verbs: ['get'],
+          },
+        ],
       },
-      ref: '',
     },
-    displayName: 'Account Type Display Name',
-    description: 'Account Type Description',
-    image: 'image-url',
-    type: { Name: 'SomeType' },
+    providerMetadata: {
+      spec: {
+        displayName: 'Test Provider',
+        description: 'A test provider',
+      },
+    },
   },
-  subType: 'subType1',
-  link: 'link-url',
-  ref: '',
+};
+
+const mockLuigiContext: NodeContext = {
+  token: 'mock-token',
+  accountId: 'acc-1',
+  userId: 'user-1',
+  entityType: 'project',
+  portalBaseUrl: 'https://portal.example.com',
+  portalContext: {} as any,
+  serviceProviderConfig: {},
+  entityName: 'my-project',
+  entityId: 'proj-123',
+  entity: {},
+  analyticsTrackerConfig: {},
+  entityContext: {},
+  parentNavigationContexts: [],
+  entityPath: '',
+  accountPath: '',
 };
 
 describe('GraphqlService', () => {
   let service: GraphqlService;
   let mockStore: MockStore;
-
-  let mockApolloQuery: jest.Mock;
-  let mockApolloMutate: jest.Mock;
-  let mockAccountsApolloQuery: jest.Mock;
-  let mockAccountsApolloMutate: jest.Mock;
-
-  const mockLuigiContext: NodeContext = {
-    tenantid: 'mockTenantId',
-    projectId: 'mockProjectId',
-    teamId: 'mockTeamId',
-    token: '',
-    userid: '',
-    frameContext: undefined as unknown as NodeContext['frameContext'],
-    serviceProviderConfig: {} as Record<string, string>,
-    serviceProvider: undefined,
-    entityContext: {},
-    parentNavigationContexts: [],
-  } as unknown as NodeContext;
-
-  const mockScopeInfo = {
-    scopeId: 'mockProjectId',
-    scopeType: ScopeType.PROJECT,
-  };
+  let mockApolloQuery: Mock;
+  let mockApolloMutate: Mock;
+  let mockWsApolloMutate: Mock;
+  let mockSendCustomMessage: Mock;
 
   beforeEach(async () => {
-    mockApolloQuery = jest.fn();
-    mockApolloMutate = jest.fn();
-    mockAccountsApolloQuery = jest.fn();
-    mockAccountsApolloMutate = jest.fn();
+    mockApolloQuery = vi.fn();
+    mockApolloMutate = vi.fn();
+    mockWsApolloMutate = vi.fn();
+    mockSendCustomMessage = vi.fn();
 
     await TestBed.configureTestingModule({
       providers: [
-        provideMockStore({}),
         GraphqlService,
-        {
-          provide: ExtensionApolloClientService,
-          useValue: {
-            apollo: jest.fn(() =>
-              of({
-                query: mockApolloQuery,
-                mutate: mockApolloMutate,
-              }),
-            ),
-          },
-        },
-        {
-          provide: AccountsApolloClientService,
-          useValue: {
-            apollo: jest.fn(() =>
-              of({
-                query: mockAccountsApolloQuery,
-                mutate: mockAccountsApolloMutate,
-              }),
-            ),
-          },
-        },
+        provideMockStore({}),
+        MockProvider(ApolloFactory, {
+          apollo: vi.fn().mockReturnValue({
+            query: mockApolloQuery,
+          }),
+          wsapollo: vi.fn().mockReturnValue({
+            mutate: mockWsApolloMutate,
+          }),
+        }),
+        MockProvider(LuigiClient, {
+          sendCustomMessage: mockSendCustomMessage,
+          linkManager: vi.fn().mockReturnValue({}),
+        }),
       ],
     }).compileComponents();
 
     mockStore = TestBed.inject(MockStore);
     service = TestBed.inject(GraphqlService);
-
     mockStore.overrideSelector(luigiContextSelector, mockLuigiContext);
-    mockStore.overrideSelector(selectScopeInfo, mockScopeInfo);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('getMarketplaceEntries', () => {
-    it('should query for an extension class for a given scope', fakeAsync(() => {
-      mockApolloQuery.mockReturnValue(
-        of({ data: { getExtensionClassForScope: mockExtensionClass } }),
-      );
-
-      const scope = ScopeType.PROJECT;
-      const providerName = 'myExtension';
-      const extFilter = { excludeHiddenExtensions: true };
-
-      let result: ProviderMetadata | undefined;
-      service
-        .getMarketplaceEntries(scope, providerName, extFilter)
-        .subscribe((res) => {
-          result = res;
-        });
-
-      tick();
-
-      expect(result).toEqual(mockExtensionClass);
-      expect(mockApolloQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            tenantId: mockLuigiContext.tenantid,
-            type: scope,
-            context:
-              GraphqlService['createGraphqlContextObject'](mockLuigiContext),
-            providerName,
-            filter: extFilter,
-          },
-          fetchPolicy: 'no-cache',
-        }),
-      );
-    }));
-  });
-
   describe('createExtFilter', () => {
-    it('should return a filter with excludeHiddenExtensions: true when no installableIn is provided', () => {
+    it('should return filter with only excludeHiddenExtensions when no installableIn provided', () => {
       const filter = service.createExtFilter();
       expect(filter).toEqual({ excludeHiddenExtensions: true });
     });
 
-    it('should return a filter with installableIn and excludeHiddenExtensions: true when installableIn is provided', () => {
+    it('should include installableIn when provided', () => {
       const installableIn = ['scope1', 'scope2'];
       const filter = service.createExtFilter(installableIn);
-      expect(filter).toEqual({
-        installableIn,
-        excludeHiddenExtensions: true,
-      });
+      expect(filter).toEqual({ installableIn, excludeHiddenExtensions: true });
     });
   });
 
-  describe('getExtensionClassesForScopesQuery', () => {
-    it('should query for extension classes for given scopes', fakeAsync(() => {
-      const mockExtensionClasses: ProviderMetadata[] = [
-        mockExtensionClass,
-        { ...mockExtensionClass, name: 'another-ext' },
-      ];
+  describe('getMarketplaceEntries', () => {
+    it('should query apollo with default filter when no arguments provided', fakeAsync(() => {
+      const entries = [mockMarketplaceEntry];
       mockApolloQuery.mockReturnValue(
-        of({ data: { getExtensionClassesForScopes: mockExtensionClasses } }),
+        of({
+          data: {
+            marketplace_platform_mesh_io: {
+              v1alpha1: {
+                MarketplaceEntries: { items: entries },
+              },
+            },
+          },
+        }),
       );
 
-      const scopes = [ScopeType.PROJECT, ScopeType.TEAM];
-      const installableIn = ['ProjectA'];
-      const extFilter = service.createExtFilter(installableIn);
-
-      let result: ProviderMetadata[] | undefined;
-      service.getMarketplaceEntries(scopes, installableIn).subscribe((res) => {
-        result = res;
-      });
-
+      let result: MarketplaceEntry[] | undefined;
+      service.getMarketplaceEntries().subscribe((res) => (result = res));
+      mockStore.refreshState();
       tick();
 
-      expect(result).toEqual(mockExtensionClasses);
+      expect(result).toEqual(entries);
       expect(mockApolloQuery).toHaveBeenCalledWith(
         expect.objectContaining({
-          variables: expect.objectContaining({
-            tenantId: mockLuigiContext.tenantid,
-            types: scopes,
-            context:
-              GraphqlService['createGraphqlContextObject'](mockLuigiContext),
-            filter: extFilter,
-          }),
           fetchPolicy: 'no-cache',
+          variables: { filter: { excludeHiddenExtensions: true } },
         }),
       );
     }));
 
-    it('should use provided extFilter if available', fakeAsync(() => {
-      const mockExtensionClasses: ProviderMetadata[] = [mockExtensionClass];
+    it('should use provided extFilter when given', fakeAsync(() => {
+      const customFilter: ProviderMetadataFilter = {
+        installableIn: ['projectA'],
+        excludeHiddenExtensions: true,
+      };
+      const entries: MarketplaceEntry[] = [];
       mockApolloQuery.mockReturnValue(
-        of({ data: { getExtensionClassesForScopes: mockExtensionClasses } }),
+        of({
+          data: {
+            marketplace_platform_mesh_io: {
+              v1alpha1: {
+                MarketplaceEntries: { items: entries },
+              },
+            },
+          },
+        }),
       );
 
-      const scopes = [ScopeType.PROJECT];
-      const customFilter: ProviderMetadataFilter = {
-        installableIn: ['Project'],
-      };
-
-      let result: ProviderMetadata[] | undefined;
-      service
-        .getMarketplaceEntries(scopes, undefined, customFilter)
-        .subscribe((res) => {
-          result = res;
-        });
-
+      let result: MarketplaceEntry[] | undefined;
+      service.getMarketplaceEntries(undefined, customFilter).subscribe((res) => (result = res));
+      mockStore.refreshState();
       tick();
 
-      expect(result).toEqual(mockExtensionClasses);
       expect(mockApolloQuery).toHaveBeenCalledWith(
         expect.objectContaining({
-          variables: {
-            tenantId: mockLuigiContext.tenantid,
-            types: scopes,
-            context:
-              GraphqlService['createGraphqlContextObject'](mockLuigiContext),
-            filter: customFilter,
-          },
-          fetchPolicy: 'no-cache',
+          variables: { filter: customFilter },
         }),
       );
     }));
   });
 
-  describe('installExtension', () => {
-    it('should call installExtension mutation with correct variables', fakeAsync(() => {
-      mockApolloMutate.mockReturnValue(
-        of({ data: { installExtension: mockInstalledExtension } }),
+  describe('getMarketplaceEntry', () => {
+    it('should return the matching marketplace entry by name', fakeAsync(() => {
+      const entries = [mockMarketplaceEntry, { ...mockMarketplaceEntry, metadata: { name: 'other-provider' } }];
+      mockApolloQuery.mockReturnValue(
+        of({
+          data: {
+            marketplace_platform_mesh_io: {
+              v1alpha1: {
+                MarketplaceEntries: { items: entries },
+              },
+            },
+          },
+        }),
       );
 
-      const installInput: InstallProviderInput = {
-        providerInput: {
-          id: 'my-new-ext',
-          scope: ScopeType.PROJECT,
-        },
-        displayName: 'my-new-ext-instance',
-        installationData: { someKey: 'someValue' },
-      };
-
-      let result: unknown;
-      service.installProviderInstance(installInput).subscribe((res) => {
-        result = res;
-      });
-
+      let result: MarketplaceEntry | undefined;
+      service.getMarketplaceEntry('test-provider').subscribe((res) => (result = res));
+      mockStore.refreshState();
       tick();
 
-      expect(mockApolloMutate).toHaveBeenCalledWith({
-        mutation: expect.anything(),
-        variables: {
-          tenantId: mockLuigiContext.tenantid,
-          scope: mockScopeInfo.scopeId,
-          entity: mockScopeInfo.scopeType.toLowerCase(),
-          input: installInput,
-        },
-      });
-      expect(result).toEqual({
-        data: { installExtension: mockInstalledExtension },
-      });
+      expect(result).toEqual(mockMarketplaceEntry);
+    }));
+
+    it('should return null when provider name is not found', fakeAsync(() => {
+      mockApolloQuery.mockReturnValue(
+        of({
+          data: {
+            marketplace_platform_mesh_io: {
+              v1alpha1: {
+                MarketplaceEntries: { items: [] },
+              },
+            },
+          },
+        }),
+      );
+
+      let result: MarketplaceEntry | undefined;
+      service.getMarketplaceEntry('nonexistent').subscribe((res) => (result = res));
+      mockStore.refreshState();
+      tick();
+
+      expect(result).toBeNull();
+    }));
+  });
+
+  describe('installProviderInstance', () => {
+    it('should mutate with correct variables and send custom message', fakeAsync(() => {
+      const linkManagerMock = {
+        goBack: vi.fn(),
+      };
+      const luigiClient = TestBed.inject(LuigiClient);
+      luigiClient.linkManager = vi.fn().mockReturnValue(linkManagerMock);
+
+      mockWsApolloMutate.mockReturnValue(of({ data: {} }));
+
+      let completed = false;
+      service.installProviderInstance(mockMarketplaceEntry).subscribe(() => (completed = true));
+      mockStore.refreshState();
+      tick();
+
+      expect(mockWsApolloMutate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          mutation: expect.anything(),
+          variables: expect.objectContaining({
+            name: 'test-provider',
+            apiExportName: 'test-api-export',
+            apiExportPath: '/workspaces/test',
+          }),
+        }),
+      );
+      expect(mockSendCustomMessage).toHaveBeenCalled();
     }));
   });
 
   describe('unInstallExtension', () => {
-    it('should call uninstallExtension mutation with correct variables', fakeAsync(() => {
-      mockApolloMutate.mockReturnValue(
-        of({ data: { uninstallExtension: true } }),
-      );
+    it('should mutate with correct name and send custom message', fakeAsync(() => {
+      mockWsApolloMutate.mockReturnValue(of({ data: {} }));
 
-      const extName = 'extension-to-uninstall';
-      let result: unknown;
-      service.unInstallExtension(extName).subscribe((res) => {
-        result = res;
-      });
-
+      let completed = false;
+      service.unInstallExtension('test-provider').subscribe(() => (completed = true));
+      mockStore.refreshState();
       tick();
 
-      expect(mockApolloMutate).toHaveBeenCalledWith({
-        mutation: expect.anything(),
-        variables: {
-          tenantId: mockLuigiContext.tenantid,
-          scope: mockScopeInfo.scopeId,
-          entity: mockScopeInfo.scopeType.toLowerCase(),
-          name: extName,
-        },
-      });
-      expect(result).toEqual({ data: { uninstallExtension: true } });
-    }));
-  });
-
-  describe('updateExtensionInstance', () => {
-    it('should call updateExtension mutation with correct variables', fakeAsync(() => {
-      mockApolloMutate.mockReturnValue(of({ data: { updateExtension: true } }));
-
-      const updateInput: UpdateProviderInput = {
-        providerInput: {
-          id: 'my-new-ext',
-          scope: ScopeType.PROJECT,
-        },
-        instanceId: 'instance-123',
-        installationData: { paths: ['configuration'] },
-      };
-
-      let result: unknown;
-      service.updateProviderInstance(updateInput).subscribe((res) => {
-        result = res;
-      });
-
-      tick();
-
-      expect(mockApolloMutate).toHaveBeenCalledWith({
-        mutation: expect.anything(),
-        variables: {
-          tenantId: mockLuigiContext.tenantid,
-          scope: mockScopeInfo.scopeId,
-          entity: mockScopeInfo.scopeType.toLowerCase(),
-          input: updateInput,
-        },
-      });
-      expect(result).toEqual({ data: { updateExtension: true } });
-    }));
-
-    it('should throw error if input is undefined', fakeAsync(() => {
-      let error: Error | undefined;
-      service
-        .updateProviderInstance(undefined as unknown as UpdateProviderInput)
-        .subscribe({
-          error: (err) => (error = err),
-        });
-
-      tick();
-
-      expect(error?.message).toBe('scopeInfo is undefined');
-      expect(mockApolloMutate).not.toHaveBeenCalled();
-    }));
-  });
-
-  describe('getAccounts', () => {
-    it('should query for accounts with correct variables', fakeAsync(() => {
-      mockAccountsApolloQuery.mockReturnValue(
-        of({ data: { accountConnectionsForScope: [mockAccount] } }),
-      );
-
-      const accountConnectionTypes = ['TypeA', 'TypeB'];
-      let result: Account[] | undefined;
-      service.getAccounts(accountConnectionTypes).subscribe((res) => {
-        result = res;
-      });
-
-      tick();
-
-      expect(result).toEqual([mockAccount]);
-      expect(mockAccountsApolloQuery).toHaveBeenCalledWith(
+      expect(mockWsApolloMutate).toHaveBeenCalledWith(
         expect.objectContaining({
-          variables: expect.objectContaining({
-            tenantId: mockLuigiContext.tenantid,
-            scope: mockScopeInfo.scopeId,
-            entity: mockScopeInfo.scopeType.toLowerCase(),
-            accountConnectionTypes,
-          }),
-          fetchPolicy: 'no-cache',
+          variables: expect.objectContaining({ name: 'test-provider' }),
         }),
       );
+      expect(mockSendCustomMessage).toHaveBeenCalled();
     }));
-
-    it('should handle getScope returning undefined (e.g., for other scopeType different from team and project)', fakeAsync(() => {
-      mockAccountsApolloQuery.mockReturnValue(
-        of({ data: { accountConnectionsForScope: [] } }),
-      );
-      mockStore.overrideSelector(selectScopeInfo, {
-        scopeId: 'unknownId',
-        scopeType: ScopeType.GLOBAL,
-      });
-
-      const accountConnectionTypes = ['TypeA'];
-      let result: Account[] | undefined;
-      service.getAccounts(accountConnectionTypes).subscribe((res) => {
-        result = res;
-      });
-
-      tick();
-
-      expect(result).toEqual([]);
-      expect(mockAccountsApolloQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          variables: {
-            tenantId: mockLuigiContext.tenantid,
-            scope: undefined,
-            entity: ScopeType.GLOBAL.toLowerCase(),
-            accountConnectionTypes,
-          },
-          fetchPolicy: 'no-cache',
-        }),
-      );
-    }));
-  });
-
-  describe('deleteAccountConnection', () => {
-    it('should call deleteAccountConnectionForScope mutation with correct variables', fakeAsync(() => {
-      mockAccountsApolloMutate.mockReturnValue(
-        of({ data: { deleteAccountConnectionForScope: true } }),
-      );
-
-      const accountId = 'acc-to-delete';
-      let result: boolean | undefined;
-      service.deleteAccountConnection(accountId).subscribe((res) => {
-        result = res;
-      });
-
-      tick();
-
-      expect(result).toBe(true);
-      expect(mockAccountsApolloMutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          mutation: expect.anything(),
-          variables: expect.objectContaining({
-            tenantId: mockLuigiContext.tenantid,
-            scope: mockScopeInfo.scopeId,
-            entity: mockScopeInfo.scopeType.toLowerCase(),
-            id: accountId,
-          }),
-        }),
-      );
-    }));
-
-    it('should return false if data is null or undefined', fakeAsync(() => {
-      mockAccountsApolloMutate.mockReturnValue(of({ data: null }));
-      const accountId = 'acc-to-delete';
-      let result: boolean | undefined;
-      service.deleteAccountConnection(accountId).subscribe((res) => {
-        result = res;
-      });
-      tick();
-      expect(result).toBe(false);
-
-      mockAccountsApolloMutate.mockReturnValue(of({ data: undefined }));
-      service.deleteAccountConnection(accountId).subscribe((res) => {
-        result = res;
-      });
-      tick();
-      expect(result).toBe(false);
-    }));
-  });
-
-  describe('setDefaultAccount', () => {
-    it('should call setDefaultAccount mutation with correct variables', fakeAsync(() => {
-      mockAccountsApolloMutate.mockReturnValue(
-        of({ data: { setDefaultAccount: true } }),
-      );
-
-      const accountName = 'newDefaultAccount';
-      let result: boolean | undefined;
-      service.setDefaultAccount(accountName).subscribe((res) => {
-        result = res;
-      });
-
-      tick();
-
-      expect(result).toBe(true);
-      expect(mockAccountsApolloMutate).toHaveBeenCalledWith({
-        mutation: expect.anything(),
-        variables: {
-          tenantId: mockLuigiContext.tenantid,
-          scope: mockScopeInfo.scopeId,
-          entity: mockScopeInfo.scopeType.toLowerCase(),
-          accountName,
-        },
-      });
-    }));
-
-    it('should return false if data is null or undefined', fakeAsync(() => {
-      mockAccountsApolloMutate.mockReturnValue(of({ data: null }));
-      const accountName = 'newDefaultAccount';
-      let result: boolean | undefined;
-      service.setDefaultAccount(accountName).subscribe((res) => {
-        result = res;
-      });
-      tick();
-      expect(result).toBe(false);
-
-      mockAccountsApolloMutate.mockReturnValue(of({ data: undefined }));
-      service.setDefaultAccount(accountName).subscribe((res) => {
-        result = res;
-      });
-      tick();
-      expect(result).toBe(false);
-    }));
-  });
-
-  describe('createGraphqlContextObject', () => {
-    it('should create context object with tenant, project, and team', () => {
-      const contextObject =
-        GraphqlService['createGraphqlContextObject'](mockLuigiContext);
-      expect(contextObject).toEqual({
-        entries: [
-          { key: 'tenant', value: mockLuigiContext.tenantid },
-          { key: 'project', value: mockLuigiContext.projectId },
-          { key: 'team', value: mockLuigiContext.teamId },
-        ],
-      });
-    });
-
-    it('should create context object with only tenant if project and team are missing', () => {
-      const contextWithoutProjectAndTeam: NodeContext = {
-        ...mockLuigiContext,
-        projectId: undefined,
-        teamId: undefined,
-      };
-      const contextObject = GraphqlService['createGraphqlContextObject'](
-        contextWithoutProjectAndTeam,
-      );
-      expect(contextObject).toEqual({
-        entries: [{ key: 'tenant', value: mockLuigiContext.tenantid }],
-      });
-    });
-
-    it('should create context object with tenant and project if team is missing', () => {
-      const contextWithoutTeam: NodeContext = {
-        ...mockLuigiContext,
-        teamId: undefined,
-      };
-      const contextObject =
-        GraphqlService['createGraphqlContextObject'](contextWithoutTeam);
-      expect(contextObject).toEqual({
-        entries: [
-          { key: 'tenant', value: mockLuigiContext.tenantid },
-          { key: 'project', value: mockLuigiContext.projectId },
-        ],
-      });
-    });
   });
 });

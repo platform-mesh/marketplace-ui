@@ -1,5 +1,6 @@
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
+import { provideZoneChangeDetection } from '@angular/core';
 // import { isDevMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 
@@ -11,6 +12,9 @@ import { bootstrapApplication } from '@angular/platform-browser';
 //   });
 // }
 
-bootstrapApplication(AppComponent, appConfig).catch((err) => {
+bootstrapApplication(AppComponent, {
+  ...appConfig,
+  providers: [provideZoneChangeDetection(), ...appConfig.providers],
+}).catch((err) => {
   console.error(err);
 });

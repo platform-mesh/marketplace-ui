@@ -1,4 +1,5 @@
 import { Injectable, NgZone, inject } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import {
   type ApolloClientOptions,
   ApolloLink,
@@ -60,14 +61,14 @@ export class ApolloFactory {
 
   private createWSApolloOptions(
     nodeContext: NodeContext,
-  ): ApolloClientOptions<any> {
+  ): ApolloClientOptions {
     const contextLink = setContext(() => {
       return {
         uri: () => nodeContext.portalContext.crdGatewayApiUrl,
-        headers: {
+        headers: new HttpHeaders({
           Authorization: `Bearer ${nodeContext.token}`,
           Accept: 'charset=utf-8',
-        },
+        }),
       };
     });
 
@@ -100,14 +101,14 @@ export class ApolloFactory {
 
   private createApolloOptions(
     nodeContext: NodeContext,
-  ): ApolloClientOptions<any> {
+  ): ApolloClientOptions {
     const contextLink = setContext(() => {
       return {
         uri: () => this.getUrl(nodeContext),
-        headers: {
+        headers: new HttpHeaders({
           Authorization: `Bearer ${nodeContext.token}`,
           Accept: 'charset=utf-8',
-        },
+        }),
       };
     });
 

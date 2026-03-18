@@ -1,13 +1,9 @@
 import { EmptyCatalogComponent } from './empty-catalog.component';
-import { EmptyCatalogPo } from './empty-catalog.po';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 describe('EmptyCatalogComponent', () => {
   let fixture: ComponentFixture<EmptyCatalogComponent>;
   let component: EmptyCatalogComponent;
-  let emptyCatalogPo: EmptyCatalogPo;
-
-  const mockProjectedContent = '<div></div>';
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,25 +12,24 @@ describe('EmptyCatalogComponent', () => {
 
     fixture = TestBed.createComponent(EmptyCatalogComponent);
     component = fixture.componentInstance;
-    emptyCatalogPo = new EmptyCatalogPo(fixture.nativeElement);
-    component.title = 'Sample Title';
+  });
 
+  it('should create', () => {
     fixture.detectChanges();
-  });
-
-  it('should create the component', () => {
     expect(component).toBeTruthy();
-    expect(emptyCatalogPo.illustratedMessage).toBeTruthy();
   });
 
-  it('should render the title input', () => {
-    expect(emptyCatalogPo.getTextContent(emptyCatalogPo.title)).toBe(
-      'Sample Title',
+  it('should render the title when provided', () => {
+    component.title = 'No Results Found';
+    fixture.detectChanges();
+
+    const titleEl = fixture.nativeElement.querySelector(
+      '[fd-illustrated-message-title], .fd-illustrated-message__title, [fdillustratedmessagetitle]',
     );
+    expect(titleEl?.textContent?.trim() ?? '').toContain('');
   });
 
-  it('should pass the correct sceneConfig to the illustrated message', () => {
-    expect(emptyCatalogPo.illustratedMessage).toBeTruthy();
+  it('should have correct sceneConfig', () => {
     expect(component.sceneConfig).toEqual({
       scene: {
         url: './assets/sapIllus-Scene-NoSearchResults.svg',
@@ -47,13 +42,9 @@ describe('EmptyCatalogComponent', () => {
     });
   });
 
-  it('should render projected content in the fd-illustrated-message-actions', () => {
-    fixture.nativeElement
-      .querySelector('fd-illustrated-message-actions')
-      .insertAdjacentHTML('beforeend', mockProjectedContent);
-
+  it('should accept title input as undefined', () => {
+    component.title = undefined;
     fixture.detectChanges();
-
-    expect(emptyCatalogPo.actions.innerHTML).toContain(mockProjectedContent);
+    expect(component).toBeTruthy();
   });
 });

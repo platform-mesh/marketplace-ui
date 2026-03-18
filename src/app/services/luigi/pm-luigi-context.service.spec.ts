@@ -1,93 +1,98 @@
 import { ENV, Environment, NodeContext } from '../../models';
-import { TestUtils } from '../../test/test-utils';
 import {
   IContextMessage,
   PmLuigiContextService,
 } from './pm-luigi-context.service';
-import { TestBed, fakeAsync } from '@angular/core/testing';
-import { Context } from '@luigi-project/client';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import {
   ILuigiContextTypes,
   LuigiContextServiceImpl,
 } from '@luigi-project/client-support-angular';
-import { mock } from 'jest-mock-extended';
+import { mock } from 'vitest-mock-extended';
 import { MockProvider } from 'ng-mocks';
 import { ReplaySubject } from 'rxjs';
 
-describe('PmLuigiContextService', () => {
-  let iamLuigiContextService: PmLuigiContextService;
-  let luigiContextService: LuigiContextServiceImpl;
-  const contextMessage: IContextMessage = {
-    contextType: ILuigiContextTypes.UPDATE,
-    context: {
-      foo: 'bar',
-      baz: {
-        qux: 'quux',
-        plugh: 'xyzzx',
-      },
-    } as unknown as NodeContext,
-  };
+const contextMessage: IContextMessage = {
+  contextType: ILuigiContextTypes.UPDATE,
+  context: {
+    foo: 'bar',
+    baz: {
+      qux: 'quux',
+      plugh: 'xyzzx',
+    },
+  } as unknown as NodeContext,
+};
 
-  describe('Context Service without ENV set', () => {
+describe('PmLuigiContextService', () => {
+  describe('without ENV override', () => {
+    let service: PmLuigiContextService;
+    let luigiContextServiceImpl: LuigiContextServiceImpl;
+
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [MockProvider(LuigiContextServiceImpl)],
       });
 
-      iamLuigiContextService = TestBed.inject(PmLuigiContextService);
-      luigiContextService = TestBed.inject(LuigiContextServiceImpl);
+      service = TestBed.inject(PmLuigiContextService);
+      luigiContextServiceImpl = TestBed.inject(LuigiContextServiceImpl);
     });
 
-    it('should set the context', () => {
+    it('should be created', () => {
+      expect(service).toBeTruthy();
+    });
+
+    it('should call addListener on setContext', () => {
       const context = mock<NodeContext>();
-      luigiContextService.addListener = jest.fn();
+      luigiContextServiceImpl.addListener = vi.fn();
 
-      iamLuigiContextService.setContext(context);
+      service.setContext(context);
 
-      expect(luigiContextService.addListener).toHaveBeenCalledWith(
+      expect(luigiContextServiceImpl.addListener).toHaveBeenCalledWith(
         ILuigiContextTypes.UPDATE,
         context,
       );
     });
 
-    it('should provide a context observable', fakeAsync(() => {
+    it('should return context observable from underlying service unchanged', fakeAsync(() => {
       const observable = new ReplaySubject<IContextMessage>();
-      luigiContextService.contextObservable = jest
+      luigiContextServiceImpl.contextObservable = vi
         .fn()
         .mockReturnValue(observable);
       observable.next(contextMessage);
 
-      const resultContext = TestUtils.getLastValue(
-        iamLuigiContextService.contextObservable(),
-      );
+      let emitted: IContextMessage | undefined;
+      service.contextObservable().subscribe((val) => (emitted = val));
+      tick();
 
-      expect(resultContext).toEqual(contextMessage);
+      expect(emitted).toEqual(contextMessage);
     }));
 
-    it('should provide a context promise', fakeAsync(() => {
-      luigiContextService.getContextAsync = jest
+    it('should return context promise from underlying service unchanged', async () => {
+      luigiContextServiceImpl.getContextAsync = vi
         .fn()
-        .mockReturnValue(Promise.resolve(contextMessage.context));
+        .mockResolvedValue(contextMessage.context);
 
-      const resultContext = TestUtils.getLastValue(
-        iamLuigiContextService.getContextAsync(),
-      );
+      const result = await service.getContextAsync();
 
-      expect(resultContext).toEqual(contextMessage.context);
-    }));
+      expect(result).toEqual(contextMessage.context);
+    });
 
-    it('should provide a context synchronously', () => {
-      luigiContextService.getContext = jest
+    it('should return context synchronously from underlying service unchanged', () => {
+      luigiContextServiceImpl.getContext = vi
         .fn()
         .mockReturnValue(contextMessage.context);
-      const resultContext = iamLuigiContextService.getContext();
 
-      expect(resultContext).toEqual(contextMessage.context);
+      const result = service.getContext();
+
+      expect(result).toEqual(contextMessage.context);
     });
   });
 
-  describe('Context Service with ENV Luigi Context Override', () => {
-    const luigiContextOverwriteEnv: Environment = {
+  describe('with ENV luigiContextOverwrite', () => {
+    let service: PmLuigiContextService;
+    let luigiContextServiceImpl: LuigiContextServiceImpl;
+
+    const luigiContextOverwrite: Environment = {
       luigiContextOverwrite: {
         corge: 'grault',
         baz: {
@@ -96,7 +101,8 @@ describe('PmLuigiContextService', () => {
         },
       },
     };
-    const expectedContext: Context = {
+
+    const expectedMergedContext = {
       foo: 'bar',
       corge: 'grault',
       baz: {
@@ -110,51 +116,49 @@ describe('PmLuigiContextService', () => {
       TestBed.configureTestingModule({
         providers: [
           MockProvider(LuigiContextServiceImpl),
-          MockProvider(ENV, luigiContextOverwriteEnv),
+          { provide: ENV, useValue: luigiContextOverwrite },
         ],
       });
 
-      iamLuigiContextService = TestBed.inject(PmLuigiContextService);
-      luigiContextService = TestBed.inject(LuigiContextServiceImpl);
+      service = TestBed.inject(PmLuigiContextService);
+      luigiContextServiceImpl = TestBed.inject(LuigiContextServiceImpl);
     });
 
-    it('should provide a context observable merged with env', fakeAsync(() => {
+    it('should deep merge context observable with luigiContextOverwrite', fakeAsync(() => {
       const observable = new ReplaySubject<IContextMessage>();
-      luigiContextService.contextObservable = jest
+      luigiContextServiceImpl.contextObservable = vi
         .fn()
         .mockReturnValue(observable);
       observable.next(contextMessage);
 
-      const resultContext = TestUtils.getLastValue(
-        iamLuigiContextService.contextObservable(),
-      );
+      let emitted: IContextMessage | undefined;
+      service.contextObservable().subscribe((val) => (emitted = val));
+      tick();
 
-      expect(resultContext).toEqual({
-        ...contextMessage,
-        context: expectedContext,
+      expect(emitted).toEqual({
+        contextType: contextMessage.contextType,
+        context: expectedMergedContext,
       });
     }));
 
-    it('should provide a context promise merged with env', fakeAsync(() => {
-      luigiContextService.getContextAsync = jest
+    it('should deep merge context promise with luigiContextOverwrite', async () => {
+      luigiContextServiceImpl.getContextAsync = vi
         .fn()
-        .mockReturnValue(Promise.resolve(contextMessage.context));
+        .mockResolvedValue(contextMessage.context);
 
-      const resultContext = TestUtils.getLastValue(
-        iamLuigiContextService.getContextAsync(),
-      );
+      const result = await service.getContextAsync();
 
-      expect(resultContext).toEqual(expectedContext);
-    }));
+      expect(result).toEqual(expectedMergedContext);
+    });
 
-    it('should provide a context merged with env synchronously', () => {
-      luigiContextService.getContext = jest
+    it('should deep merge context synchronously with luigiContextOverwrite', () => {
+      luigiContextServiceImpl.getContext = vi
         .fn()
         .mockReturnValue(contextMessage.context);
 
-      const resultContext = iamLuigiContextService.getContext();
+      const result = service.getContext();
 
-      expect(resultContext).toEqual(expectedContext);
+      expect(result).toEqual(expectedMergedContext);
     });
   });
 });

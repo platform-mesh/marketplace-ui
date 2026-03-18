@@ -2,22 +2,23 @@ import { ProviderInstanceEffects } from './changing-provider-instance.effects';
 import {
   unInstallProviderInstance,
   uninstalledProviderInstanceSuccessfully,
-} from './changing-provider-instances.actions';
+} from './changing-provider-instance.actions';
 import { loadProviders } from './providers.actions';
-import { fakeAsync } from '@angular/core/testing';
-import { LuigiClient } from '@dxp/ngx-core/luigi';
-import { NotificationService } from '@dxp/ngx-core/notification';
-import { TestUtils } from '@dxp/ngx-core/test';
-import { LinkManager } from '@luigi-project/client';
-import { Actions } from '@ngrx/effects';
+import { TestBed, fakeAsync } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
-import { MockStore, createMockStore } from '@ngrx/store/testing';
-import { MockProxy, mock } from 'jest-mock-extended';
-import { ProviderMetadata } from 'models/index';
-import { of } from 'rxjs';
+import { MockProxy, mock } from 'vitest-mock-extended';
+import { LuigiGoBackAction } from 'models/luigi-go-back';
+import { of, Observable, Subject } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
+import { LuigiClient } from 'services/luigi';
+import { NotificationService } from 'services/notification.service';
+import { MockProvider } from 'ng-mocks';
+import { Actions } from '@ngrx/effects';
+import { createMockStore, MockStore } from '@ngrx/store/testing';
+import { TestUtils } from 'src/app/test/test-utils';
 
-describe('ProviderInstancesEffects', () => {
+describe('ProviderInstanceEffects', () => {
   let mockStore: MockStore;
   let graphqlService: MockProxy<GraphqlService>;
   let luigiClient: MockProxy<LuigiClient>;
@@ -25,7 +26,9 @@ describe('ProviderInstancesEffects', () => {
 
   beforeEach(() => {
     luigiClient = mock<LuigiClient>({
-      linkManager: jest.fn().mockReturnValue(mock<LinkManager>()),
+      linkManager: vi.fn().mockReturnValue({
+        goBack: vi.fn(),
+      }),
     });
     graphqlService = mock<GraphqlService>();
     mockStore = createMockStore();
@@ -45,51 +48,50 @@ describe('ProviderInstancesEffects', () => {
     );
   }
 
-  describe('unInstallExtensionInstance', () => {
-    it('should return uninstalledExtensionSuccessfully action', fakeAsync(() => {
-      const extensionInstanceName = 'extensionInstanceName';
-      const extension = mock<ProviderMetadata>();
-      const action = unInstallProviderInstance({
-        providerInstanceName: extensionInstanceName,
-        provider: extension,
-      });
+  describe('unInstallProviderInstance', () => {
+    it('should call unInstallExtension and emit uninstalledProviderInstanceSuccessfully', fakeAsync(() => {
+      const providerName = 'my-provider';
+      const action = unInstallProviderInstance({ providerName });
 
       graphqlService.unInstallExtension.mockReturnValue(of({}));
 
-      const expectedAction = uninstalledProviderInstanceSuccessfully({
-        provider: extension,
-      });
-
-      // when
       const effects = createEffects(action);
-      const emittedAction = TestUtils.getLastValue(
-        effects.unInstallProviderInstance,
-      );
+      const emittedAction = TestUtils.getLastValue(effects.unInstallProviderInstance);
 
-      expect(graphqlService.unInstallExtension).toHaveBeenCalledWith(
-        extensionInstanceName,
+      expect(graphqlService.unInstallExtension).toHaveBeenCalledWith(providerName);
+      expect(emittedAction).toEqual(
+        uninstalledProviderInstanceSuccessfully({ providerName }),
       );
-      expect(emittedAction).toEqual(expectedAction);
     }));
   });
 
   describe('uninstallCompleteSuccessfully', () => {
-    it('should open message toast for uninstalled extension', fakeAsync(() => {
-      const extension = mock<ProviderMetadata>();
-      const action = uninstalledProviderInstanceSuccessfully({
-        provider: extension,
-      });
+    it('should show success toast, go back, and dispatch loadProviders', fakeAsync(() => {
+      const providerName = 'my-provider';
+      const action = uninstalledProviderInstanceSuccessfully({ providerName });
 
-      const expectedAction = loadProviders();
-
-      // when
       const effects = createEffects(action);
-      const emittedAction = TestUtils.getLastValue(
-        effects.uninstallCompleteSuccessfully,
-      );
+      const emittedAction = TestUtils.getLastValue(effects.uninstallCompleteSuccessfully);
 
-      expect(emittedAction).toEqual(expectedAction);
+      expect(notificationService.openSuccessToast).toHaveBeenCalledWith(
+        'Provider Instance Uninstalled',
+      );
       expect(luigiClient.linkManager).toHaveBeenCalled();
+      expect(emittedAction).toEqual(loadProviders());
+    }));
+
+    it('should call goBack with PROVIDER_INSTANCE_UNINSTALLED action', fakeAsync(() => {
+      const providerName = 'my-provider';
+      const action = uninstalledProviderInstanceSuccessfully({ providerName });
+      const goBackMock = vi.fn();
+      luigiClient.linkManager.mockReturnValue({ goBack: goBackMock } as any);
+
+      const effects = createEffects(action);
+      TestUtils.getLastValue(effects.uninstallCompleteSuccessfully);
+
+      expect(goBackMock).toHaveBeenCalledWith({
+        action: LuigiGoBackAction.PROVIDER_INSTANCE_UNINSTALLED,
+      });
     }));
   });
 });

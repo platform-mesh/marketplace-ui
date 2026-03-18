@@ -1,68 +1,76 @@
 import { retrievedProviders } from './providers.actions';
-import { providersReducer } from './providers.reducer';
-import { ScopeType } from 'models/provider-metadata';
+import { initialState, providersReducer } from './providers.reducer';
+import { MarketplaceEntry } from 'models/provider-metadata';
 
-describe('providerMetadataReducer', () => {
-  it('should sort extension classes by display name', () => {
-    // given
-    const action = retrievedProviders({
-      providers: [
-        {
-          name: 'extensionClassName-1',
-          displayName: 'a',
-          instance: null,
-          scope: { type: ScopeType.PROJECT },
-          configurationMetadata: '',
-          isChangingInstallations: false,
-        },
-        {
-          name: 'extensionClassName-2',
-          displayName: 'b',
-          instance: null,
-          scope: { type: ScopeType.PROJECT },
-          configurationMetadata: '',
-          isChangingInstallations: false,
-        },
-        {
-          name: 'extensionClassName-3',
-          displayName: 'c',
-          instance: null,
-          scope: { type: ScopeType.PROJECT },
-          configurationMetadata: '',
-          isChangingInstallations: false,
-        },
-      ],
-    });
+const buildEntry = (name: string, displayName: string, installed = false): MarketplaceEntry => ({
+  metadata: { name },
+  spec: {
+    installed,
+    apiExport: {
+      metadata: '{}',
+      spec: { permissionClaims: [] },
+    },
+    providerMetadata: {
+      spec: {
+        displayName,
+        description: `${name} description`,
+      },
+    },
+  },
+});
 
-    // when
-    const newState = providersReducer([], action);
+describe('providersReducer', () => {
+  it('should return initial state (empty array) for unknown action', () => {
+    const state = providersReducer(undefined, { type: '@@UNKNOWN' } as any);
+    expect(state).toEqual([]);
+  });
 
-    // then
-    expect(newState).toEqual([
-      {
-        name: 'extensionClassName-1',
-        displayName: 'a',
-        instance: null,
-        scope: { type: ScopeType.PROJECT },
-        configurationMetadata: '',
-        isChangingInstallations: false,
-      },
-      {
-        name: 'extensionClassName-2',
-        displayName: 'b',
-        instance: null,
-        scope: { type: ScopeType.PROJECT },
-        configurationMetadata: '',
-        isChangingInstallations: false,
-      },
-      {
-        name: 'extensionClassName-3',
-        displayName: 'c',
-        instance: null,
-        scope: { type: ScopeType.PROJECT },
-        configurationMetadata: '',
-        isChangingInstallations: false,
-      },
+  it('should sort providers alphabetically by displayName when retrievedProviders is dispatched', () => {
+    const providers = [
+      buildEntry('provider-c', 'C Provider'),
+      buildEntry('provider-a', 'A Provider'),
+      buildEntry('provider-b', 'B Provider'),
+    ];
+
+    const state = providersReducer(initialState, retrievedProviders({ providers }));
+
+    expect(state.map((p) => p.spec.providerMetadata.spec.displayName)).toEqual([
+      'A Provider',
+      'B Provider',
+      'C Provider',
     ]);
+  });
+
+  it('should return sorted array even when providers are already in order', () => {
+    const providers = [
+      buildEntry('provider-a', 'Alpha'),
+      buildEntry('provider-b', 'Beta'),
+      buildEntry('provider-c', 'Gamma'),
+    ];
+
+    const state = providersReducer(initialState, retrievedProviders({ providers }));
+
+    expect(state.map((p) => p.spec.providerMetadata.spec.displayName)).toEqual([
+      'Alpha',
+      'Beta',
+      'Gamma',
+    ]);
+  });
+
+  it('should replace state with new sorted providers on each retrievedProviders action', () => {
+    const firstProviders = [buildEntry('prov-b', 'B'), buildEntry('prov-a', 'A')];
+    let state = providersReducer(initialState, retrievedProviders({ providers: firstProviders }));
+    expect(state).toHaveLength(2);
+    expect(state[0].metadata.name).toBe('prov-a');
+
+    const secondProviders = [buildEntry('only-one', 'Only One')];
+    state = providersReducer(state, retrievedProviders({ providers: secondProviders }));
+    expect(state).toHaveLength(1);
+    expect(state[0].metadata.name).toBe('only-one');
+  });
+
+  it('should return empty array when providers is empty', () => {
+    const state = providersReducer(initialState, retrievedProviders({ providers: [] }));
+    expect(state).toEqual([]);
   });
 });

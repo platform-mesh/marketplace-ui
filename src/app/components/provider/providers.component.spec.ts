@@ -8,40 +8,41 @@ import {
   fakeAsync,
   tick,
 } from '@angular/core/testing';
-import { VerificationType } from '@dxp/ngx-core/provider-verification';
-import { DialogService } from '@fundamental-ngx/core';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { ScopeType, ServiceStatus } from 'models/provider-metadata';
 import { MockProvider } from 'ng-mocks';
-import { of, take } from 'rxjs';
+import { of, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
-import { loadProviders } from 'state/providers.actions';
 import { selectAllProviders } from 'state/providers.selectors';
+import { MarketplaceEntry } from 'models/provider-metadata';
 
 describe('ExtensionAllComponent', () => {
   let component: ProvidersComponent;
   let fixture: ComponentFixture<ProvidersComponent>;
   let luigiClient: LuigiClient;
-  let store: MockStore<unknown>;
+  let store: MockStore;
+  let contextSubject: Subject<{ context: Record<string, unknown> }>;
 
   beforeEach(async () => {
+    contextSubject = new Subject();
+
     await TestBed.configureTestingModule({
+      imports: [ProviderAllComponent],
       providers: [
-        provideMockStore({}),
-        MockProvider(ProviderService, {}),
-        {
-          provide: DialogService,
-          useValue: {},
-        },
+        provideMockStore({
+          initialState: { marketplaceEntries: [], marketplaceEntry: undefined, changingProviderNames: [] },
+        }),
+        MockProvider(ProviderService, {
+          buildLabels: vi.fn().mockReturnValue(undefined),
+          getIcon: vi.fn().mockReturnValue(undefined),
+        }),
         MockProvider(PmLuigiContextService, {
-          contextObservable: jest
-            .fn()
-            .mockReturnValue(of({ context: { projectId: 'foo' } })),
+          contextObservable: vi.fn().mockReturnValue(contextSubject),
         }),
         MockProvider(LuigiClient, {
-          getNodeParams: jest.fn().mockReturnValue({}),
-          addNodeParams: jest.fn(),
+          getNodeParams: vi.fn().mockReturnValue({}),
+          addNodeParams: vi.fn(),
         }),
       ],
       imports: [ProvidersComponent],
@@ -61,176 +62,150 @@ describe('ExtensionAllComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize component with correct title and process extensions', fakeAsync(() => {
-    let emittedExtensions: ProviderCatalogDataItem[] | undefined;
+  describe('installableProviders', () => {
+    it('should map marketplace entries to catalog data items', fakeAsync(() => {
+      let emitted: unknown;
+      component.installableProviders.pipe(take(1)).subscribe((items) => {
+        emitted = items;
+      });
 
-    component.installableProviders.pipe(take(1)).subscribe((extensions) => {
-      emittedExtensions = extensions;
-    });
+      const entries: MarketplaceEntry[] = [
+        buildMarketplaceEntry({
+          name: 'ext1',
+          installed: false,
+          displayName: 'Extension One',
+          description: 'Desc One',
+          category: 'Category A',
+        }),
+        buildMarketplaceEntry({
+          name: 'ext2',
+          installed: true,
+          displayName: 'Extension Two',
+          description: 'Desc Two',
+          category: 'Category B',
+        }),
+      ];
 
-    store.overrideSelector(selectAllProviders, [
-      {
-        name: 'ext1',
-        displayName: 'Extension One',
-        description: 'Description for Extension One',
-        scope: { type: ScopeType.PROJECT },
-        instance: null,
-        category: 'Category A',
-        provider: 'Provider X',
-        configurationMetadata: '',
-        isChangingInstallations: false,
-      },
-      {
-        name: 'ext2',
-        displayName: 'Extension Two',
-        description: 'Description for Extension Two',
-        scope: { type: ScopeType.GLOBAL },
-        instance: {
-          id: '',
-          name: '',
-          providerMetadata: {
-            name: '',
-            displayName: '',
-            scope: {
-              type: ScopeType.PROJECT,
-            },
-            configurationMetadata: '',
-            instance: null,
-            isChangingInstallations: false,
-          },
-          status: ServiceStatus.READY,
-          scope: {
-            type: ScopeType.PROJECT,
-          },
-        },
-        category: 'Category B',
-        provider: 'Provider Y',
-        verification: {
-          type: VerificationType.Hyperspace,
-        },
-        configurationMetadata: '',
-        isChangingInstallations: false,
-      },
-    ]);
-    store.refreshState();
+      store.overrideSelector(selectAllProviders, entries);
+      store.refreshState();
+      tick();
 
-    tick();
+      expect(Array.isArray(emitted)).toBe(true);
+      expect((emitted as any[]).length).toBe(2);
+    }));
 
-    expect(emittedExtensions?.length).toBe(2);
+    it('should set badge text to INSTALLED when installed is true', fakeAsync(() => {
+      let emitted: any[] = [];
+      component.installableProviders.pipe(take(1)).subscribe((items) => {
+        emitted = items;
+      });
 
-    expect(emittedExtensions?.[0]).toEqual(
-      expect.objectContaining({
-        id: 'ext1',
-        scope: ScopeType.PROJECT,
-        title: 'Extension One',
-        description: 'Description for Extension One',
-        image: undefined,
-        verification: undefined,
-        category: 'Category A',
-        provider: 'Provider X',
-        badge: { text: '', color: 'var(--sapPositiveColor)' },
-        labels: undefined,
-        testId: 'dxp-extensions-catalog-all-card-ext1-entity',
-        additionalInfo: [{ label: 'Category', value: 'Category A' }],
-      }),
-    );
+      store.overrideSelector(selectAllProviders, [
+        buildMarketplaceEntry({ name: 'ext1', installed: true }),
+      ]);
+      store.refreshState();
+      tick();
 
-    expect(emittedExtensions?.[1]).toEqual(
-      expect.objectContaining({
-        id: 'ext2',
-        scope: ScopeType.GLOBAL,
-        title: 'Extension Two',
-        description: 'Description for Extension Two',
-        verification: {
-          type: VerificationType.Hyperspace,
-        },
-        image: undefined,
-        category: 'Category B',
-        provider: 'Provider Y',
-        badge: { text: 'INSTALLED', color: 'var(--sapPositiveColor)' },
-        labels: undefined,
-        testId: 'dxp-extensions-catalog-all-card-ext2-entity',
-        additionalInfo: [{ label: 'Category', value: 'Category B' }],
-      }),
-    );
-  }));
+      expect(emitted[0].badge.text).toBe('INSTALLED');
+    }));
+
+    it('should set badge text to empty string when not installed', fakeAsync(() => {
+      let emitted: any[] = [];
+      component.installableProviders.pipe(take(1)).subscribe((items) => {
+        emitted = items;
+      });
+
+      store.overrideSelector(selectAllProviders, [
+        buildMarketplaceEntry({ name: 'ext1', installed: false }),
+      ]);
+      store.refreshState();
+      tick();
+
+      expect(emitted[0].badge.text).toBe('');
+    }));
+
+    it('should include additionalInfo with Category when category is set', fakeAsync(() => {
+      let emitted: any[] = [];
+      component.installableProviders.pipe(take(1)).subscribe((items) => {
+        emitted = items;
+      });
+
+      store.overrideSelector(selectAllProviders, [
+        buildMarketplaceEntry({ category: 'MyCategory' }),
+      ]);
+      store.refreshState();
+      tick();
+
+      expect(emitted[0].additionalInfo).toEqual([
+        { label: 'Category', value: 'MyCategory' },
+      ]);
+    }));
+
+    it('should set isLoading to false after receiving entries', fakeAsync(() => {
+      component.installableProviders.pipe(take(1)).subscribe();
+
+      store.overrideSelector(selectAllProviders, []);
+      store.refreshState();
+      tick();
+
+      let loadingValue: boolean | undefined;
+      component.isLoading.pipe(take(1)).subscribe((v) => {
+        loadingValue = v;
+      });
+      expect(loadingValue).toBe(false);
+    }));
+  });
 
   describe('ngOnInit', () => {
-    it('should subscribe to contextObservable', fakeAsync(() => {
-      const q = 'Test';
-
-      luigiClient.getNodeParams = jest.fn().mockReturnValue({ q });
-      jest.spyOn(store, 'dispatch');
+    it('should set initialFilter from Luigi node params', fakeAsync(() => {
+      luigiClient.getNodeParams = vi.fn().mockReturnValue({ q: 'test-query' });
 
       component.ngOnInit();
+      contextSubject.next({ context: { entityId: 'e1', entityType: 'project' } });
       tick();
-      expect(component.initialFilter).toEqual(q);
-      expect(store.dispatch).toHaveBeenCalledWith(loadProviders());
+
+      expect(component.initialFilter).toBe('test-query');
+    }));
+
+    it('should set initialFilter to empty string when q param is absent', fakeAsync(() => {
+      luigiClient.getNodeParams = vi.fn().mockReturnValue({});
+
+      component.ngOnInit();
+      contextSubject.next({ context: { entityId: 'e1', entityType: 'project' } });
+      tick();
+
+      expect(component.initialFilter).toBe('');
     }));
   });
 
   describe('writeQueryParam', () => {
-    it('should add query to Luigi node', () => {
-      const query = 'Test';
-      component.writeQueryParam(query);
-
+    it('should call addNodeParams with the search query', () => {
+      component.writeQueryParam('mySearch');
       expect(luigiClient.addNodeParams).toHaveBeenCalledWith(
-        { q: query },
+        { q: 'mySearch' },
         true,
       );
     });
 
-    it('should not add query to Luigi node when search is empty', () => {
-      const query = '';
-      component.writeQueryParam(query);
-
+    it('should call addNodeParams with empty string when query is empty', () => {
+      component.writeQueryParam('');
       expect(luigiClient.addNodeParams).toHaveBeenCalledWith({ q: '' }, true);
     });
   });
 
   describe('navigate', () => {
-    it('should open modal with correct params in feature mode', () => {
-      component.isFeatureMode = true;
-      const catalogItem = {
-        id: 'ext1',
-        scope: ScopeType.GLOBAL,
-        title: 'Extension 1',
-      } as ProviderCatalogDataItem;
+    it('should open a modal with fromParent and correct title', () => {
+      const openAsModal = vi.fn();
+      const fromParent = vi.fn().mockReturnValue({ openAsModal });
+      luigiClient.linkManager = vi.fn().mockReturnValue({ fromParent });
 
-      const openAsModal = jest.fn();
-      luigiClient.linkManager = jest.fn().mockReturnValue({ openAsModal });
+      component.navigate({ id: 'ext1', title: 'Extension One' });
 
-      component.navigate(catalogItem);
+      expect(fromParent).toHaveBeenCalled();
       expect(openAsModal).toHaveBeenCalledWith(
-        `/extensions/${catalogItem.id}`,
+        'provider/ext1',
         expect.objectContaining({
-          title: 'Extension Details - Extension 1',
-        }),
-      );
-    });
-
-    it('should open modal with correct params in non-feature mode', () => {
-      component.isFeatureMode = false;
-      const catalogItem = {
-        id: 'ext2',
-        scop: ScopeType.PROJECT,
-        title: 'Extension 2',
-      } as ProviderCatalogDataItem;
-
-      const openAsModal = jest.fn();
-      luigiClient.linkManager = jest.fn().mockReturnValue({
-        fromParent: () => ({
-          withParams: () => ({
-            openAsModal,
-          }),
-        }),
-      });
-
-      component.navigate(catalogItem);
-      expect(openAsModal).toHaveBeenCalledWith(
-        `extensions/${catalogItem.id}`,
-        expect.objectContaining({
-          title: 'Extension Details - Extension 2',
+          title: 'Provider Details - Extension One',
           keepPrevious: true,
         }),
       );

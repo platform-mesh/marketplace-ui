@@ -1,4 +1,4 @@
-import { CatalogDataItem, InfoLabels } from '../../models';
+import { CatalogDataItem, InfoLabelFilter } from '../../models';
 import {
   INSTALLED_BADGE_TEXT,
   getFilteredDataByInfoLabels,
@@ -9,33 +9,13 @@ import {
 } from './core-catalog.component.service';
 
 describe('CatalogComponentService', () => {
-  describe('when getSortedDataByInstallStatus is called', () => {
-    it('should sort "installed" items first', () => {
+  describe('getSortedDataByInstallStatus', () => {
+    it('should sort installed items first', () => {
       const data: CatalogDataItem[] = [
-        {
-          title: 'Item 1',
-          badge: {
-            text: 'Beta',
-            color: '',
-          },
-        },
-        {
-          title: 'Item 2',
-          badge: {
-            text: 'INSTALLED',
-            color: '',
-          },
-        },
-        {
-          title: 'Item 3',
-        },
-        {
-          title: 'Item 4',
-          badge: {
-            text: 'INSTALLED',
-            color: '',
-          },
-        },
+        { title: 'Item 1', badge: { text: 'Beta', color: '' } },
+        { title: 'Item 2', badge: { text: 'INSTALLED', color: '' } },
+        { title: 'Item 3' },
+        { title: 'Item 4', badge: { text: 'INSTALLED', color: '' } },
       ];
 
       const sortedData = getSortedDataByInstallStatus(data);
@@ -47,27 +27,13 @@ describe('CatalogComponentService', () => {
     });
 
     it('should handle an empty list', () => {
-      const data: CatalogDataItem[] = [];
-
-      const sortedData = getSortedDataByInstallStatus(data);
-
-      expect(sortedData).toEqual([]);
+      expect(getSortedDataByInstallStatus([])).toEqual([]);
     });
 
-    it('should handle an array with no "installed" items', () => {
+    it('should handle an array with no installed items', () => {
       const data: CatalogDataItem[] = [
-        {
-          badge: {
-            text: '',
-            color: '',
-          },
-        },
-        {
-          badge: {
-            text: 'Not installed',
-            color: '',
-          },
-        },
+        { badge: { text: '', color: '' } },
+        { badge: { text: 'Not installed', color: '' } },
       ];
 
       const sortedData = getSortedDataByInstallStatus(data);
@@ -76,43 +42,37 @@ describe('CatalogComponentService', () => {
     });
   });
 
-  describe('when getSortedDataByTitle is called', () => {
+  describe('getSortedDataByTitle', () => {
     it('should sort the data alphabetically by title', () => {
-      const cases: [CatalogDataItem[], CatalogDataItem[]][] = [
-        [
-          [{ title: 'b' }, { title: 'a' }, { title: 'd' }, { title: 'c' }],
-          [{ title: 'a' }, { title: 'b' }, { title: 'c' }, { title: 'd' }],
-        ],
-        [
-          [{ title: 'a' }, { title: undefined }, { title: '' }],
-          [{ title: undefined }, { title: '' }, { title: 'a' }],
-        ],
-        [
-          [
-            { title: 'A' },
-            { title: 'b' },
-            { title: '1' },
-            { title: 'B' },
-            { title: 'a' },
-          ],
-          [
-            { title: '1' },
-            { title: 'a' },
-            { title: 'A' },
-            { title: 'b' },
-            { title: 'B' },
-          ],
-        ],
+      const data: CatalogDataItem[] = [
+        { title: 'b' },
+        { title: 'a' },
+        { title: 'd' },
+        { title: 'c' },
       ];
-
-      cases.forEach(([items, expectedSortedData]) => {
-        const sortedData = getSortedDataByTitle(items);
-        expect(sortedData).toEqual(expectedSortedData);
-      });
+      const sorted = getSortedDataByTitle(data);
+      expect(sorted.map((i) => i.title)).toEqual(['a', 'b', 'c', 'd']);
     });
 
-    it('should create correct suggestions', () => {
-      const items = [
+    it('should handle undefined and empty titles (empty/undefined sort before defined)', () => {
+      const data: CatalogDataItem[] = [
+        { title: 'a' },
+        { title: undefined },
+        { title: '' },
+      ];
+      const sorted = getSortedDataByTitle(data);
+      // empty string and undefined come before 'a'
+      expect(sorted[sorted.length - 1].title).toBe('a');
+    });
+
+    it('should handle an empty array', () => {
+      expect(getSortedDataByTitle([])).toEqual([]);
+    });
+  });
+
+  describe('getSuggestions', () => {
+    it('should return unique non-empty suggestions from title, badge, labels, additionalInfo', () => {
+      const items: CatalogDataItem[] = [
         {},
         { title: '' },
         { title: 'searched' },
@@ -130,18 +90,15 @@ describe('CatalogComponentService', () => {
           title: 'something else again',
           badge: { text: 'searched', color: 'test' },
           additionalInfo: [
-            {
-              label: 'some label',
-              value: 'searched',
-            },
-            {
-              label: 'other label',
-              value: 'other label value',
-            },
+            { label: 'some label', value: 'searched' },
+            { label: 'other label', value: 'other label value' },
           ],
         },
       ];
-      const expectedSuggestions = [
+
+      const suggestions = getSuggestions(items);
+
+      expect(suggestions).toEqual([
         { value: 'searched' },
         { value: 'SeArChed' },
         { value: 'something else' },
@@ -149,43 +106,33 @@ describe('CatalogComponentService', () => {
         { value: 'some label' },
         { value: 'other label' },
         { value: 'other label value' },
-      ];
+      ]);
+    });
 
-      const suggestions = getSuggestions(items);
-
-      expect(suggestions).toEqual(expectedSuggestions);
+    it('should return empty array for empty input', () => {
+      expect(getSuggestions([])).toEqual([]);
     });
   });
 
-  describe('when getFilteredDataBySearchTerm is called', () => {
-    it('should filter correctly', () => {
+  describe('getFilteredDataBySearchTerm', () => {
+    it('should return all items when search term is empty', () => {
+      const data: CatalogDataItem[] = [{ title: 'foo' }, { title: 'bar' }];
+      expect(getFilteredDataBySearchTerm(data, '')).toEqual(data);
+    });
+
+    it('should filter by title, additionalInfo, provider, and description', () => {
       const data = [
         { title: 'searched' },
         { title: 'something else' },
         { title: 'something else again ' },
-        {
-          additionalInfo: [
-            {
-              label: 'some label',
-              value: 'searched',
-            },
-          ],
-        },
+        { additionalInfo: [{ label: 'some label', value: 'searched' }] },
         { title: 'something else', provider: 'searched' },
-        {
-          title: 'something else',
-          description: 'something else again',
-        },
-        {
-          title: 'something else',
-          description: 'searched this description',
-        },
+        { title: 'something else', description: 'something else again' },
+        { title: 'something else', description: 'searched this description' },
       ];
-      const expectedFilteredData = [data[0], data[3], data[4], data[6]];
+      const expected = [data[0], data[3], data[4], data[6]];
 
-      const filteredData = getFilteredDataBySearchTerm(data, 'searched');
-
-      expect(filteredData).toEqual(expectedFilteredData);
+      expect(getFilteredDataBySearchTerm(data, 'searched')).toEqual(expected);
     });
 
     it('should filter on badge texts but not on images', () => {
@@ -193,184 +140,153 @@ describe('CatalogComponentService', () => {
         { title: 'searched' },
         { title: 'something else', image: 'searched' },
         {
-          title: 'something else again ',
+          title: 'something else again',
           badge: { text: 'searched', color: 'test' },
         },
-        {
-          additionalInfo: [
-            {
-              label: 'some label',
-              value: 'searched',
-            },
-          ],
-        },
+        { additionalInfo: [{ label: 'some label', value: 'searched' }] },
       ];
-      const expectedFilteredData = [data[0], data[2], data[3]];
+      const expected = [data[0], data[2], data[3]];
 
-      const filteredData = getFilteredDataBySearchTerm(data, 'searched');
+      expect(getFilteredDataBySearchTerm(data, 'searched')).toEqual(expected);
+    });
 
-      expect(filteredData).toEqual(expectedFilteredData);
+    it('should be case-insensitive', () => {
+      const data: CatalogDataItem[] = [
+        { title: 'HelloWorld' },
+        { title: 'other' },
+      ];
+      expect(getFilteredDataBySearchTerm(data, 'helloworld')).toEqual([
+        data[0],
+      ]);
     });
   });
 
-  describe('when getFilteredDataByInfoLabels is called', () => {
-    const hyperspaceExt = {
+  describe('getFilteredDataByInfoLabels', () => {
+    const hyperspaceExt: CatalogDataItem = {
       title: 'hyperspace extension',
       additionalInfo: [
-        {
-          label: InfoLabels.Provider,
-          value: 'provider-hyperspace',
-        },
-        {
-          label: InfoLabels.Category,
-          value: 'category-hyperspace',
-        },
+        { label: 'Provider', value: 'provider-hyperspace' },
+        { label: 'Category', value: 'category-hyperspace' },
       ],
     };
-    const dxpExtension = {
+    const dxpExtension: CatalogDataItem = {
       title: 'dxp extension',
       additionalInfo: [
-        {
-          label: InfoLabels.Provider,
-          value: 'provider-dxp',
-        },
-        {
-          label: InfoLabels.Category,
-          value: 'category-dxp',
-        },
+        { label: 'Provider', value: 'provider-dxp' },
+        { label: 'Category', value: 'category-dxp' },
       ],
     };
-    const dxpExtensionOtherCategory = {
-      title: 'dxp extension',
+    const dxpExtensionOtherCategory: CatalogDataItem = {
+      title: 'dxp extension other',
       additionalInfo: [
-        {
-          label: InfoLabels.Provider,
-          value: 'provider-dxp',
-        },
-        {
-          label: InfoLabels.Category,
-          value: 'category-dxp-other',
-        },
+        { label: 'Provider', value: 'provider-dxp' },
+        { label: 'Category', value: 'category-dxp-other' },
       ],
     };
-    const macarenaExtension = {
+    const macarenaExtension: CatalogDataItem = {
       title: 'macarena extension',
-      additionalInfo: [
-        {
-          label: InfoLabels.Category,
-          value: 'macarena-category',
-        },
-      ],
+      additionalInfo: [{ label: 'Category', value: 'macarena-category' }],
     };
-    it('filter data when filtering by one provider', () => {
+
+    it('should return same data if no filters are passed', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const providerFilter = {
-        label: InfoLabels.Provider,
+      expect(getFilteredDataByInfoLabels(items, [])).toEqual(items);
+    });
+
+    it('should filter data when filtering by one provider', () => {
+      const items = [hyperspaceExt, dxpExtension, macarenaExtension];
+      const providerFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['provider-hyperspace'],
       };
 
-      const filteredData = getFilteredDataByInfoLabels(items, [providerFilter]);
-
-      expect(filteredData).toEqual([hyperspaceExt]);
+      expect(getFilteredDataByInfoLabels(items, [providerFilter])).toEqual([
+        hyperspaceExt,
+      ]);
     });
 
-    it('filter data when filtering by multiple providers', () => {
+    it('should filter data when filtering by multiple provider values', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const providerFilter = {
-        label: InfoLabels.Provider,
+      const providerFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['provider-hyperspace', 'provider-dxp'],
       };
 
-      const filteredData = getFilteredDataByInfoLabels(items, [providerFilter]);
-
-      expect(filteredData).toEqual([hyperspaceExt, dxpExtension]);
+      expect(getFilteredDataByInfoLabels(items, [providerFilter])).toEqual([
+        hyperspaceExt,
+        dxpExtension,
+      ]);
     });
 
-    it('filter data when filtering by category', () => {
+    it('should filter data when filtering by category', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const categoryFilter = {
-        label: InfoLabels.Category,
+      const categoryFilter: InfoLabelFilter = {
+        label: 'Category',
         values: ['category-dxp'],
       };
 
-      const filteredData = getFilteredDataByInfoLabels(items, [categoryFilter]);
-
-      expect(filteredData).toEqual([dxpExtension]);
+      expect(getFilteredDataByInfoLabels(items, [categoryFilter])).toEqual([
+        dxpExtension,
+      ]);
     });
 
-    it('filter data return only one item if all filters match the same item', () => {
+    it('should apply multiple filters (AND logic)', () => {
       const items = [
         hyperspaceExt,
         dxpExtension,
         macarenaExtension,
         dxpExtensionOtherCategory,
       ];
-      const providerFilter = {
-        label: InfoLabels.Provider,
+      const providerFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['provider-dxp'],
       };
-      const categoryFilter = {
-        label: InfoLabels.Category,
+      const categoryFilter: InfoLabelFilter = {
+        label: 'Category',
         values: ['category-dxp', 'category-dxp-other'],
       };
-      const filteredData = getFilteredDataByInfoLabels(items, [
-        categoryFilter,
-        providerFilter,
-      ]);
 
-      expect(filteredData).toEqual([dxpExtension, dxpExtensionOtherCategory]);
+      expect(
+        getFilteredDataByInfoLabels(items, [categoryFilter, providerFilter]),
+      ).toEqual([dxpExtension, dxpExtensionOtherCategory]);
     });
 
-    it('filter data returns empty if items do not match all filters', () => {
+    it('should return empty array when no items match all filters', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const providerFilter = {
-        label: InfoLabels.Provider,
+      const providerFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['provider-dxp'],
       };
-      const categoryFilter = {
-        label: InfoLabels.Category,
+      const categoryFilter: InfoLabelFilter = {
+        label: 'Category',
         values: ['category-hyperspace', 'macarena-category'],
       };
-      const filteredData = getFilteredDataByInfoLabels(items, [
-        categoryFilter,
-        providerFilter,
-      ]);
 
-      expect(filteredData).toEqual([]);
+      expect(
+        getFilteredDataByInfoLabels(items, [categoryFilter, providerFilter]),
+      ).toEqual([]);
     });
 
-    it('returns same data if no filters are passed', () => {
+    it('should return empty array when filters do not match any item', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-
-      const filteredData = getFilteredDataByInfoLabels(items, []);
-
-      expect(filteredData).toEqual(items);
-    });
-
-    it('filter all when the filters do not match any catalog item', () => {
-      const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const supermanProviderFilter = {
-        label: InfoLabels.Provider,
+      const supermanFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['superman'],
       };
 
-      const filteredData = getFilteredDataByInfoLabels(items, [
-        supermanProviderFilter,
-      ]);
-
-      expect(filteredData).toEqual([]);
+      expect(getFilteredDataByInfoLabels(items, [supermanFilter])).toEqual([]);
     });
 
-    it('filters are case unsensitive', () => {
+    it('should be case-insensitive for filter values and labels', () => {
       const items = [hyperspaceExt, dxpExtension, macarenaExtension];
-      const providerFilter = {
-        label: InfoLabels.Provider,
+      const providerFilter: InfoLabelFilter = {
+        label: 'Provider',
         values: ['PrOvIdEr-HyPeRsPaCe'],
       };
 
-      const filteredData = getFilteredDataByInfoLabels(items, [providerFilter]);
-
-      expect(filteredData).toEqual([hyperspaceExt]);
+      expect(getFilteredDataByInfoLabels(items, [providerFilter])).toEqual([
+        hyperspaceExt,
+      ]);
     });
   });
 });

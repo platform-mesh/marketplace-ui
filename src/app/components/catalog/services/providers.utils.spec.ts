@@ -1,71 +1,65 @@
 import { ProvidersUtils } from './providers.utils';
-import { VerificationType } from '@dxp/ngx-core/provider-verification';
+import { CardFilter } from '../components/core-catalog/core-catalog.component';
+import { CatalogDataItem } from '../models';
 
 describe('ProvidersUtils', () => {
   describe('getProviders', () => {
-    const expectedProviders = [
-      { id: 'hyperspace', label: 'Hyperspace' },
-      { id: 'hyperspacePartner', label: 'Hyperspace Partner' },
-      { id: 'community', label: 'Community' },
-    ];
-    it('should return expected providers', () => {
-      const resultProviders = ProvidersUtils.getProviders();
-
-      expect(resultProviders).toEqual(expectedProviders);
+    it('should return a list containing the community provider', () => {
+      const providers = ProvidersUtils.getProviders();
+      expect(providers).toEqual([{ label: 'Community', id: 'community' }]);
     });
   });
-});
 
-describe.each([
-  {
-    filter: {
-      providers: [],
-    },
-    item: { verification: undefined },
-    expected: true,
-  },
-  {
-    filter: {
-      providers: [],
-    },
-    item: { verification: { type: VerificationType.Hyperspace } },
-    expected: true,
-  },
-  {
-    filter: {
-      providers: [{ label: 'Hyperspace', id: VerificationType.Hyperspace }],
-    },
-    item: { verification: { type: VerificationType.Hyperspace } },
-    expected: true,
-  },
-  {
-    filter: {
-      providers: [
-        { label: 'Hyperspace', id: VerificationType.Hyperspace },
-        { label: 'Hyperspace', id: VerificationType.HyperspacePartner },
-      ],
-    },
-    item: { verification: { type: VerificationType.Hyperspace } },
-    expected: true,
-  },
-  {
-    filter: {
-      providers: [],
-    },
-    item: { verification: { type: VerificationType.Hyperspace } },
-    expected: true,
-  },
-  {
-    filter: {
-      providers: [{ label: 'Hyperspace', id: VerificationType.Hyperspace }],
-    },
-    item: { verification: { type: VerificationType.HyperspacePartner } },
-    expected: false,
-  },
-])('filterByProviders', ({ filter, item, expected }) => {
-  it(`should return ${expected}, when provider filter is ${filter.providers}`, () => {
-    const result = ProvidersUtils.filterByProviders(filter, item);
+  describe('isCommunityVerification', () => {
+    it('should return true when providerId is the community fallback id', () => {
+      expect(ProvidersUtils.isCommunityVerification('community', {} as CatalogDataItem)).toBe(true);
+    });
 
-    expect(result).toEqual(expected);
+    it('should return false when providerId is not the community fallback id', () => {
+      expect(ProvidersUtils.isCommunityVerification('hyperspace', {} as CatalogDataItem)).toBe(false);
+    });
+  });
+
+  describe('filterByProviders', () => {
+    it.each([
+      {
+        description: 'no providers filter — should always include',
+        filter: { providers: [] },
+        item: { verification: undefined },
+        expected: true,
+      },
+      {
+        description: 'no providers filter with a verification type — should include',
+        filter: { providers: [] },
+        item: { verification: { type: 'hyperspace' } },
+        expected: true,
+      },
+      {
+        description: 'matching verification type — should include',
+        filter: { providers: [{ label: 'Community', id: 'community' }] },
+        item: { verification: { type: 'community' } },
+        expected: true,
+      },
+      {
+        description: 'non-matching filter — should exclude',
+        filter: { providers: [{ label: 'Hyperspace', id: 'hyperspace' }] },
+        item: { verification: { type: 'other' } },
+        expected: false,
+      },
+      {
+        description: 'multiple providers filter with one matching — should include',
+        filter: {
+          providers: [
+            { label: 'Hyperspace', id: 'hyperspace' },
+            { label: 'Community', id: 'community' },
+          ],
+        },
+        item: { verification: { type: 'hyperspace' } },
+        expected: true,
+      },
+    ])('$description', ({ filter, item, expected }) => {
+      const result = ProvidersUtils.filterByProviders(filter as CardFilter, item as CatalogDataItem);
+      expect(result).toBe(expected);
+    });
   });
 });

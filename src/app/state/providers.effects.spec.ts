@@ -1,48 +1,38 @@
-import { selectScope } from './luigi.selectors';
 import { loadProviders, retrievedProviders } from './providers.actions';
 import { ProvidersEffects } from './providers.effects';
 import { fakeAsync, tick } from '@angular/core/testing';
 import { Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { MockStore, createMockStore } from '@ngrx/store/testing';
-import { MockProxy, mock } from 'jest-mock-extended';
-import {
-  ProviderMetadata,
-  ScopeType,
-  ServiceInstance,
-  ServiceStatus,
-} from 'models/index';
-import { Observable, ReplaySubject, of } from 'rxjs';
+import { createMockStore, MockStore } from '@ngrx/store/testing';
+import { MockProxy, mock } from 'vitest-mock-extended';
+import { MarketplaceEntry } from 'models/index';
+import { of, ReplaySubject, EMPTY, Observable } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
 
-describe('ExtensionClassesEffects', () => {
+const buildMarketplaceEntry = (name: string, installed = false): MarketplaceEntry => ({
+  metadata: { name },
+  spec: {
+    installed,
+    apiExport: {
+      metadata: JSON.stringify({
+        annotations: { 'kcp.io/path': '/workspaces/test' },
+        name: `${name}-api-export`,
+      }),
+      spec: { permissionClaims: [] },
+    },
+    providerMetadata: {
+      spec: {
+        displayName: `${name} display`,
+        description: `${name} description`,
+      },
+    },
+  },
+});
+
+describe('ProvidersEffects', () => {
   let mockStore: MockStore;
   let graphqlService: MockProxy<GraphqlService>;
   let actionsSubject: ReplaySubject<Action>;
-
-  function createExtensionClass(status: ServiceStatus): ProviderMetadata[] {
-    const providerMetadata: ProviderMetadata = {
-      displayName: 'bar',
-      name: 'foo',
-      scope: {
-        type: ScopeType.PROJECT,
-      },
-      configurationMetadata: '',
-      instance: null,
-      isChangingInstallations: false,
-    };
-    const extensionInstance: ServiceInstance = {
-      id: 'id',
-      name: 'name',
-      providerMetadata,
-      status,
-      scope: {
-        type: ScopeType.PROJECT,
-      },
-    };
-    providerMetadata.instance = extensionInstance;
-    return [providerMetadata];
-  }
 
   beforeEach(() => {
     mockStore = createMockStore();
@@ -58,105 +48,21 @@ describe('ExtensionClassesEffects', () => {
   function createEffectsInstance() {
     return new ProvidersEffects(
       new Actions(actionsSubject),
-      mockStore,
       graphqlService,
     );
   }
 
-  describe('refreshListIfThereIsAChangingState', () => {
-    it('should not emit for no classes', fakeAsync(() => {
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-
-      const subscription =
-        effects.refreshListIfThereIsAChangingState.subscribe(expectations);
-
-      actionsSubject.next(retrievedProviders({ providers: [] }));
-      tick(5000);
-
-      expect(expectations).not.toHaveBeenCalled();
-      subscription.unsubscribe();
-    }));
-
-    it('should not emit for a non-pending instance', fakeAsync(() => {
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-
-      const subscription =
-        effects.refreshListIfThereIsAChangingState.subscribe(expectations);
-
-      actionsSubject.next(
-        retrievedProviders({
-          providers: createExtensionClass(ServiceStatus.READY),
-        }),
-      );
-      tick(5000);
-
-      expect(expectations).not.toHaveBeenCalled();
-      subscription.unsubscribe();
-    }));
-
-    it('should emit for a pending instance', fakeAsync(() => {
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-
-      const subscription =
-        effects.refreshListIfThereIsAChangingState.subscribe(expectations);
-
-      actionsSubject.next(
-        retrievedProviders({
-          providers: createExtensionClass(ServiceStatus.IN_DELETION),
-        }),
-      );
-
-      tick(999);
-      expect(expectations).not.toHaveBeenCalled();
-
-      tick(1);
-      expect(expectations).toHaveBeenCalledTimes(1);
-      expect(expectations).toHaveBeenCalledWith(loadProviders());
-
-      tick(5000);
-      expect(expectations).toHaveBeenCalledTimes(1);
-
-      subscription.unsubscribe();
-    }));
-  });
-
-  describe('loadExtensionClassesForProjectOrTeam', () => {
-    const providersMock: ProviderMetadata[] = [
-      {
-        name: 'extension1',
-        displayName: 'extension 1',
-        scope: { type: ScopeType.PROJECT },
-        configurationMetadata: '',
-        instance: null,
-        isChangingInstallations: false,
-      },
-      {
-        name: 'extension2',
-        displayName: 'extension 2',
-        scope: { type: ScopeType.PROJECT },
-        configurationMetadata: '',
-        instance: null,
-        isChangingInstallations: false,
-      },
-    ];
-
-    it('should call getExtensionClassesForScopesQuery with correct scopes for PROJECT and emit retrievedExtensionClasses', fakeAsync(() => {
-      const scope = ScopeType.PROJECT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
-      graphqlService.getMarketplaceEntries.mockReturnValue(of(providersMock));
+  describe('loadProviders', () => {
+    it('should call getMarketplaceEntries and emit retrievedProviders', fakeAsync(() => {
+      const providers = [
+        buildMarketplaceEntry('provider-a'),
+        buildMarketplaceEntry('provider-b'),
+      ];
+      graphqlService.getMarketplaceEntries.mockReturnValue(of(providers));
 
       const effects = createEffectsInstance();
 
-      let emittedAction: unknown;
+      let emittedAction: Action | undefined;
       const subscription = effects.loadProviders.subscribe((action) => {
         emittedAction = action;
       });
@@ -164,47 +70,15 @@ describe('ExtensionClassesEffects', () => {
       actionsSubject.next(loadProviders());
       tick();
 
-      expect(graphqlService.getMarketplaceEntries).toHaveBeenCalledWith(
-        [scope, ScopeType.TENANT, ScopeType.GLOBAL],
-        [scope],
-      );
-      expect(emittedAction).toEqual(
-        retrievedProviders({ providers: providersMock }),
-      );
+      expect(graphqlService.getMarketplaceEntries).toHaveBeenCalled();
+      expect(emittedAction).toEqual(retrievedProviders({ providers }));
 
       subscription.unsubscribe();
     }));
 
-    it('should not emit for TENANT scope', fakeAsync(() => {
-      const scope = ScopeType.TENANT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
-      graphqlService.getMarketplaceEntries.mockReturnValue(of([]));
-
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-      const subscription = effects.loadProviders.subscribe(expectations);
-
-      actionsSubject.next(loadProviders());
-      tick(100);
-
-      expect(expectations).not.toHaveBeenCalled();
-      subscription.unsubscribe();
-    }));
-
-    it('should handle errors from getExtensionClassesForScopesQuery by emitting nothing', fakeAsync(() => {
-      const scope = ScopeType.PROJECT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
+    it('should emit nothing (EMPTY) when getMarketplaceEntries errors', fakeAsync(() => {
       graphqlService.getMarketplaceEntries.mockReturnValue(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         new (class extends Observable<any> {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           _subscribe(subscriber: any): void {
             subscriber.error(new Error('GraphQL Error'));
           }
@@ -212,8 +86,7 @@ describe('ExtensionClassesEffects', () => {
       );
 
       const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
+      const expectations = vi.fn();
       const subscription = effects.loadProviders.subscribe(expectations);
 
       actionsSubject.next(loadProviders());
@@ -222,105 +95,30 @@ describe('ExtensionClassesEffects', () => {
       expect(expectations).not.toHaveBeenCalled();
       subscription.unsubscribe();
     }));
-  });
 
-  describe('loadExtensionClassesForTenant', () => {
-    const tenantExtensionClassesMock: ProviderMetadata[] = [
-      {
-        name: 'tenantExtension1',
-        displayName: 'Tenant Extension 1',
-        scope: { type: ScopeType.TENANT },
-        configurationMetadata: '',
-        instance: null,
-        isChangingInstallations: false,
-      },
-    ];
+    it('should handle multiple loadProviders dispatches', fakeAsync(() => {
+      const providers1 = [buildMarketplaceEntry('provider-a')];
+      const providers2 = [buildMarketplaceEntry('provider-b')];
 
-    it('should call getExtensionClassesForScopesQuery with correct scopes for TENANT and emit retrievedExtensionClasses', fakeAsync(() => {
-      const scope = ScopeType.TENANT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
-      graphqlService.getMarketplaceEntries.mockReturnValue(
-        of(tenantExtensionClassesMock),
-      );
+      graphqlService.getMarketplaceEntries
+        .mockReturnValueOnce(of(providers1))
+        .mockReturnValueOnce(of(providers2));
 
       const effects = createEffectsInstance();
-
-      let emittedAction: unknown;
-      const subscription = effects.loadProvidersForTenant.subscribe(
-        (action) => {
-          emittedAction = action;
-        },
-      );
+      const emittedActions: Action[] = [];
+      const subscription = effects.loadProviders.subscribe((action) => {
+        emittedActions.push(action);
+      });
 
       actionsSubject.next(loadProviders());
       tick();
-
-      expect(graphqlService.getMarketplaceEntries).toHaveBeenCalledWith(
-        [ScopeType.TENANT, ScopeType.GLOBAL],
-        [],
-        {
-          excludeHiddenExtensions: true,
-          excludeHiddenInGlobalCatalogExtensions: true,
-        },
-      );
-      expect(emittedAction).toEqual(
-        retrievedProviders({
-          providers: tenantExtensionClassesMock,
-        }),
-      );
-      subscription.unsubscribe();
-    }));
-
-    it('should not emit for PROJECT or TEAM scope', fakeAsync(() => {
-      const scope = ScopeType.PROJECT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
-      graphqlService.getMarketplaceEntries.mockReturnValue(of([]));
-
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-      const subscription =
-        effects.loadProvidersForTenant.subscribe(expectations);
-
       actionsSubject.next(loadProviders());
-      tick(100);
+      tick();
 
-      expect(expectations).not.toHaveBeenCalled();
-      subscription.unsubscribe();
-    }));
+      expect(emittedActions).toHaveLength(2);
+      expect(emittedActions[0]).toEqual(retrievedProviders({ providers: providers1 }));
+      expect(emittedActions[1]).toEqual(retrievedProviders({ providers: providers2 }));
 
-    it('should handle errors for TENANT scope by emitting nothing', fakeAsync(() => {
-      const scope = ScopeType.TENANT;
-
-      mockStore.overrideSelector(selectScope, scope);
-      mockStore.refreshState();
-
-      graphqlService.getMarketplaceEntries.mockReturnValue(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        new (class extends Observable<any> {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          _subscribe(subscriber: any): void {
-            subscriber.error(new Error('GraphQL Error'));
-          }
-        })(),
-      );
-
-      const effects = createEffectsInstance();
-
-      const expectations = jest.fn();
-      const subscription =
-        effects.loadProvidersForTenant.subscribe(expectations);
-
-      actionsSubject.next(loadProviders());
-      tick(100);
-
-      expect(expectations).not.toHaveBeenCalled();
       subscription.unsubscribe();
     }));
   });

@@ -1,17 +1,21 @@
 import { luigiContextSelector } from './luigi-context.selector';
+import { NodeContext } from 'models/index';
 
-describe('LuigiContextSelector', () => {
-  it('should return the context from the state', () => {
+describe('luigiContextSelector', () => {
+  it('should select context from luigi feature state', () => {
     const expectedContext = {
-      frameContext: {},
-      tenantid: 'new',
-      token: '123',
-      userid: 'user',
-    };
-    const luigiContext = luigiContextSelector({
-      luigi: { context: expectedContext },
-    });
+      token: 'test-token',
+      userId: 'user-1',
+      accountId: 'acc-1',
+    } as unknown as NodeContext;
 
-    expect(luigiContext).toEqual(expectedContext);
+    const result = luigiContextSelector({ luigi: { context: expectedContext } });
+
+    expect(result).toEqual(expectedContext);
+  });
+
+  it('should return undefined when context is not set', () => {
+    const result = luigiContextSelector({ luigi: { context: undefined } });
+    expect(result).toBeUndefined();
   });
 });

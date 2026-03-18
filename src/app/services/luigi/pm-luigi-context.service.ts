@@ -1,5 +1,5 @@
 import { ENV, Environment, NodeContext } from '../../models';
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, Signal } from '@angular/core';
 import {
   ILuigiContextTypes,
   LuigiContextService,
@@ -38,6 +38,10 @@ export class PmLuigiContextService extends LuigiContextService {
     this.luigiContextService.addListener(ILuigiContextTypes.UPDATE, context);
   }
 
+  contextSignal(): Signal<IContextMessage | undefined> {
+    return this.luigiContextService.contextSignal() as Signal<IContextMessage | undefined>;
+  }
+
   getContext(): NodeContext {
     if (!this.env.luigiContextOverwrite) {
       return this.luigiContextService.getContext() as NodeContext;
@@ -46,7 +50,7 @@ export class PmLuigiContextService extends LuigiContextService {
     return deepmerge(
       this.luigiContextService.getContext(),
       this.env.luigiContextOverwrite,
-    ) as any;
+    ) as NodeContext;
   }
 
   getContextAsync(): Promise<NodeContext> {
