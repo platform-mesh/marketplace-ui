@@ -1,6 +1,6 @@
 import { LuigiClient, PmLuigiContextService } from './luigi';
 import { NEW_LABEL, ProviderService } from './provider.service';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { mock } from 'vitest-mock-extended';
 import {
@@ -334,7 +334,7 @@ describe('ProviderService', () => {
   });
 
   describe('handleInstallProvider', () => {
-    it('should show success toast, clear frame cache, and dispatch loadProviders when PROVIDER_INSTANCE_INSTALLED is received', fakeAsync(() => {
+    it('should show success toast, clear frame cache, and dispatch loadProviders when PROVIDER_INSTANCE_INSTALLED is received', () => {
       const clearFrameCacheSpy = vi.spyOn(luigiClient, 'clearFrameCache');
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
@@ -347,14 +347,12 @@ describe('ProviderService', () => {
 
       service['handleInstallProvider']();
 
-      tick();
-
       expect(notificationService.openSuccessToast).toHaveBeenCalledWith('Provider Enabled');
       expect(clearFrameCacheSpy).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(loadProviders());
-    }));
+    });
 
-    it('should not react to unrelated context events', fakeAsync(() => {
+    it('should not react to unrelated context events', () => {
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
       pmLuigiContextService.contextObservable = vi.fn().mockReturnValue(
@@ -365,9 +363,8 @@ describe('ProviderService', () => {
       );
 
       service['handleInstallProvider']();
-      tick();
 
       expect(dispatchSpy).not.toHaveBeenCalled();
-    }));
+    });
   });
 });

@@ -1,5 +1,5 @@
 import { GraphqlService } from './graphql.service';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { NodeContext, MarketplaceEntry, ProviderMetadataFilter } from 'models/index';
 import { of } from 'rxjs';
@@ -66,13 +66,13 @@ describe('GraphqlService', () => {
   let mockWsApolloMutate: Mock;
   let mockSendCustomMessage: Mock;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockApolloQuery = vi.fn();
     mockApolloMutate = vi.fn();
     mockWsApolloMutate = vi.fn();
     mockSendCustomMessage = vi.fn();
 
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       providers: [
         GraphqlService,
         provideMockStore({}),
@@ -89,7 +89,7 @@ describe('GraphqlService', () => {
           linkManager: vi.fn().mockReturnValue({}),
         }),
       ],
-    }).compileComponents();
+    });
 
     mockStore = TestBed.inject(MockStore);
     service = TestBed.inject(GraphqlService);
@@ -114,7 +114,7 @@ describe('GraphqlService', () => {
   });
 
   describe('getMarketplaceEntries', () => {
-    it('should query apollo with default filter when no arguments provided', fakeAsync(() => {
+    it('should query apollo with default filter when no arguments provided', () => {
       const entries = [mockMarketplaceEntry];
       mockApolloQuery.mockReturnValue(
         of({
@@ -131,7 +131,6 @@ describe('GraphqlService', () => {
       let result: MarketplaceEntry[] | undefined;
       service.getMarketplaceEntries().subscribe((res) => (result = res));
       mockStore.refreshState();
-      tick();
 
       expect(result).toEqual(entries);
       expect(mockApolloQuery).toHaveBeenCalledWith(
@@ -140,9 +139,9 @@ describe('GraphqlService', () => {
           variables: { filter: { excludeHiddenExtensions: true } },
         }),
       );
-    }));
+    });
 
-    it('should use provided extFilter when given', fakeAsync(() => {
+    it('should use provided extFilter when given', () => {
       const customFilter: ProviderMetadataFilter = {
         installableIn: ['projectA'],
         excludeHiddenExtensions: true,
@@ -163,18 +162,17 @@ describe('GraphqlService', () => {
       let result: MarketplaceEntry[] | undefined;
       service.getMarketplaceEntries(undefined, customFilter).subscribe((res) => (result = res));
       mockStore.refreshState();
-      tick();
 
       expect(mockApolloQuery).toHaveBeenCalledWith(
         expect.objectContaining({
           variables: { filter: customFilter },
         }),
       );
-    }));
+    });
   });
 
   describe('getMarketplaceEntry', () => {
-    it('should return the matching marketplace entry by name', fakeAsync(() => {
+    it('should return the matching marketplace entry by name', () => {
       const entries = [mockMarketplaceEntry, { ...mockMarketplaceEntry, metadata: { name: 'other-provider' } }];
       mockApolloQuery.mockReturnValue(
         of({
@@ -191,12 +189,11 @@ describe('GraphqlService', () => {
       let result: MarketplaceEntry | undefined;
       service.getMarketplaceEntry('test-provider').subscribe((res) => (result = res));
       mockStore.refreshState();
-      tick();
 
       expect(result).toEqual(mockMarketplaceEntry);
-    }));
+    });
 
-    it('should return null when provider name is not found', fakeAsync(() => {
+    it('should return null when provider name is not found', () => {
       mockApolloQuery.mockReturnValue(
         of({
           data: {
@@ -212,17 +209,14 @@ describe('GraphqlService', () => {
       let result: MarketplaceEntry | undefined;
       service.getMarketplaceEntry('nonexistent').subscribe((res) => (result = res));
       mockStore.refreshState();
-      tick();
 
       expect(result).toBeNull();
-    }));
+    });
   });
 
   describe('installProviderInstance', () => {
-    it('should mutate with correct variables and send custom message', fakeAsync(() => {
-      const linkManagerMock = {
-        goBack: vi.fn(),
-      };
+    it('should mutate with correct variables and send custom message', () => {
+      const linkManagerMock = { goBack: vi.fn() };
       const luigiClient = TestBed.inject(LuigiClient);
       luigiClient.linkManager = vi.fn().mockReturnValue(linkManagerMock);
 
@@ -231,7 +225,6 @@ describe('GraphqlService', () => {
       let completed = false;
       service.installProviderInstance(mockMarketplaceEntry).subscribe(() => (completed = true));
       mockStore.refreshState();
-      tick();
 
       expect(mockWsApolloMutate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -244,17 +237,16 @@ describe('GraphqlService', () => {
         }),
       );
       expect(mockSendCustomMessage).toHaveBeenCalled();
-    }));
+    });
   });
 
   describe('unInstallExtension', () => {
-    it('should mutate with correct name and send custom message', fakeAsync(() => {
+    it('should mutate with correct name and send custom message', () => {
       mockWsApolloMutate.mockReturnValue(of({ data: {} }));
 
       let completed = false;
       service.unInstallExtension('test-provider').subscribe(() => (completed = true));
       mockStore.refreshState();
-      tick();
 
       expect(mockWsApolloMutate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -262,6 +254,6 @@ describe('GraphqlService', () => {
         }),
       );
       expect(mockSendCustomMessage).toHaveBeenCalled();
-    }));
+    });
   });
 });

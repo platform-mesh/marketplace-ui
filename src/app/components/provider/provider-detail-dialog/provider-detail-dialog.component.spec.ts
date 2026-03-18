@@ -172,13 +172,12 @@ describe('ProviderDetailDialogComponent', () => {
   });
 
   describe('installExtension', () => {
-    it('should call installProviderInstance and navigate back on success', fakeAsync(() => {
+    it('should call installProviderInstance and navigate back on success', () => {
       const entry = buildMarketplaceEntry();
       component.marketplaceEntry = entry;
       providerServiceMock.installProviderInstance.mockReturnValue(of(true));
 
       component['installExtension']();
-      tick();
 
       expect(providerServiceMock.installProviderInstance).toHaveBeenCalledWith(
         entry,
@@ -186,7 +185,7 @@ describe('ProviderDetailDialogComponent', () => {
       expect(luigiLinkManagerGoBackSpy).toHaveBeenCalledWith(
         PROVIDER_INSTANCE_INSTALLED,
       );
-    }));
+    });
   });
 
   describe('visitExtension', () => {

@@ -3,7 +3,7 @@ import {
   IContextMessage,
   PmLuigiContextService,
 } from './pm-luigi-context.service';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import {
   ILuigiContextTypes,
   LuigiContextServiceImpl,
@@ -53,7 +53,7 @@ describe('PmLuigiContextService', () => {
       );
     });
 
-    it('should return context observable from underlying service unchanged', fakeAsync(() => {
+    it('should return context observable from underlying service unchanged', () => {
       const observable = new ReplaySubject<IContextMessage>();
       luigiContextServiceImpl.contextObservable = vi
         .fn()
@@ -62,10 +62,9 @@ describe('PmLuigiContextService', () => {
 
       let emitted: IContextMessage | undefined;
       service.contextObservable().subscribe((val) => (emitted = val));
-      tick();
 
       expect(emitted).toEqual(contextMessage);
-    }));
+    });
 
     it('should return context promise from underlying service unchanged', async () => {
       luigiContextServiceImpl.getContextAsync = vi
@@ -124,7 +123,7 @@ describe('PmLuigiContextService', () => {
       luigiContextServiceImpl = TestBed.inject(LuigiContextServiceImpl);
     });
 
-    it('should deep merge context observable with luigiContextOverwrite', fakeAsync(() => {
+    it('should deep merge context observable with luigiContextOverwrite', () => {
       const observable = new ReplaySubject<IContextMessage>();
       luigiContextServiceImpl.contextObservable = vi
         .fn()
@@ -133,13 +132,12 @@ describe('PmLuigiContextService', () => {
 
       let emitted: IContextMessage | undefined;
       service.contextObservable().subscribe((val) => (emitted = val));
-      tick();
 
       expect(emitted).toEqual({
         contextType: contextMessage.contextType,
         context: expectedMergedContext,
       });
-    }));
+    });
 
     it('should deep merge context promise with luigiContextOverwrite', async () => {
       luigiContextServiceImpl.getContextAsync = vi

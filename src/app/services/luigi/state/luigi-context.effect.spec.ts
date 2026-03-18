@@ -1,14 +1,14 @@
 import { initAction } from './init.action';
 import { luigiContextUpdate } from './luigi-context-update.action';
 import { LuigiContextEffect } from './luigi-context.effect';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { NodeContext } from 'models/index';
 import { PmLuigiContextService } from 'services/luigi';
 import { ILuigiContextTypes } from '@luigi-project/client-support-angular';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { MockProvider } from 'ng-mocks';
-import { Observable, Subject, of } from 'rxjs';
+import { Subject, ReplaySubject } from 'rxjs';
 
 function createContext(token: string): NodeContext {
   return {
@@ -29,12 +29,12 @@ function createContext(token: string): NodeContext {
 }
 
 describe('LuigiContextEffect', () => {
-  let actions$: Observable<Action>;
+  let actions$: ReplaySubject<Action>;
   let effect: LuigiContextEffect;
   let luigiContextSubject: Subject<{ context: NodeContext; contextType: ILuigiContextTypes }>;
 
   beforeEach(() => {
-    actions$ = new Observable<Action>();
+    actions$ = new ReplaySubject<Action>(1);
     luigiContextSubject = new Subject();
 
     TestBed.configureTestingModule({
@@ -57,14 +57,13 @@ describe('LuigiContextEffect', () => {
   });
 
   describe('registerForLuigiContextChanges$', () => {
-    it('should emit luigiContextUpdate when context has token', fakeAsync(() => {
-      actions$ = of(initAction());
+    it('should emit luigiContextUpdate when context has token', () => {
+      actions$.next(initAction());
 
       let emittedAction: Action | undefined;
       effect.registerForLuigiContextChanges$.subscribe((action) => {
         emittedAction = action;
       });
-      tick();
 
       const contextPayload = createContext('my-token');
       luigiContextSubject.next({
@@ -75,16 +74,15 @@ describe('LuigiContextEffect', () => {
       expect(emittedAction).toEqual(
         luigiContextUpdate({ luigiContext: contextPayload }),
       );
-    }));
+    });
 
-    it('should filter out context messages without a token', fakeAsync(() => {
-      actions$ = of(initAction());
+    it('should filter out context messages without a token', () => {
+      actions$.next(initAction());
 
       let emittedAction: Action | undefined;
       effect.registerForLuigiContextChanges$.subscribe((action) => {
         emittedAction = action;
       });
-      tick();
 
       const contextWithToken = createContext('my-token');
       const contextWithoutToken = createContext('');
@@ -100,16 +98,15 @@ describe('LuigiContextEffect', () => {
       expect(emittedAction).toEqual(
         luigiContextUpdate({ luigiContext: contextWithToken }),
       );
-    }));
+    });
 
-    it('should emit the latest context when multiple messages are received', fakeAsync(() => {
-      actions$ = of(initAction());
+    it('should emit the latest context when multiple messages are received', () => {
+      actions$.next(initAction());
 
       let emittedAction: Action | undefined;
       effect.registerForLuigiContextChanges$.subscribe((action) => {
         emittedAction = action;
       });
-      tick();
 
       const context1 = createContext('token-1');
       const context2 = createContext('token-2');
@@ -125,6 +122,6 @@ describe('LuigiContextEffect', () => {
       expect(emittedAction).toEqual(
         luigiContextUpdate({ luigiContext: context2 }),
       );
-    }));
+    });
   });
 });

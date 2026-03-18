@@ -20,31 +20,24 @@ describe('AnalyticsTrackerService', () => {
     }),
   });
 
-  const testLuigiContext = new BehaviorSubject<IContextMessage>(
-    makeContextMessage(),
-  );
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       providers: [
         AnalyticsTrackerService,
         MockProvider(PmLuigiContextService, {
           contextObservable(): Observable<IContextMessage> {
-            return testLuigiContext;
+            return new BehaviorSubject<IContextMessage>(makeContextMessage());
           },
         }),
       ],
-    }).compileComponents();
+    });
 
     service = TestBed.inject(AnalyticsTrackerService);
     ctxSrv = TestBed.inject(PmLuigiContextService);
   });
 
   afterEach(() => {
-    const script = document.querySelector('script');
-    if (script) {
-      script.remove();
-    }
+    document.body.querySelectorAll('script').forEach((s) => s.remove());
   });
 
   describe('digestMessage', () => {
@@ -67,25 +60,29 @@ describe('AnalyticsTrackerService', () => {
   });
 
   describe('injectScript', () => {
+    beforeEach(() => {
+      document.body.querySelectorAll('script').forEach((s) => s.remove());
+    });
+
     it('should not inject a script when analyticsTrackerConfig is missing', async () => {
       ctxSrv.contextObservable = () =>
         new BehaviorSubject<IContextMessage>(
           makeContextMessage({ analyticsTrackerConfig: undefined }),
         );
       await service.injectScript(true);
-      expect(document.querySelector('script')).toBeNull();
+      expect(document.body.querySelector('script')).toBeNull();
     });
 
     it('should not inject a script when matomoContainerId is missing from serviceProviderConfig', async () => {
       ctxSrv.contextObservable = () =>
         new BehaviorSubject<IContextMessage>(
           makeContextMessage({
-            serviceProviderConfig: {},
+            serviceProviderConfig: { matomoContainerId: undefined },
             analyticsTrackerConfig: { siteUrl: 'https://matomo.example.com/' },
           }),
         );
       await service.injectScript(false);
-      expect(document.querySelector('script')).toBeNull();
+      expect(document.body.querySelector('script')).toBeNull();
     });
 
     it('should inject a script when full config is provided (useMatomoId=false)', async () => {
@@ -104,7 +101,7 @@ describe('AnalyticsTrackerService', () => {
 
       await service.injectScript(false);
 
-      const script = document.querySelector('script');
+      const script = document.body.querySelector<HTMLScriptElement>('script:not([src])');
       expect(script).not.toBeNull();
       expect(script!.text).toContain('svc-container-id');
       expect(script!.text).toContain('https://matomo.example.com/');
@@ -125,7 +122,7 @@ describe('AnalyticsTrackerService', () => {
 
       await service.injectScript(true);
 
-      const script = document.querySelector('script');
+      const script = document.body.querySelector<HTMLScriptElement>('script:not([src])');
       expect(script).not.toBeNull();
       expect(script!.text).toContain('analytics-container-id');
     });

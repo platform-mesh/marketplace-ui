@@ -2,6 +2,10 @@ import { luigiContextSelector } from './luigi-context.selector';
 import { NodeContext } from 'models/index';
 
 describe('luigiContextSelector', () => {
+  beforeEach(() => {
+    luigiContextSelector.release();
+  });
+
   it('should select context from luigi feature state', () => {
     const expectedContext = {
       token: 'test-token',

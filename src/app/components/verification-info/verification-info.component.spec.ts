@@ -1,39 +1,41 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VerificationInfoComponent } from './verification-info.component';
 
-describe('ProviderVerificationComponent', () => {
-  const component: VerificationInfoComponent = new VerificationInfoComponent();
+describe('VerificationInfoComponent', () => {
+  let component: VerificationInfoComponent;
+  let fixture: ComponentFixture<VerificationInfoComponent>;
 
   beforeEach(() => {
-    component = new ProviderVerificationComponent();
+    TestBed.configureTestingModule({
+      imports: [VerificationInfoComponent],
+    });
+
+    fixture = TestBed.createComponent(VerificationInfoComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
   describe('mapVerificationInfo', () => {
     it('should return communityVerificationInfo when verification is undefined', () => {
-      component.verification = undefined;
-      expect(component.mapVerificationInfo()).toEqual(
-        component.communityVerificationInfo,
-      );
+      fixture.componentRef.setInput('verification', undefined);
+      fixture.detectChanges();
+      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
     });
 
-    it('should return communityVerificationInfo when verification is null', () => {
-      component.verification = null;
-      expect(component.mapVerificationInfo()).toEqual(
-        component.communityVerificationInfo,
-      );
+    it('should return communityVerificationInfo for community verification type', () => {
+      fixture.componentRef.setInput('verification', { type: 'community' });
+      fixture.detectChanges();
+      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
     });
 
-    it('should return communityVerificationInfo for any verification type', () => {
-      component.verification = { type: 'community' };
-      expect(component.mapVerificationInfo()).toEqual(
-        component.communityVerificationInfo,
-      );
-    });
-
-    it('should return communityVerificationInfo regardless of verification type string', () => {
-      component.verification = { type: 'some-unknown-type' };
-      expect(component.mapVerificationInfo()).toEqual(
-        component.communityVerificationInfo,
-      );
+    it('should return communityVerificationInfo for any unknown verification type', () => {
+      fixture.componentRef.setInput('verification', { type: 'some-unknown-type' });
+      fixture.detectChanges();
+      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
     });
   });
 
@@ -51,20 +53,15 @@ describe('ProviderVerificationComponent', () => {
     });
   });
 
-  describe('ngOnChanges', () => {
-    it('should update verificationInfo when called', () => {
-      component.verification = { type: 'community' };
-      component.ngOnChanges({});
-      expect(component.verificationInfo).toEqual(
-        component.communityVerificationInfo,
-      );
+  describe('verificationInfo computed signal', () => {
+    it('should return communityVerificationInfo for any verification input', () => {
+      fixture.componentRef.setInput('verification', { type: 'some-type' });
+      fixture.detectChanges();
+      expect(component.verificationInfo()).toEqual(component.communityVerificationInfo);
     });
 
-    it('should set verificationInfo on initial change', () => {
-      component.ngOnChanges({});
-      expect(component.verificationInfo).toEqual(
-        component.communityVerificationInfo,
-      );
+    it('should return communityVerificationInfo when no input is set', () => {
+      expect(component.verificationInfo()).toEqual(component.communityVerificationInfo);
     });
   });
 });

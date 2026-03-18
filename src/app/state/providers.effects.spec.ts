@@ -1,6 +1,5 @@
 import { loadProviders, retrievedProviders } from './providers.actions';
 import { ProvidersEffects } from './providers.effects';
-import { fakeAsync, tick } from '@angular/core/testing';
 import { Actions } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { createMockStore, MockStore } from '@ngrx/store/testing';
@@ -53,7 +52,7 @@ describe('ProvidersEffects', () => {
   }
 
   describe('loadProviders', () => {
-    it('should call getMarketplaceEntries and emit retrievedProviders', fakeAsync(() => {
+    it('should call getMarketplaceEntries and emit retrievedProviders', () => {
       const providers = [
         buildMarketplaceEntry('provider-a'),
         buildMarketplaceEntry('provider-b'),
@@ -68,15 +67,14 @@ describe('ProvidersEffects', () => {
       });
 
       actionsSubject.next(loadProviders());
-      tick();
 
       expect(graphqlService.getMarketplaceEntries).toHaveBeenCalled();
       expect(emittedAction).toEqual(retrievedProviders({ providers }));
 
       subscription.unsubscribe();
-    }));
+    });
 
-    it('should emit nothing (EMPTY) when getMarketplaceEntries errors', fakeAsync(() => {
+    it('should emit nothing (EMPTY) when getMarketplaceEntries errors', () => {
       graphqlService.getMarketplaceEntries.mockReturnValue(
         new (class extends Observable<any> {
           _subscribe(subscriber: any): void {
@@ -90,13 +88,12 @@ describe('ProvidersEffects', () => {
       const subscription = effects.loadProviders.subscribe(expectations);
 
       actionsSubject.next(loadProviders());
-      tick(100);
 
       expect(expectations).not.toHaveBeenCalled();
       subscription.unsubscribe();
-    }));
+    });
 
-    it('should handle multiple loadProviders dispatches', fakeAsync(() => {
+    it('should handle multiple loadProviders dispatches', () => {
       const providers1 = [buildMarketplaceEntry('provider-a')];
       const providers2 = [buildMarketplaceEntry('provider-b')];
 
@@ -111,15 +108,13 @@ describe('ProvidersEffects', () => {
       });
 
       actionsSubject.next(loadProviders());
-      tick();
       actionsSubject.next(loadProviders());
-      tick();
 
       expect(emittedActions).toHaveLength(2);
       expect(emittedActions[0]).toEqual(retrievedProviders({ providers: providers1 }));
       expect(emittedActions[1]).toEqual(retrievedProviders({ providers: providers2 }));
 
       subscription.unsubscribe();
-    }));
+    });
   });
 });

@@ -2,8 +2,10 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    reporters: ['default', ['junit', { outputFile: 'TEST-frontend.xml' }]],
+    globals: true,
     coverage: {
+      enabled: true,
+      provider: 'v8',
       thresholds: { branches: 70, functions: 75 },
       exclude: ['**/*.po.ts'],
     },

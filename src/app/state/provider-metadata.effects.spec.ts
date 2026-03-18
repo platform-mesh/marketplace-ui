@@ -3,13 +3,13 @@ import {
   retrievedProviderMetadata,
 } from './provider-metadata.action';
 import { ProviderMetadataEffects } from './provider-metadata.effects';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { Action } from '@ngrx/store';
 import { MarketplaceEntry, Label } from 'models/provider-metadata';
 import { MockProvider } from 'ng-mocks';
-import { Observable, of, throwError } from 'rxjs';
+import { of, throwError, ReplaySubject } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
 import { ProviderService } from 'services/provider.service';
 import { requestFailed } from 'state/common.action';
@@ -37,12 +37,12 @@ const buildMarketplaceEntry = (): MarketplaceEntry => ({
 
 describe('ProviderMetadataEffects', () => {
   let effects: ProviderMetadataEffects;
-  let actions$: Observable<Action>;
+  let actions$: ReplaySubject<Action>;
   let graphqlService: GraphqlService;
   let providerService: ProviderService;
 
   beforeEach(() => {
-    actions$ = new Observable<Action>();
+    actions$ = new ReplaySubject<Action>(1);
 
     TestBed.configureTestingModule({
       providers: [
@@ -62,12 +62,11 @@ describe('ProviderMetadataEffects', () => {
   });
 
   describe('loadProviderMetadata', () => {
-    it('should dispatch requestFailed when providerName is missing', fakeAsync(() => {
-      actions$ = of(loadProviderMetadata({}));
+    it('should dispatch requestFailed when providerName is missing', () => {
+      actions$.next(loadProviderMetadata({}));
 
       let emittedAction: Action | undefined;
       effects.loadProviderMetadata.subscribe((action) => (emittedAction = action));
-      tick();
 
       expect(emittedAction).toEqual(
         expect.objectContaining({
@@ -76,33 +75,31 @@ describe('ProviderMetadataEffects', () => {
           goBack: false,
         }),
       );
-    }));
+    });
 
-    it('should call getMarketplaceEntry with providerName', fakeAsync(() => {
+    it('should call getMarketplaceEntry with providerName', () => {
       const entry = buildMarketplaceEntry();
       vi.spyOn(graphqlService, 'getMarketplaceEntry').mockReturnValue(of(entry));
 
-      actions$ = of(loadProviderMetadata({ providerName: 'test-provider' }));
+      actions$.next(loadProviderMetadata({ providerName: 'test-provider' }));
 
       let emittedAction: Action | undefined;
       effects.loadProviderMetadata.subscribe((action) => (emittedAction = action));
-      tick();
 
       expect(graphqlService.getMarketplaceEntry).toHaveBeenCalledWith('test-provider');
-    }));
+    });
 
-    it('should emit retrievedProviderMetadata with labels applied', fakeAsync(() => {
+    it('should emit retrievedProviderMetadata with labels applied', () => {
       const entry = buildMarketplaceEntry();
       const labels: Label[] = [{ title: 'New', color: '6' }];
 
       vi.spyOn(graphqlService, 'getMarketplaceEntry').mockReturnValue(of(entry));
       vi.spyOn(providerService, 'buildLabels').mockReturnValue(labels);
 
-      actions$ = of(loadProviderMetadata({ providerName: 'test-provider' }));
+      actions$.next(loadProviderMetadata({ providerName: 'test-provider' }));
 
       let emittedAction: Action | undefined;
       effects.loadProviderMetadata.subscribe((action) => (emittedAction = action));
-      tick();
 
       expect(emittedAction).toEqual(
         retrievedProviderMetadata({
@@ -116,17 +113,16 @@ describe('ProviderMetadataEffects', () => {
           }),
         }),
       );
-    }));
+    });
 
-    it('should emit requestFailed on GraphQL error', fakeAsync(() => {
+    it('should emit requestFailed on GraphQL error', () => {
       const error = new HttpErrorResponse({ error: 'GraphQL error', status: 500 });
       vi.spyOn(graphqlService, 'getMarketplaceEntry').mockReturnValue(throwError(() => error));
 
-      actions$ = of(loadProviderMetadata({ providerName: 'test-provider' }));
+      actions$.next(loadProviderMetadata({ providerName: 'test-provider' }));
 
       let emittedAction: Action | undefined;
       effects.loadProviderMetadata.subscribe((action) => (emittedAction = action));
-      tick();
 
       expect(emittedAction).toEqual(
         requestFailed({
@@ -135,6 +131,6 @@ describe('ProviderMetadataEffects', () => {
           dialogTitle: 'Failed to retrieve provider metadata',
         }),
       );
-    }));
+    });
   });
 });

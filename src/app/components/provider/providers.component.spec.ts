@@ -5,17 +5,44 @@ import {
 import {
   ComponentFixture,
   TestBed,
-  fakeAsync,
-  tick,
 } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MockProvider } from 'ng-mocks';
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { selectAllProviders } from 'state/providers.selectors';
 import { MarketplaceEntry } from 'models/provider-metadata';
+
+function buildMarketplaceEntry(opts: {
+  name?: string;
+  installed?: boolean;
+  displayName?: string;
+  description?: string;
+  category?: string;
+} = {}): MarketplaceEntry {
+  return {
+    metadata: { name: opts.name ?? 'test-ext' },
+    spec: {
+      installed: opts.installed ?? false,
+      apiExport: {
+        metadata: JSON.stringify({
+          annotations: { 'kcp.io/path': '/workspaces/test' },
+          name: 'api-export',
+        }),
+        spec: { permissionClaims: [] },
+      },
+      providerMetadata: {
+        spec: {
+          displayName: opts.displayName ?? 'Test Extension',
+          description: opts.description ?? 'A description',
+          category: opts.category,
+        },
+      },
+    },
+  };
+}
 
 describe('ExtensionAllComponent', () => {
   let component: ProvidersComponent;
@@ -28,7 +55,7 @@ describe('ExtensionAllComponent', () => {
     contextSubject = new Subject();
 
     await TestBed.configureTestingModule({
-      imports: [ProviderAllComponent],
+      imports: [ProvidersComponent],
       providers: [
         provideMockStore({
           initialState: { marketplaceEntries: [], marketplaceEntry: undefined, changingProviderNames: [] },
@@ -45,7 +72,6 @@ describe('ExtensionAllComponent', () => {
           addNodeParams: vi.fn(),
         }),
       ],
-      imports: [ProvidersComponent],
     }).compileComponents();
 
     luigiClient = TestBed.inject(LuigiClient);
@@ -63,38 +89,25 @@ describe('ExtensionAllComponent', () => {
   });
 
   describe('installableProviders', () => {
-    it('should map marketplace entries to catalog data items', fakeAsync(() => {
+    it('should map marketplace entries to catalog data items', () => {
       let emitted: unknown;
       component.installableProviders.pipe(take(1)).subscribe((items) => {
         emitted = items;
       });
 
       const entries: MarketplaceEntry[] = [
-        buildMarketplaceEntry({
-          name: 'ext1',
-          installed: false,
-          displayName: 'Extension One',
-          description: 'Desc One',
-          category: 'Category A',
-        }),
-        buildMarketplaceEntry({
-          name: 'ext2',
-          installed: true,
-          displayName: 'Extension Two',
-          description: 'Desc Two',
-          category: 'Category B',
-        }),
+        buildMarketplaceEntry({ name: 'ext1', installed: false, displayName: 'Extension One', description: 'Desc One', category: 'Category A' }),
+        buildMarketplaceEntry({ name: 'ext2', installed: true, displayName: 'Extension Two', description: 'Desc Two', category: 'Category B' }),
       ];
 
       store.overrideSelector(selectAllProviders, entries);
       store.refreshState();
-      tick();
 
       expect(Array.isArray(emitted)).toBe(true);
       expect((emitted as any[]).length).toBe(2);
-    }));
+    });
 
-    it('should set badge text to INSTALLED when installed is true', fakeAsync(() => {
+    it('should set badge text to INSTALLED when installed is true', () => {
       let emitted: any[] = [];
       component.installableProviders.pipe(take(1)).subscribe((items) => {
         emitted = items;
@@ -104,12 +117,11 @@ describe('ExtensionAllComponent', () => {
         buildMarketplaceEntry({ name: 'ext1', installed: true }),
       ]);
       store.refreshState();
-      tick();
 
       expect(emitted[0].badge.text).toBe('INSTALLED');
-    }));
+    });
 
-    it('should set badge text to empty string when not installed', fakeAsync(() => {
+    it('should set badge text to empty string when not installed', () => {
       let emitted: any[] = [];
       component.installableProviders.pipe(take(1)).subscribe((items) => {
         emitted = items;
@@ -119,12 +131,11 @@ describe('ExtensionAllComponent', () => {
         buildMarketplaceEntry({ name: 'ext1', installed: false }),
       ]);
       store.refreshState();
-      tick();
 
       expect(emitted[0].badge.text).toBe('');
-    }));
+    });
 
-    it('should include additionalInfo with Category when category is set', fakeAsync(() => {
+    it('should include additionalInfo with Category when category is set', () => {
       let emitted: any[] = [];
       component.installableProviders.pipe(take(1)).subscribe((items) => {
         emitted = items;
@@ -134,48 +145,44 @@ describe('ExtensionAllComponent', () => {
         buildMarketplaceEntry({ category: 'MyCategory' }),
       ]);
       store.refreshState();
-      tick();
 
       expect(emitted[0].additionalInfo).toEqual([
         { label: 'Category', value: 'MyCategory' },
       ]);
-    }));
+    });
 
-    it('should set isLoading to false after receiving entries', fakeAsync(() => {
+    it('should set isLoading to false after receiving entries', () => {
       component.installableProviders.pipe(take(1)).subscribe();
 
       store.overrideSelector(selectAllProviders, []);
       store.refreshState();
-      tick();
 
       let loadingValue: boolean | undefined;
       component.isLoading.pipe(take(1)).subscribe((v) => {
         loadingValue = v;
       });
       expect(loadingValue).toBe(false);
-    }));
+    });
   });
 
   describe('ngOnInit', () => {
-    it('should set initialFilter from Luigi node params', fakeAsync(() => {
+    it('should set initialFilter from Luigi node params', () => {
       luigiClient.getNodeParams = vi.fn().mockReturnValue({ q: 'test-query' });
 
       component.ngOnInit();
       contextSubject.next({ context: { entityId: 'e1', entityType: 'project' } });
-      tick();
 
       expect(component.initialFilter).toBe('test-query');
-    }));
+    });
 
-    it('should set initialFilter to empty string when q param is absent', fakeAsync(() => {
+    it('should set initialFilter to empty string when q param is absent', () => {
       luigiClient.getNodeParams = vi.fn().mockReturnValue({});
 
       component.ngOnInit();
       contextSubject.next({ context: { entityId: 'e1', entityType: 'project' } });
-      tick();
 
       expect(component.initialFilter).toBe('');
-    }));
+    });
   });
 
   describe('writeQueryParam', () => {
