@@ -96,6 +96,10 @@ describe('GraphqlService', () => {
     mockStore.overrideSelector(luigiContextSelector, mockLuigiContext);
   });
 
+  afterEach(() => {
+    mockStore.resetSelectors();
+  });
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
