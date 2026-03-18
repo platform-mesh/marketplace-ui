@@ -5,26 +5,19 @@ export interface EntityConfig {
   contextProperty: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface NodeContext extends Record<string, any> {
   token: string;
   accountId: string;
   userId: string;
-  tenantId: string;
   entityType: string;
   portalBaseUrl: string;
   portalContext: PortalContext;
   serviceProviderConfig: Record<string, string>;
   entityName: string;
   entityId: string;
-  entity: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  componentId?: string;
+  entity: any;
   profileUserId?: string;
   analyticsTrackerConfig: AnalyzerTrackingConfig;
-  dashboard?: {
-    sections: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    sidebar: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  };
   entityContext: Record<
     string,
     {
@@ -45,7 +38,6 @@ export interface NodeContext extends Record<string, any> {
     }
   >;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   goBackContext?: GoBackContext | any;
   parentNavigationContexts: string[];
   providerName?: string;
@@ -53,6 +45,4 @@ export interface NodeContext extends Record<string, any> {
 
 export interface AnalyzerTrackingConfig {
   siteUrl?: string;
-  jukeboxMatomoContainerId?: string;
-  tenantIds?: string[];
 }

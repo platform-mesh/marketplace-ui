@@ -1,4 +1,3 @@
-import { WizardConfigError } from '@dxp/ngx-core/fundamental-wizard-generator';
 import { ProviderMetadata } from 'models/index';
 
 export const PROVIDER_INSTANCE_INSTALLED = 'PROVIDER_INSTANCE_INSTALLED';
@@ -6,9 +5,8 @@ export const PROVIDER_INSTANCE_UPDATED = 'PROVIDER_INSTANCE_UPDATED';
 
 export enum LuigiGoBackAction {
   PROVIDER_INSTANCE_UNINSTALLED = 'PROVIDER_INSTANCE_UNINSTALLED',
-  WIZARD_CONFIG_ERROR = 'WIZARD_CONFIG_ERROR',
+  EXTENSION_UNINSTALLED = 'PROVIDER_INSTANCE_UNINSTALLED',
   RESOURCE_ACCOUNT_EDITED = 'ACCOUNT_EDITED',
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   RESOURCE_ACCOUNT_ERROR = 'RESOURCE_ACCOUNT_CANCEL',
 }
 
@@ -16,5 +14,4 @@ export interface GoBackContext {
   action: LuigiGoBackAction;
   provider?: ProviderMetadata;
   installationData?: Record<string, unknown>;
-  wizardConfigError?: WizardConfigError;
 }
