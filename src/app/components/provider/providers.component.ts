@@ -2,11 +2,17 @@ import {
   AdditionalInfo,
   CatalogDataItem,
   CoreCatalogComponent,
-} from '../../catalog';
-import { ProviderEmptyComponent } from '../../provider/provider-empty/provider-empty.component';
+} from '../catalog';
+import { ProviderEmptyComponent } from './provider-empty/provider-empty.component';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { LinkComponent } from '@fundamental-ngx/platform/link';
+import { LinkComponent } from '@fundamental-ngx/core/link';
+import {
+  DynamicPageComponent,
+  DynamicPageContentComponent,
+  DynamicPageTitleComponent,
+} from '@fundamental-ngx/platform';
+import { DynamicPageComponent as DynamicPageComponent_1 } from '@fundamental-ngx/platform/dynamic-page';
 import { ModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { MarketplaceEntry, ProviderMetadata } from 'models/provider-metadata';
@@ -21,6 +27,7 @@ import { map, take } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
 import { ProviderService } from 'services/provider.service';
 import { ProviderState } from 'state/providerState';
+import { loadProviders } from 'state/providers.actions';
 import { selectAllProviders } from 'state/providers.selectors';
 import { triggerMatomoEvent } from 'utils/helpers';
 
@@ -32,16 +39,22 @@ export interface ProviderCatalogDataItem extends CatalogDataItem {
 @Component({
   selector: 'app-provider-all',
   imports: [
-    CoreCatalogComponent,
     LinkComponent,
+    DynamicPageComponent_1,
+    DynamicPageTitleComponent,
+    DynamicPageContentComponent,
+    CoreCatalogComponent,
     ProviderEmptyComponent,
     AsyncPipe,
+    DynamicPageComponent,
+    DynamicPageContentComponent,
+    DynamicPageTitleComponent,
   ],
-  templateUrl: './provider-all.component.html',
-  styleUrl: './provider-all.component.scss',
+  templateUrl: './providers.component.html',
+  styleUrl: './providers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProviderAllComponent implements OnInit {
+export class ProvidersComponent implements OnInit {
   initialFilter?: string;
   isLoading: Subject<boolean> = new BehaviorSubject(true);
   installableProviders: Observable<ProviderCatalogDataItem[]>;
@@ -54,6 +67,10 @@ export class ProviderAllComponent implements OnInit {
     private luigiClient: LuigiClient,
     private pmLuigiContextService: PmLuigiContextService,
   ) {
+    this.pmLuigiContextService.contextObservable().subscribe(() => {
+      this.store.dispatch(loadProviders());
+    });
+
     this.installableProviders = combineLatest([
       this.store.select(selectAllProviders),
     ]).pipe(

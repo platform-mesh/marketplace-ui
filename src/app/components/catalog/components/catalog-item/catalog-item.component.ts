@@ -18,7 +18,7 @@ import { FormLabelComponent } from '@fundamental-ngx/core/form';
 import { InfoLabelComponent } from '@fundamental-ngx/core/info-label';
 import { TextComponent } from '@fundamental-ngx/core/text';
 import { CatalogDataItem } from 'components/catalog';
-import { ProviderVerificationComponent } from 'components/provider/provider-verification/provider-verification.component';
+import { VerificationInfoComponent } from 'components/verification-info/verification-info.component';
 import { Md5 } from 'ts-md5';
 
 @Component({
@@ -30,7 +30,7 @@ import { Md5 } from 'ts-md5';
     InfoLabelComponent,
     AvatarComponent,
     CardTitleDirective,
-    ProviderVerificationComponent,
+    VerificationInfoComponent,
     CardContentComponent,
     FormLabelComponent,
     TextComponent,

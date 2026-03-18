@@ -1,33 +1,28 @@
-import { Verification } from '../../catalog';
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
+  computed,
+  input,
 } from '@angular/core';
 import { ObjectStatusComponent } from '@fundamental-ngx/core';
 import { AvatarComponent } from '@fundamental-ngx/core/avatar';
 import { InlineHelpDirective } from '@fundamental-ngx/core/inline-help';
+import { Verification } from 'models/verification';
 import { VerificationInfo } from 'models/verification-info';
 
 @Component({
   selector: 'app-provider-verification',
   imports: [AvatarComponent, InlineHelpDirective, ObjectStatusComponent],
-  templateUrl: './provider-verification.component.html',
-  styleUrl: './provider-verification.component.scss',
+  templateUrl: './verification-info.component.html',
+  styleUrl: './verification-info.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProviderVerificationComponent implements OnChanges {
+export class VerificationInfoComponent {
   /**
-   * Represents the verification status, indicating whether it is verified by Hyperspace or a Hyperspace Partner.
+   * Indication the verification status
    */
-  @Input() verification?: Verification | null;
-  verificationInfo?: VerificationInfo;
-
-  ngOnChanges(_: SimpleChanges): void {
-    this.verificationInfo = this.mapVerificationInfo();
-  }
+  verification = input<Verification | undefined>(undefined);
+  verificationInfo = computed(() => this.mapVerificationInfo());
 
   communityVerificationInfo: VerificationInfo = {
     showIcon: false,

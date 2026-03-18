@@ -1,3 +1,11 @@
+.catalog-page .fd-grid-list__item--link:active {
+  color: var(--sapTextColor) !important;
+}
+
+::ng-deep .fd-dynamic-page__header {
+  display: none !important;
+}
+
 .extension-catalog-call-to-action-banner {
   margin: 2rem auto 0 auto;
   width: 665px;

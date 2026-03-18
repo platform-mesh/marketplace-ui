@@ -1,5 +1,4 @@
 import { MarketplaceEntry, NodeContext } from '../../../models';
-import { ProviderVerificationComponent } from '../provider-verification/provider-verification.component';
 import { AsyncPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -32,6 +31,7 @@ import {
   DynamicPageTitleComponent,
 } from '@fundamental-ngx/platform/dynamic-page';
 import { Store } from '@ngrx/store';
+import { VerificationInfoComponent } from 'components/verification-info/verification-info.component';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import {
   Contact,
@@ -76,7 +76,7 @@ import { triggerMatomoEvent } from 'utils/helpers';
     TextComponent,
     AsyncPipe,
     ContentDensityDirective,
-    ProviderVerificationComponent,
+    VerificationInfoComponent,
   ],
   templateUrl: './provider-detail-dialog.component.html',
   styleUrl: './provider-detail-dialog.component.scss',
