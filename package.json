@@ -75,7 +75,6 @@
     "@openmfp/config-prettier": "^0.9.1",
     "@openmfp/eslint-config-typescript": "^0.7.11",
     "@openmfp/gha-cache": "^0.5.23",
-    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/node": "22.15.18",
     "@vitest/coverage-v8": "^4.1.0",
     "angular-eslint": "^21.3.1",
