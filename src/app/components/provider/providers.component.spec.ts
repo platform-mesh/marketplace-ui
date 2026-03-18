@@ -1,7 +1,7 @@
 import {
-  ProviderAllComponent,
   ProviderCatalogDataItem,
-} from './provider-all.component';
+  ProvidersComponent,
+} from './providers.component';
 import {
   ComponentFixture,
   TestBed,
@@ -20,8 +20,8 @@ import { loadProviders } from 'state/providers.actions';
 import { selectAllProviders } from 'state/providers.selectors';
 
 describe('ExtensionAllComponent', () => {
-  let component: ProviderAllComponent;
-  let fixture: ComponentFixture<ProviderAllComponent>;
+  let component: ProvidersComponent;
+  let fixture: ComponentFixture<ProvidersComponent>;
   let luigiClient: LuigiClient;
   let store: MockStore<unknown>;
 
@@ -44,7 +44,7 @@ describe('ExtensionAllComponent', () => {
           addNodeParams: jest.fn(),
         }),
       ],
-      imports: [ProviderAllComponent],
+      imports: [ProvidersComponent],
     }).compileComponents();
 
     luigiClient = TestBed.inject(LuigiClient);
@@ -52,7 +52,7 @@ describe('ExtensionAllComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProviderAllComponent);
+    fixture = TestBed.createComponent(ProvidersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

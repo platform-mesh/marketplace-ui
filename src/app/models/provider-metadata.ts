@@ -50,23 +50,6 @@ export interface ExecutionPayload {
   payload: string;
 }
 
-export interface ColumnConfig {
-  label: string;
-  name: string;
-  dataPath: string;
-  hidden?: boolean;
-  link?: LinkConfig;
-  text?: TextConfig;
-  status?: StatusConfig;
-  tags?: TagConfig;
-  textMapping?: Record<string, string>;
-  popIn?: boolean;
-}
-
-export interface TagConfig {
-  sort?: string;
-}
-
 export interface StatusConfig {
   mapping: StatusMapping;
   tooltipDataPath?: string;
@@ -79,16 +62,6 @@ export interface StatusMapping {
   negative: string[];
   informative: string[];
   default: string[];
-}
-
-export interface TextConfig {
-  style?: string;
-}
-
-export interface LinkConfig {
-  target: string;
-  urlPath?: string;
-  url?: string;
 }
 
 export interface Contact {

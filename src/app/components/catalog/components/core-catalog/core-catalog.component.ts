@@ -1,7 +1,5 @@
 import { CatalogDataItem, InfoLabelFilter } from '../../models';
-import { CategoriesUtils } from '../../services/categories.utils';
 import { ProvidersUtils } from '../../services/providers.utils';
-import { CatalogItemComponent } from '../catalog-item/catalog-item.component';
 import {
   getFilteredDataByInfoLabels,
   getFilteredDataBySearchTerm,
@@ -9,7 +7,6 @@ import {
   getSortedDataByTitle,
   getSuggestions,
 } from './core-catalog.component.service';
-import { EmptyCatalogComponent } from './empty-catalog/empty-catalog.component';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -45,6 +42,9 @@ import {
   SelectComponent,
 } from '@fundamental-ngx/platform/form';
 import { SearchFieldComponent } from '@fundamental-ngx/platform/search-field';
+import { CatalogItemComponent } from 'components/catalog';
+import { EmptyCatalogComponent } from 'components/catalog';
+import { CategoriesUtils } from 'components/catalog';
 
 export interface CardFilter {
   category?: string;

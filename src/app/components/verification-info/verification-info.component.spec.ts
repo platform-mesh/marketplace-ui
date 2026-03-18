@@ -1,9 +1,8 @@
-import { ProviderVerificationComponent } from './provider-verification.component';
+import { VerificationInfoComponent } from './verification-info.component';
 import { Verification, VerificationType } from 'models/index';
 
 describe('ProviderVerificationComponent', () => {
-  const component: ProviderVerificationComponent =
-    new ProviderVerificationComponent();
+  const component: VerificationInfoComponent = new VerificationInfoComponent();
 
   it.each([
     [

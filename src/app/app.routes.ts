@@ -1,11 +1,11 @@
-import { CatalogComponent } from './components/provider/catalog/catalog.component';
-import { ProviderDetailDialogComponent } from './components/provider/provider-detail-dialog/provider-detail-dialog.component';
 import { Routes } from '@angular/router';
+import { ProviderDetailDialogComponent } from 'components/provider/provider-detail-dialog/provider-detail-dialog.component';
+import { ProvidersComponent } from 'components/provider/providers.component';
 
 export const routes: Routes = [
   {
     path: 'marketplace',
-    component: CatalogComponent,
+    component: ProvidersComponent,
   },
   {
     path: 'provider/:providerName',
