@@ -1,5 +1,4 @@
 import {
-  ProviderCatalogDataItem,
   ProvidersComponent,
 } from './providers.component';
 import {
