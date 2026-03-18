@@ -13,11 +13,6 @@ import {
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withHashLocation } from '@angular/router';
 import {
-  DxpFundamentalDialogServiceReplacer,
-  DxpFundamentalMessageBoxServiceReplacer,
-} from '@dxp/ngx-core/fundamental';
-import { provideLuigiState } from '@dxp/ngx-core/state';
-import {
   ContentDensityMode,
   ContentDensityService,
   RtlService,
@@ -31,7 +26,12 @@ import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideNamedApollo } from 'apollo-angular';
 import { ENV } from 'models/env.token';
+import {
+  FundamentalDialogServiceReplacer,
+  FundamentalMessageBoxServiceReplacer,
+} from 'services/fundamental';
 import { LuigiClient } from 'services/luigi';
+import { provideLuigiState } from 'services/luigi/state/provide-luigi-state';
 import { ProviderInstanceEffects } from 'state/changing-provider-instance.effects';
 import { changingProviderInstanceReducer } from 'state/changing-provider-instance.reducer';
 import { CommonEffects } from 'state/common.effects';
@@ -44,8 +44,8 @@ import { providersReducer } from 'state/providers.reducer';
 export const appConfig: ApplicationConfig = {
   providers: [
     ContentDensityService,
-    DxpFundamentalDialogServiceReplacer,
-    DxpFundamentalMessageBoxServiceReplacer,
+    FundamentalDialogServiceReplacer,
+    FundamentalMessageBoxServiceReplacer,
     LuigiClient,
     RtlService,
     provideNamedApollo(() => ({})),
