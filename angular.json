@@ -169,7 +169,8 @@
           },
           "configurations": {
             "coverage": {
-              "coverage": true
+              "coverage": true,
+              "watch": false
             }
           }
         }
