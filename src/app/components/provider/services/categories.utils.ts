@@ -1,4 +1,4 @@
-import { CardFilter, CatalogDataItem } from '../models';
+import { CardFilter, CatalogDataItem } from 'models/index';
 
 export class CategoriesUtils {
   static getCategories = (data: CatalogDataItem[]): string[] => {

@@ -1,5 +1,4 @@
-import { CardFilter } from '../models';
-import { CatalogDataItem } from '../models';
+import { CardFilter, CatalogDataItem } from 'models/index';
 
 export class ProvidersUtils {
   static providerFallbackId = 'community';
