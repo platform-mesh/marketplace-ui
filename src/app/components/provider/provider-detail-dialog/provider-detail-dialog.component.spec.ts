@@ -1,13 +1,6 @@
 import { ProviderDetailDialogComponent } from './provider-detail-dialog.component';
-import { type Mock } from 'vitest';
-import {
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  tick,
-} from '@angular/core/testing';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { mock } from 'vitest-mock-extended';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MarketplaceEntry, ServiceLevel } from 'models/index';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
@@ -24,7 +17,8 @@ import {
   selectProviderMetadataProductOwners,
   selectProviderMetadataSupportLinks,
 } from 'state/provider-metadata.selectors';
-import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
+import { type Mock } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 const buildMarketplaceEntry = (
   overrides: Partial<MarketplaceEntry> = {},
@@ -193,9 +187,9 @@ describe('ProviderDetailDialogComponent', () => {
       const entry = buildMarketplaceEntry();
       component.marketplaceEntry = entry;
       component['visitExtension']();
-      expect(providerServiceMock.navigateToProviderDetails).toHaveBeenCalledWith(
-        entry,
-      );
+      expect(
+        providerServiceMock.navigateToProviderDetails,
+      ).toHaveBeenCalledWith(entry);
     });
 
     it('should not throw when marketplaceEntry is not set', () => {
@@ -240,13 +234,23 @@ describe('ProviderDetailDialogComponent', () => {
   describe('ngOnInit and ngOnDestroy', () => {
     it('should subscribe on init and unsubscribe on destroy', () => {
       const store = TestBed.inject(MockStore) as MockStore;
-      store.overrideSelector(selectProviderMetadata, buildMarketplaceEntry() as any);
+      store.overrideSelector(
+        selectProviderMetadata,
+        buildMarketplaceEntry() as any,
+      );
       store.refreshState();
 
       const contextMsg = mock<IContextMessage>({
         context: {
           providerName: 'test-provider',
-          entityContext: { project: { policies: ['providerAdmin'], id: '', displayName: '', type: '' } } as any,
+          entityContext: {
+            project: {
+              policies: ['providerAdmin'],
+              id: '',
+              displayName: '',
+              type: '',
+            },
+          } as any,
         },
       });
       luigiContextSubject.next(contextMsg);

@@ -1,4 +1,4 @@
-import { CatalogDataItem, InfoLabelFilter } from '../../models';
+import { CatalogDataItem, InfoLabelFilter } from '../models';
 import { SuggestionItem } from '@fundamental-ngx/platform';
 
 export const INSTALLED_BADGE_TEXT = 'INSTALLED';

@@ -1,12 +1,12 @@
-import { CatalogDataItem, InfoLabelFilter } from '../../models';
-import { ProvidersUtils } from '../../services/providers.utils';
+import { CatalogDataItem, InfoLabelFilter } from '../models';
+import { ProvidersUtils } from '../services/providers.utils';
 import {
   getFilteredDataByInfoLabels,
   getFilteredDataBySearchTerm,
   getSortedDataByInstallStatus,
   getSortedDataByTitle,
   getSuggestions,
-} from './core-catalog.component.service';
+} from './catalog.component.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -42,19 +42,11 @@ import {
   SelectComponent,
 } from '@fundamental-ngx/platform/form';
 import { SearchFieldComponent } from '@fundamental-ngx/platform/search-field';
-import { CatalogItemComponent } from 'components/catalog';
-import { EmptyCatalogComponent } from 'components/catalog';
-import { CategoriesUtils } from 'components/catalog';
-
-export interface CardFilter {
-  category?: string;
-  providers: Filter[];
-}
-
-interface Filter {
-  label: string;
-  id: string;
-}
+import { CatalogItemComponent } from 'components/provider/catalog-item/catalog-item.component';
+import { EmptyCatalogComponent } from 'components/provider/catalog/empty-catalog/empty-catalog.component';
+import { CardFilter } from 'components/provider/models';
+import { Filter } from 'components/provider/models/filter';
+import { CategoriesUtils } from 'components/provider/services/categories.utils';
 
 @Component({
   selector: 'app-core-catalog',
@@ -75,11 +67,11 @@ interface Filter {
     FormGroupComponent,
     SelectComponent,
   ],
-  templateUrl: './core-catalog.component.html',
-  styleUrl: './core-catalog.component.scss',
+  templateUrl: './catalog.component.html',
+  styleUrl: './catalog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoreCatalogComponent implements OnInit, OnChanges {
+export class CatalogComponent implements OnInit, OnChanges {
   readonly title = input('Catalog', {
     transform: (value: undefined | string) => value ?? 'Catalog',
   });

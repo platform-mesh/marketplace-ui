@@ -1,4 +1,4 @@
-import { CardFilter } from '../components/core-catalog/core-catalog.component';
+import { CardFilter } from '../models';
 import { CatalogDataItem } from '../models';
 
 export class ProvidersUtils {

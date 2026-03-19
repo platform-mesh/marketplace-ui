@@ -11,7 +11,6 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
-    "importHelpers": true,
     "allowJs": true,
     "target": "ES2022",
     "module": "ES2022",

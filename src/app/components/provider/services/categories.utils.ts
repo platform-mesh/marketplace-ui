@@ -1,5 +1,4 @@
-import { CardFilter } from '../components/core-catalog/core-catalog.component';
-import { CatalogDataItem } from '../models';
+import { CardFilter, CatalogDataItem } from '../models';
 
 export class CategoriesUtils {
   static getCategories = (data: CatalogDataItem[]): string[] => {
