@@ -1,7 +1,7 @@
-import { CatalogDataItem } from '../models';
 import { CatalogComponent } from './catalog.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, ParamMap, convertToParamMap } from '@angular/router';
+import { CatalogDataItem } from 'models/index';
 import { of } from 'rxjs';
 import { mock } from 'vitest-mock-extended';
 

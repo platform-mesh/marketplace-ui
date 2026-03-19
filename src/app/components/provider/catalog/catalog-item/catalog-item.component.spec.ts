@@ -1,6 +1,6 @@
-import { CatalogDataItem } from '../models';
 import { CatalogItemComponent } from './catalog-item.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CatalogDataItem } from 'models/index';
 import { mock } from 'vitest-mock-extended';
 
 const buildItem = (

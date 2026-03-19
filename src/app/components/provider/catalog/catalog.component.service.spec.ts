@@ -1,4 +1,3 @@
-import { CatalogDataItem, InfoLabelFilter } from '../models';
 import {
   INSTALLED_BADGE_TEXT,
   getFilteredDataByInfoLabels,
@@ -7,6 +6,7 @@ import {
   getSortedDataByTitle,
   getSuggestions,
 } from './catalog.component.service';
+import { CatalogDataItem, InfoLabelFilter } from 'models/index';
 
 describe('CatalogComponentService', () => {
   describe('getSortedDataByInstallStatus', () => {
