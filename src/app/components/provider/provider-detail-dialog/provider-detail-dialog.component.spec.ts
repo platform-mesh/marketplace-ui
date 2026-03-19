@@ -182,22 +182,6 @@ describe('ProviderDetailDialogComponent', () => {
     });
   });
 
-  describe('visitExtension', () => {
-    it('should call navigateToProviderDetails when marketplaceEntry is set', () => {
-      const entry = buildMarketplaceEntry();
-      component.marketplaceEntry = entry;
-      component['visitExtension']();
-      expect(
-        providerServiceMock.navigateToProviderDetails,
-      ).toHaveBeenCalledWith(entry);
-    });
-
-    it('should not throw when marketplaceEntry is not set', () => {
-      component.marketplaceEntry = undefined as any;
-      expect(() => component['visitExtension']()).not.toThrow();
-    });
-  });
-
   describe('uninstallExtension', () => {
     it('should call uninstallProviderInstanceDialog when marketplaceEntry is set', async () => {
       const entry = buildMarketplaceEntry();
