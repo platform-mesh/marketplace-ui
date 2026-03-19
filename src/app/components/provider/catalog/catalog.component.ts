@@ -1,4 +1,3 @@
-import { CatalogDataItem, InfoLabelFilter } from '../models';
 import { ProvidersUtils } from '../services/providers.utils';
 import {
   getFilteredDataByInfoLabels,
@@ -44,9 +43,13 @@ import {
 import { SearchFieldComponent } from '@fundamental-ngx/platform/search-field';
 import { CatalogItemComponent } from 'components/provider/catalog-item/catalog-item.component';
 import { EmptyCatalogComponent } from 'components/provider/catalog/empty-catalog/empty-catalog.component';
-import { CardFilter } from 'components/provider/models';
-import { Filter } from 'components/provider/models/filter';
 import { CategoriesUtils } from 'components/provider/services/categories.utils';
+import {
+  CardFilter,
+  CatalogDataItem,
+  Filter,
+  InfoLabelFilter,
+} from 'models/index';
 
 @Component({
   selector: 'app-core-catalog',

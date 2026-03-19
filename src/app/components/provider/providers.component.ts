@@ -1,4 +1,4 @@
-import { AdditionalInfo, CatalogDataItem } from './models';
+import { AdditionalInfo, CatalogDataItem } from 'models/index';
 import { ProviderEmptyComponent } from './provider-empty/provider-empty.component';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
