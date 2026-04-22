@@ -48,14 +48,14 @@ export class ApolloFactory {
 
   private getUrl(nodeContext: NodeContext): string {
     return nodeContext.portalContext.crdGatewayApiUrl.replace(
-      /kubernetes-graphql-gateway\/.+/,
-      'kubernetes-graphql-gateway/single-marketplace/graphql',
+      /gateway\/api\/clusters\/.+/,
+      'gateway/api/clusters/single-marketplace/graphql',
     );
   }
 
   private getClusterTarget(nodeContext: NodeContext): string {
     const match = nodeContext.portalContext.crdGatewayApiUrl.match(
-      /kubernetes-graphql-gateway\/([^/]+)/,
+      /gateway\/api\/clusters\/([^/]+)/,
     );
     return match?.[1] ?? '';
   }

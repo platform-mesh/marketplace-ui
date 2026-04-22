@@ -66,14 +66,14 @@ describe('ApolloFactory', () => {
   describe('apollo (marketplace client)', () => {
     it('should use single-marketplace path and set clusterTarget extension', async () => {
       const ctx = buildNodeContext(
-        'https://host/api/kubernetes-graphql-gateway/root:orgs:demo/graphql',
+        'https://host/gateway/api/clusters/root:orgs:demo/graphql',
       );
       const apollo = factory.apollo(ctx);
 
       await firstValueFrom(apollo.query({ query: QUERY, fetchPolicy: 'no-cache' }));
 
       expect(capturedUri).toBe(
-        'https://host/api/kubernetes-graphql-gateway/single-marketplace/graphql',
+        'https://host/gateway/api/clusters/single-marketplace/graphql',
       );
       expect(capturedExtensions).toEqual(
         expect.objectContaining({ clusterTarget: 'root:orgs:demo' }),
@@ -82,14 +82,14 @@ describe('ApolloFactory', () => {
 
     it('should handle complex cluster paths', async () => {
       const ctx = buildNodeContext(
-        'https://demo.portal.localhost:8443/api/kubernetes-graphql-gateway/root:orgs:demo:test/graphql',
+        'https://demo.portal.localhost:8443/gateway/api/clusters/root:orgs:demo:test/graphql',
       );
       const apollo = factory.apollo(ctx);
 
       await firstValueFrom(apollo.query({ query: QUERY, fetchPolicy: 'no-cache' }));
 
       expect(capturedUri).toBe(
-        'https://demo.portal.localhost:8443/api/kubernetes-graphql-gateway/single-marketplace/graphql',
+        'https://demo.portal.localhost:8443/gateway/api/clusters/single-marketplace/graphql',
       );
       expect(capturedExtensions).toEqual(
         expect.objectContaining({ clusterTarget: 'root:orgs:demo:test' }),
@@ -100,14 +100,14 @@ describe('ApolloFactory', () => {
   describe('wsapollo (workspace client)', () => {
     it('should use single-marketplace path and set clusterTarget extension for queries', async () => {
       const ctx = buildNodeContext(
-        'https://host/api/kubernetes-graphql-gateway/root:orgs:demo/graphql',
+        'https://host/gateway/api/clusters/root:orgs:demo/graphql',
       );
       const apollo = factory.wsapollo(ctx);
 
       await firstValueFrom(apollo.query({ query: QUERY, fetchPolicy: 'no-cache' }));
 
       expect(capturedUri).toBe(
-        'https://host/api/kubernetes-graphql-gateway/single-marketplace/graphql',
+        'https://host/gateway/api/clusters/single-marketplace/graphql',
       );
       expect(capturedExtensions).toEqual(
         expect.objectContaining({ clusterTarget: 'root:orgs:demo' }),
