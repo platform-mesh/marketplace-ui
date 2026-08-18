@@ -22,7 +22,6 @@ const mockMarketplaceEntry: MarketplaceEntry = {
       spec: {
         permissionClaims: [
           {
-            all: false,
             group: 'example.io',
             identityHash: 'abc123',
             resource: 'configs',
