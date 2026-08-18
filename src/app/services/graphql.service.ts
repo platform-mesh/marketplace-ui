@@ -31,7 +31,7 @@ export class GraphqlService {
           })
           .pipe(
             map((apolloResponse: any) => {
-              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha1
+              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
                 .MarketplaceEntries.items;
             }),
             map((entries: MarketplaceEntry[]) => {
@@ -75,7 +75,7 @@ export class GraphqlService {
           .pipe(
             map(
               (apolloResponse: any) =>
-                apolloResponse.data.marketplace_platform_mesh_io.v1alpha1
+                apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
                   .MarketplaceEntries.items,
             ),
           );

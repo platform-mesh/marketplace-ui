@@ -42,7 +42,7 @@ export const deleteAPIBindingMutation = gql`
 export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {
-      v1alpha1 {
+      v1alpha2 {
         MarketplaceEntries {
           items {
             metadata {
@@ -54,7 +54,6 @@ export const getMarketplaceEntriesQuery = gql`
                 metadata
                 spec {
                   permissionClaims {
-                    all
                     group
                     identityHash
                     resource
