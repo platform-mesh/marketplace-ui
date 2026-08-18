@@ -316,7 +316,7 @@ input MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatuscon
 """"""
 type Subscription {
   """Subscribe to changes of MarketplaceEntries"""
-  marketplace_platform_mesh_io_v1alpha1_marketplaceentries(
+  marketplace_platform_mesh_io_v1alpha2_marketplaceentries(
     """
     If set, subscription will stream changes starting from this resourceVersion. If omitted will return all
     """
@@ -333,7 +333,7 @@ type Subscription {
     subscribeToAll: Boolean = false
   ): MarketplaceEntryEvent
   """Subscribe to changes of MarketplaceEntry"""
-  marketplace_platform_mesh_io_v1alpha1_marketplaceentry(
+  marketplace_platform_mesh_io_v1alpha2_marketplaceentry(
     """The name of the object"""
     name: String!
     """If true, the operation will be performed in dry-run mode"""
@@ -2296,7 +2296,7 @@ type DeleteOptionsEvent {
 }
 
 """"""
-type MarketplacePlatformMeshIoV1alpha1Query {
+type MarketplacePlatformMeshIoV1alpha2Query {
   """"""
   MarketplaceEntries(
     """A label selector to filter the objects by"""
@@ -3076,7 +3076,7 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_GroupVersionForDiscoverypreferredVers
 }
 
 """"""
-type MarketplacePlatformMeshIoV1alpha1Mutation {
+type MarketplacePlatformMeshIoV1alpha2Mutation {
   """"""
   createMarketplaceEntry(
     """The object to create or update"""
@@ -3123,7 +3123,7 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFiel
 """"""
 type MarketplacePlatformMeshIoQuery {
   """"""
-  v1alpha1: MarketplacePlatformMeshIoV1alpha1Query
+  v1alpha2: MarketplacePlatformMeshIoV1alpha2Query
 }
 
 """"""
@@ -3181,7 +3181,7 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_GroupVersionForDiscoveryversions {
 """"""
 type MarketplacePlatformMeshIoMutation {
   """"""
-  v1alpha1: MarketplacePlatformMeshIoV1alpha1Mutation
+  v1alpha2: MarketplacePlatformMeshIoV1alpha2Mutation
 }
 
 """"""

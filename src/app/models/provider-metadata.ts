@@ -99,7 +99,6 @@ export interface MarketplaceEntry {
       metadata: string;
       spec: {
         permissionClaims: {
-          all: boolean;
           group: string;
           identityHash: string;
           resource: string;
