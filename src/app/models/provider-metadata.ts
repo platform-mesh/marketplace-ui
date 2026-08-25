@@ -86,9 +86,12 @@ export interface MarketplaceEntry {
   };
   spec: {
     apiBindingName?: string;
+    /** Authoritative v1alpha2 claims used when creating the APIBinding. */
+    apiExportPermissionClaims?: APIExportPermissionClaim[];
+    /** Legacy v1alpha1 APIExport projection retained for existing consumers. */
     apiExport: {
       metadata: string;
-      spec: {
+      spec?: {
         permissionClaims: {
           all: boolean;
           group: string;
@@ -100,6 +103,28 @@ export interface MarketplaceEntry {
     };
     providerMetadata: ProviderMetadata;
   };
+}
+
+export interface APIExportPermissionClaim {
+  defaultSelector?: PermissionClaimSelector | null;
+  group?: string;
+  identityHash?: string;
+  resource: string;
+  verbs: string[];
+}
+
+export interface PermissionClaimSelector {
+  __typename?: string;
+  matchAll?: boolean;
+  matchExpressions?: PermissionClaimSelectorRequirement[];
+  matchLabels?: Record<string, string>;
+}
+
+export interface PermissionClaimSelectorRequirement {
+  __typename?: string;
+  key: string;
+  operator: string;
+  values?: string[] | null;
 }
 
 export interface ProviderMetadata {

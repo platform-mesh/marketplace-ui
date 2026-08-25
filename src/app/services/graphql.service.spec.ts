@@ -18,6 +18,57 @@ const mockMarketplaceEntry: MarketplaceEntry = {
   metadata: { name: 'test-provider' },
   spec: {
     apiBindingName: 'test-provider-abc12',
+    apiExportPermissionClaims: [
+      {
+        defaultSelector: {
+          __typename: 'PermissionClaimSelector',
+          matchLabels: { 'example.io/credential': 'true' },
+        },
+        group: 'example.io',
+        identityHash: 'abc123',
+        resource: 'configs',
+        verbs: ['get', 'create', 'update', 'patch'],
+      },
+      {
+        defaultSelector: null,
+        group: '',
+        identityHash: '',
+        resource: 'events',
+        verbs: ['*'],
+      },
+      {
+        defaultSelector: {
+          __typename: 'PermissionClaimSelector',
+          matchAll: false,
+          matchExpressions: [
+            {
+              __typename: 'LabelSelectorRequirement',
+              key: 'example.io/environment',
+              operator: 'In',
+              values: ['development'],
+            },
+            {
+              __typename: 'LabelSelectorRequirement',
+              key: 'example.io/ready',
+              operator: 'Exists',
+              values: null,
+            },
+          ],
+        },
+        group: '',
+        resource: 'namespaces',
+        verbs: ['get', 'list', 'watch'],
+      },
+      {
+        defaultSelector: {
+          __typename: 'PermissionClaimSelector',
+          matchAll: true,
+        },
+        group: '',
+        resource: 'configmaps',
+        verbs: ['get'],
+      },
+    ],
     apiExport: {
       metadata: JSON.stringify({
         annotations: { 'kcp.io/path': '/workspaces/test' },
@@ -26,11 +77,11 @@ const mockMarketplaceEntry: MarketplaceEntry = {
       spec: {
         permissionClaims: [
           {
-            all: false,
+            all: true,
             group: 'example.io',
-            identityHash: 'abc123',
-            resource: 'configs',
-            verbs: ['get'],
+            identityHash: 'legacy-claim-must-not-be-used',
+            resource: 'legacy-configs',
+            verbs: ['*'],
           },
         ],
       },
@@ -202,10 +253,136 @@ describe('GraphqlService', () => {
             generateName: 'test-provider-',
             apiExportName: 'test-api-export',
             apiExportPath: '/workspaces/test',
+            permissionClaims: [
+              {
+                state: 'Accepted',
+                group: 'example.io',
+                resource: 'configs',
+                identityHash: 'abc123',
+                verbs: ['get', 'create', 'update', 'patch'],
+                selector: {
+                  matchLabels: { 'example.io/credential': 'true' },
+                },
+              },
+              {
+                state: 'Accepted',
+                group: '',
+                resource: 'events',
+                identityHash: '',
+                verbs: ['*'],
+                selector: { matchAll: true },
+              },
+              {
+                state: 'Accepted',
+                group: '',
+                resource: 'namespaces',
+                identityHash: undefined,
+                verbs: ['get', 'list', 'watch'],
+                selector: {
+                  matchAll: false,
+                  matchExpressions: [
+                    {
+                      key: 'example.io/environment',
+                      operator: 'In',
+                      values: ['development'],
+                    },
+                    {
+                      key: 'example.io/ready',
+                      operator: 'Exists',
+                    },
+                  ],
+                },
+              },
+              {
+                state: 'Accepted',
+                group: '',
+                resource: 'configmaps',
+                identityHash: undefined,
+                verbs: ['get'],
+                selector: { matchAll: true },
+              },
+            ],
           }),
         }),
       );
       expect(mockSendCustomMessage).toHaveBeenCalled();
+    });
+
+    it('rejects an empty default selector instead of broadening it', () => {
+      const entry: MarketplaceEntry = {
+        ...mockMarketplaceEntry,
+        spec: {
+          ...mockMarketplaceEntry.spec,
+          apiExportPermissionClaims: [
+            {
+              defaultSelector: {},
+              group: 'example.io',
+              resource: 'configs',
+              verbs: ['get'],
+            },
+          ],
+        },
+      };
+
+      expect(() => service.installProviderInstance(entry)).toThrow(
+        'Invalid defaultSelector for permission claim configs.example.io',
+      );
+      expect(mockWsApolloMutate).not.toHaveBeenCalled();
+    });
+
+    it('rejects a conflicting default selector instead of broadening it', () => {
+      const entry: MarketplaceEntry = {
+        ...mockMarketplaceEntry,
+        spec: {
+          ...mockMarketplaceEntry.spec,
+          apiExportPermissionClaims: [
+            {
+              defaultSelector: {
+                matchAll: true,
+                matchLabels: { 'example.io/credential': 'true' },
+              },
+              group: 'example.io',
+              resource: 'configs',
+              verbs: ['get'],
+            },
+          ],
+        },
+      };
+
+      expect(() => service.installProviderInstance(entry)).toThrow(
+        'Invalid defaultSelector for permission claim configs.example.io',
+      );
+      expect(mockWsApolloMutate).not.toHaveBeenCalled();
+    });
+
+    it('rejects a malformed match expression', () => {
+      const entry: MarketplaceEntry = {
+        ...mockMarketplaceEntry,
+        spec: {
+          ...mockMarketplaceEntry.spec,
+          apiExportPermissionClaims: [
+            {
+              defaultSelector: {
+                matchExpressions: [
+                  {
+                    key: '',
+                    operator: 'In',
+                    values: ['development'],
+                  },
+                ],
+              },
+              group: '',
+              resource: 'namespaces',
+              verbs: ['get'],
+            },
+          ],
+        },
+      };
+
+      expect(() => service.installProviderInstance(entry)).toThrow(
+        'Invalid defaultSelector for permission claim namespaces',
+      );
+      expect(mockWsApolloMutate).not.toHaveBeenCalled();
     });
   });
 

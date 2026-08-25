@@ -1,16 +1,4 @@
 """"""
-type MarketplaceEntryList {
-  """"""
-  continue: String
-  """"""
-  items: [MarketplaceEntry!]!
-  """"""
-  remainingItemCount: Int
-  """"""
-  resourceVersion: String
-}
-
-""""""
 type io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedFields {
   """"""
   apiVersion: String
@@ -32,50 +20,6 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntrymetadatamanagedField
 scalar JSONString
 
 """"""
-type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRef_secret_Enhanced {
-  """"""
-  name: String
-  """"""
-  namespace: String
-}
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspaces {
-  """"""
-  url: String
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondark {
-  """"""
-  data: String
-  """"""
-  url: String
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconInput {
-  """"""
-  dark: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondarkInput
-  """"""
-  light: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlightInput
-}
-
-""""""
-type MarketplaceEntry {
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-  """"""
-  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadata
-  """"""
-  spec: MarketplaceEntryspec
-  """"""
-  status: JSONString
-}
-
-""""""
 type io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetails {
   """"""
   causes: [io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscauses]
@@ -92,33 +36,11 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetails {
 }
 
 """"""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlightInput {
-  """"""
-  url: String
-  """"""
-  data: String
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityInput {
-  """"""
-  secretRef: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRefInput
-}
-
-""""""
 type StatusEvent {
   """"""
   object: Status
   """"""
   type: WatchEventType!
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentation {
-  """"""
-  displayName: String
-  """"""
-  url: String
 }
 
 """"""
@@ -158,18 +80,6 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_GroupVersionForDiscoverypreferredVersi
 }
 
 """"""
-input MarketplaceEntryspecspecapiExportspecapiExportspecInput {
-  """"""
-  permissionClaims: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsInput]
-  """"""
-  identity: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityInput
-  """"""
-  latestResourceSchemas: [String]
-  """"""
-  maximalPermissionPolicy: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicyInput
-}
-
-""""""
 type APIGroup {
   """"""
   apiVersion: String
@@ -187,8 +97,6 @@ type APIGroup {
 
 """"""
 type Mutation {
-  """"""
-  marketplace_platform_mesh_io: MarketplacePlatformMeshIoMutation
   """"""
   v1: V1Mutation
   """"""
@@ -219,6 +127,8 @@ type Mutation {
   topology_kcp_io: TopologyKcpIoMutation
   """"""
   ui_platform_mesh_io: UiPlatformMeshIoMutation
+  """"""
+  marketplace_platform_mesh_io: MarketplacePlatformMeshIoMutation
 }
 
 """"""
@@ -234,14 +144,6 @@ input APIVersionsInput {
 }
 
 """"""
-type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelector {
-  """"""
-  name: String
-  """"""
-  namespace: String
-}
-
-""""""
 input io_k8s_apimachinery_pkg_apis_meta_v1_ServerAddressByClientCIDRserverAddressByClientCIDRsInput {
   """"""
   clientCIDR: String
@@ -250,101 +152,7 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_ServerAddressByClientCIDRserverAddres
 }
 
 """"""
-input MarketplaceEntryInput {
-  """"""
-  spec: MarketplaceEntryspecInput
-  """"""
-  status: JSONString
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-  """"""
-  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadataInput
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecInput {
-  """"""
-  documentation: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentationInput]
-  """"""
-  helpCenterData: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterDataInput]
-  """"""
-  contacts: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontactsInput]
-  """"""
-  tags: [String]
-  """"""
-  links: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinksInput]
-  """"""
-  description: String
-  """"""
-  preferredSupportChannels: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannelsInput]
-  """"""
-  icon: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconInput
-  """"""
-  data: String
-  """"""
-  displayName: String
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportstatusInput {
-  """"""
-  conditions: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditionsInput]
-  """"""
-  identityHash: String
-  """"""
-  virtualWorkspaces: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspacesInput]
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditionsInput {
-  """"""
-  status: String
-  """"""
-  type: String
-  """"""
-  lastTransitionTime: String
-  """"""
-  message: String
-  """"""
-  reason: String
-  """"""
-  severity: String
-}
-
-""""""
 type Subscription {
-  """Subscribe to changes of MarketplaceEntries"""
-  marketplace_platform_mesh_io_v1alpha1_marketplaceentries(
-    """
-    If set, subscription will stream changes starting from this resourceVersion. If omitted will return all
-    """
-    resourceVersion: String
-    """A label selector to filter the objects by"""
-    labelselector: String
-    """The field to sort the results by"""
-    sortBy: String = "metadata.name"
-    """Maximum number of items to return (server may return fewer)"""
-    limit: Int
-    """Continue token from a previous list call to retrieve the next page"""
-    continue: String
-    """If true, events will be emitted on every field change"""
-    subscribeToAll: Boolean = false
-  ): MarketplaceEntryEvent
-  """Subscribe to changes of MarketplaceEntry"""
-  marketplace_platform_mesh_io_v1alpha1_marketplaceentry(
-    """The name of the object"""
-    name: String!
-    """If true, the operation will be performed in dry-run mode"""
-    dryRun: Boolean
-    """If true, events will be emitted on every field change"""
-    subscribeToAll: Boolean = false
-    """
-    If set, subscription will stream changes starting from this resourceVersion. If omitted will return all
-    """
-    resourceVersion: String
-  ): MarketplaceEntryEvent
   """Subscribe to changes of APIGroup"""
   v1_apigroup(
     """The name of the object"""
@@ -1906,30 +1714,38 @@ type Subscription {
     """
     resourceVersion: String
   ): WatchEventEvent
+  """Subscribe to changes of MarketplaceEntries"""
+  marketplace_platform_mesh_io_v1alpha1_marketplaceentries(
+    """
+    If set, subscription will stream changes starting from this resourceVersion. If omitted will return all
+    """
+    resourceVersion: String
+    """A label selector to filter the objects by"""
+    labelselector: String
+    """The field to sort the results by"""
+    sortBy: String = "metadata.name"
+    """Maximum number of items to return (server may return fewer)"""
+    limit: Int
+    """Continue token from a previous list call to retrieve the next page"""
+    continue: String
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntryEvent
+  """Subscribe to changes of MarketplaceEntry"""
+  marketplace_platform_mesh_io_v1alpha1_marketplaceentry(
+    """The name of the object"""
+    name: String!
+    """If true, events will be emitted on every field change"""
+    subscribeToAll: Boolean = false
+    """
+    If set, subscription will stream changes starting from this resourceVersion. If omitted will return all
+    """
+    resourceVersion: String
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntryEvent
 }
 
 """Input type for a map from strings to strings."""
 scalar StringMapInput
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportspec {
-  """"""
-  identity: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentity
-  """"""
-  latestResourceSchemas: [String]
-  """"""
-  maximalPermissionPolicy: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicy
-  """"""
-  permissionClaims: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaims]
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannels {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
 
 """Event type for resource change notifications"""
 enum WatchEventType {
@@ -1947,54 +1763,6 @@ type APIGroupEvent {
   object: APIGroup
   """"""
   type: WatchEventType!
-}
-
-""""""
-type MarketplaceEntryspec {
-  """"""
-  apiExport: MarketplaceEntryspecspecapiExport
-  """"""
-  installed: Boolean
-  """"""
-  providerMetadata: MarketplaceEntryspecspecproviderMetadata
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsInput {
-  """"""
-  resource: String
-  """"""
-  resourceSelector: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelectorInput]
-  """"""
-  all: Boolean
-  """"""
-  group: String
-  """"""
-  identityHash: String
-}
-
-""""""
-type MarketplaceEntryEvent {
-  """"""
-  object: MarketplaceEntry
-  """"""
-  type: WatchEventType!
-}
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicy {
-  """"""
-  local: JSONString
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontacts {
-  """"""
-  displayName: String
-  """"""
-  email: String
-  """"""
-  role: [String]
 }
 
 """"""
@@ -2068,44 +1836,6 @@ input APIGroupInput {
 }
 
 """"""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontactsInput {
-  """"""
-  email: String
-  """"""
-  role: [String]
-  """"""
-  displayName: String
-}
-
-""""""
-type MarketplaceEntryspecspecapiExport {
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-  """"""
-  metadata: JSONString
-  """"""
-  spec: MarketplaceEntryspecspecapiExportspecapiExportspec
-  """"""
-  status: MarketplaceEntryspecspecapiExportspecapiExportstatus
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadata {
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-  """"""
-  metadata: JSONString
-  """"""
-  spec: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspec
-  """"""
-  status: JSONString
-}
-
-""""""
 input io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetailsInput {
   """"""
   retryAfterSeconds: Int
@@ -2119,42 +1849,6 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_StatusDetailsdetailsInput {
   kind: String
   """"""
   name: String
-}
-
-""""""
-input MarketplaceEntryspecInput {
-  """"""
-  providerMetadata: MarketplaceEntryspecspecproviderMetadataInput
-  """"""
-  apiExport: MarketplaceEntryspecspecapiExportInput
-  """"""
-  installed: Boolean
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannelsInput {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRefInput {
-  """"""
-  name: String
-  """"""
-  namespace: String
-}
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportstatus {
-  """"""
-  conditions: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditions]
-  """"""
-  identityHash: String
-  """"""
-  virtualWorkspaces: [MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspaces]
 }
 
 """"""
@@ -2236,22 +1930,6 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferences
 }
 
 """"""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentationInput {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterDataInput {
-  """"""
-  url: String
-  """"""
-  displayName: String
-}
-
-""""""
 type typeByCategoryObject {
   """"""
   group: String!
@@ -2261,22 +1939,6 @@ type typeByCategoryObject {
   scope: String!
   """"""
   version: String!
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinksInput {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
-
-""""""
-input MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondarkInput {
-  """"""
-  data: String
-  """"""
-  url: String
 }
 
 """"""
@@ -2299,20 +1961,20 @@ type DeleteOptionsEvent {
 type MarketplacePlatformMeshIoV1alpha1Query {
   """"""
   MarketplaceEntries(
+    """Continue token from a previous list call to retrieve the next page"""
+    continue: String
     """A label selector to filter the objects by"""
     labelselector: String
     """The field to sort the results by"""
     sortBy: String = "metadata.name"
     """Maximum number of items to return (server may return fewer)"""
     limit: Int
-    """Continue token from a previous list call to retrieve the next page"""
-    continue: String
-  ): MarketplaceEntryList!
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntryList!
   """"""
   MarketplaceEntry(
     """The name of the object"""
     name: String!
-  ): MarketplaceEntry!
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntry!
   """"""
   MarketplaceEntryYaml(
     """The name of the object"""
@@ -2352,42 +2014,6 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetametadata {
   selfLink: String
   """"""
   uid: String
-}
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentity {
-  """"""
-  secretRef: MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecidentityspecapiExportspecidentitysecretRef_secret_Enhanced
-}
-
-""""""
-type MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaims {
-  """"""
-  all: Boolean
-  """"""
-  group: String
-  """"""
-  identityHash: String
-  """"""
-  resource: String
-  """"""
-  resourceSelector: [MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelector]
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinks {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlight {
-  """"""
-  data: String
-  """"""
-  url: String
 }
 
 """"""
@@ -2651,46 +2277,6 @@ type DeleteOptions {
   preconditions: io_k8s_apimachinery_pkg_apis_meta_v1_Preconditionspreconditions
   """"""
   propagationPolicy: String
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspec {
-  """"""
-  contacts: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeccontacts]
-  """"""
-  data: String
-  """"""
-  description: String
-  """"""
-  displayName: String
-  """"""
-  documentation: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecdocumentation]
-  """"""
-  helpCenterData: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterData]
-  """"""
-  icon: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecicon
-  """"""
-  links: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeclinks]
-  """"""
-  preferredSupportChannels: [MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecpreferredSupportChannels]
-  """"""
-  tags: [String]
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspechelpCenterData {
-  """"""
-  displayName: String
-  """"""
-  url: String
-}
-
-""""""
-type MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspecicon {
-  """"""
-  dark: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspecicondark
-  """"""
-  light: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecspecproviderMetadataspeciconspecproviderMetadataspeciconlight
 }
 
 """"""
@@ -2993,23 +2579,7 @@ type V1Mutation {
 }
 
 """"""
-input MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusvirtualWorkspacesInput {
-  """"""
-  url: String
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecpermissionClaimsspecapiExportspecpermissionClaimsresourceSelectorInput {
-  """"""
-  name: String
-  """"""
-  namespace: String
-}
-
-""""""
 type Query {
-  """"""
-  marketplace_platform_mesh_io: MarketplacePlatformMeshIoQuery
   """"""
   typeByCategory(
     """The name of the object"""
@@ -3045,6 +2615,8 @@ type Query {
   topology_kcp_io: TopologyKcpIoQuery
   """"""
   ui_platform_mesh_io: UiPlatformMeshIoQuery
+  """"""
+  marketplace_platform_mesh_io: MarketplacePlatformMeshIoQuery
 }
 
 """"""
@@ -3080,10 +2652,10 @@ type MarketplacePlatformMeshIoV1alpha1Mutation {
   """"""
   createMarketplaceEntry(
     """The object to create or update"""
-    object: MarketplaceEntryInput!
+    object: MarketplacePlatformMeshIoV1alpha1MarketplaceEntry_Input!
     """If true, the operation will be performed in dry-run mode"""
     dryRun: Boolean
-  ): MarketplaceEntry
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntry
   """"""
   deleteMarketplaceEntry(
     """The name of the object"""
@@ -3094,12 +2666,12 @@ type MarketplacePlatformMeshIoV1alpha1Mutation {
   """"""
   updateMarketplaceEntry(
     """The object to create or update"""
-    object: MarketplaceEntryInput!
+    object: MarketplacePlatformMeshIoV1alpha1MarketplaceEntry_Input!
     """If true, the operation will be performed in dry-run mode"""
     dryRun: Boolean
     """The name of the object"""
     name: String!
-  ): MarketplaceEntry
+  ): MarketplacePlatformMeshIoV1alpha1MarketplaceEntry
 }
 
 """"""
@@ -3143,22 +2715,6 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferencemetadataownerReferences 
 }
 
 """"""
-type MarketplaceEntryspecspecapiExportspecapiExportstatusspecapiExportstatusconditions {
-  """"""
-  lastTransitionTime: String
-  """"""
-  message: String
-  """"""
-  reason: String
-  """"""
-  severity: String
-  """"""
-  status: String
-  """"""
-  type: String
-}
-
-""""""
 type APIGroupList {
   """"""
   continue: String
@@ -3185,34 +2741,6 @@ type MarketplacePlatformMeshIoMutation {
 }
 
 """"""
-input MarketplaceEntryspecspecproviderMetadataInput {
-  """"""
-  spec: MarketplaceEntryspecspecproviderMetadataspecproviderMetadataspecInput
-  """"""
-  status: JSONString
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-  """"""
-  metadata: JSONString
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportInput {
-  """"""
-  metadata: JSONString
-  """"""
-  spec: MarketplaceEntryspecspecapiExportspecapiExportspecInput
-  """"""
-  status: MarketplaceEntryspecspecapiExportspecapiExportstatusInput
-  """"""
-  apiVersion: String
-  """"""
-  kind: String
-}
-
-""""""
 type io_k8s_apimachinery_pkg_apis_meta_v1_Preconditionspreconditions {
   """"""
   resourceVersion: String
@@ -3228,12 +2756,6 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_StatusCausedetailscausesInput {
   message: String
   """"""
   reason: String
-}
-
-""""""
-input MarketplaceEntryspecspecapiExportspecapiExportspecspecapiExportspecmaximalPermissionPolicyInput {
-  """"""
-  local: JSONString
 }
 
 """"""
@@ -11264,26 +10786,12 @@ input APIBindingspecInput {
 """"""
 type ApisKcpIoV1alpha2Mutation {
   """"""
-  createAPIBinding(
-    """The object to create or update"""
-    object: ApisKcpIoV1alpha2APIBindingInput!
-    """If true, the operation will be performed in dry-run mode"""
-    dryRun: Boolean
-  ): ApisKcpIoV1alpha2APIBinding
-  """"""
   createAPIExport(
     """The object to create or update"""
     object: ApisKcpIoV1alpha2APIExportInput!
     """If true, the operation will be performed in dry-run mode"""
     dryRun: Boolean
   ): ApisKcpIoV1alpha2APIExport
-  """"""
-  deleteAPIBinding(
-    """The name of the object"""
-    name: String!
-    """If true, the operation will be performed in dry-run mode"""
-    dryRun: Boolean
-  ): Boolean
   """"""
   deleteAPIExport(
     """The name of the object"""
@@ -11309,6 +10817,20 @@ type ApisKcpIoV1alpha2Mutation {
     """The name of the object"""
     name: String!
   ): ApisKcpIoV1alpha2APIExport
+  """"""
+  createAPIBinding(
+    """The object to create or update"""
+    object: ApisKcpIoV1alpha2APIBinding_Input!
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): ApisKcpIoV1alpha2APIBinding
+  """"""
+  deleteAPIBinding(
+    """The name of the object"""
+    name: String!
+    """If true, the operation will be performed in dry-run mode"""
+    dryRun: Boolean
+  ): Boolean
 }
 
 """"""
@@ -13305,6 +12827,2171 @@ type WorkspaceAuthenticationConfigurationspecspecjwt {
   issuer: WorkspaceAuthenticationConfigurationspecspecjwtspecjwtissuer
   """"""
   userValidationRules: [WorkspaceAuthenticationConfigurationspecspecjwtspecjwtuserValidationRules]
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntry {
+  """
+  APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  """
+  apiVersion: String
+  """
+  Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """
+  Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata
+  """MarketplaceEntrySpec defines the desired state of MarketplaceEntry."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec
+  """MarketplaceEntryStatus defines the observed state of MarketplaceEntry."""
+  status: JSONString
+}
+
+"""
+PermissionClaim identifies an object by GR and identity hash.
+Its purpose is to determine the added permissions that a service provider may
+request and that a consumer may accept and allow the service provider access to.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaims {
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelector
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconDark_Input {
+  """"""
+  data: String
+  """"""
+  url: String
+}
+
+"""
+APIExport is the v1alpha1-compatible export associated with the marketplace entry.
+It is retained for existing Marketplace clients.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport_Input {
+  """"""
+  metadata: JSONString
+  """Spec holds the desired state."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec_Input
+  """Status communicates the observed state."""
+  status: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatus_Input
+  """"""
+  apiVersion: String
+  """"""
+  kind: String
+}
+
+"""Input type for a map from strings to strings."""
+scalar StringMap_Input
+
+"""MarketplaceEntrySpec defines the desired state of MarketplaceEntry."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec {
+  """
+  APIBindingName is the metadata.name of the APIBinding backing this installation.
+  Empty means not installed.
+  """
+  apiBindingName: String
+  """
+  APIExport is the v1alpha1-compatible export associated with the marketplace entry.
+  It is retained for existing Marketplace clients.
+  """
+  apiExport: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport
+  """
+  APIExportPermissionClaims contains v1alpha2 permission claims associated with
+  the APIExport, including verbs and default selectors. Claims originating from
+  v1alpha1 resourceSelector are omitted because they cannot be translated to a
+  v1alpha2 label selector without broadening their scope.
+  """
+  apiExportPermissionClaims: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaims]
+  """
+  ProviderMetadata contains metadata about the provider of the marketplace entry.
+  """
+  providerMetadata: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata
+}
+
+"""
+LegacyPermissionClaim is the JSON-compatible v1alpha1 permission claim.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaims {
+  """All claims all resources for the group/resource."""
+  all: Boolean
+  """
+  Group is the name of an API group. The empty string represents the core group.
+  """
+  group: String
+  """IdentityHash identifies the API identity for non-core resources."""
+  identityHash: String
+  """Resource is the name of the resource."""
+  resource: String
+  """ResourceSelector is the list of specifically claimed resources."""
+  resourceSelector: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaimsResourceSelector]
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntry_Input {
+  """MarketplaceEntrySpec defines the desired state of MarketplaceEntry."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec_Input
+  """MarketplaceEntryStatus defines the observed state of MarketplaceEntry."""
+  status: JSONString
+  """
+  APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  """
+  apiVersion: String
+  """
+  Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """
+  Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata_Input
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels_Input {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""
+OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+"""
+input io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferenceOwnerReferences_Input {
+  """
+  If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+  """
+  blockOwnerDeletion: Boolean
+  """If true, this reference points to the managing controller."""
+  controller: Boolean
+  """
+  Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """
+  Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+  """
+  name: String
+  """
+  UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+  """
+  uid: String
+  """API version of the referent."""
+  apiVersion: String
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntryList {
+  """"""
+  continue: String
+  """"""
+  items: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntry!]!
+  """"""
+  remainingItemCount: Int
+  """"""
+  resourceVersion: String
+}
+
+"""
+APIExport is the v1alpha1-compatible export associated with the marketplace entry.
+It is retained for existing Marketplace clients.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport {
+  """"""
+  apiVersion: String
+  """"""
+  kind: String
+  """"""
+  metadata: JSONString
+  """Spec holds the desired state."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec
+  """Status communicates the observed state."""
+  status: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatus
+}
+
+"""Identity points to the Secret containing the API identity."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentity {
+  """
+  secretRef is a reference to a secret that contains the API identity in the 'key' file.
+  """
+  secretRef: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentitySecretRef
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDocumentation {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""
+LegacyPermissionClaim is the JSON-compatible v1alpha1 permission claim.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaims_Input {
+  """ResourceSelector is the list of specifically claimed resources."""
+  resourceSelector: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaimsResourceSelector_Input]
+  """All claims all resources for the group/resource."""
+  all: Boolean
+  """
+  Group is the name of an API group. The empty string represents the core group.
+  """
+  group: String
+  """IdentityHash identifies the API identity for non-core resources."""
+  identityHash: String
+  """Resource is the name of the resource."""
+  resource: String
+}
+
+"""Spec holds the desired state."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec {
+  """Identity points to the Secret containing the API identity."""
+  identity: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentity
+  """
+  LatestResourceSchemas records the latest APIResourceSchemas exposed by the APIExport.
+  """
+  latestResourceSchemas: [String]
+  """
+  MaximalPermissionPolicy sets the APIExport's upper authorization bound.
+  """
+  maximalPermissionPolicy: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecMaximalPermissionPolicy
+  """
+  PermissionClaims are the legacy v1alpha1 claims retained for existing clients.
+  """
+  permissionClaims: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaims]
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecHelpCenterData_Input {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""
+MaximalPermissionPolicy sets the APIExport's upper authorization bound.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecMaximalPermissionPolicy_Input {
+  """
+  local is the policy that is defined in same workspace as the API Export.
+  """
+  local: JSONString
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecHelpCenterData {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""
+PermissionClaim identifies an object by GR and identity hash.
+Its purpose is to determine the added permissions that a service provider may
+request and that a consumer may accept and allow the service provider access to.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaims_Input {
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelector_Input
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+DetailViewExtension describes a provider-owned micro frontend that enriches
+the provider details view. The extension is rendered in list order.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDetailViewExtensions_Input {
+  """URL is the absolute URL of the micro frontend."""
+  url: String
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIcon_Input {
+  """"""
+  dark: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconDark_Input
+  """"""
+  light: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconLight_Input
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconLight_Input {
+  """"""
+  data: String
+  """"""
+  url: String
+}
+
+"""Status communicates the observed state."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatus_Input {
+  """
+  identityHash is the hash of the API identity key of this APIExport. This value
+  is immutable as soon as it is set.
+  """
+  identityHash: String
+  """
+  virtualWorkspaces contains all APIExport virtual workspace URLs.
+
+  Deprecated: use APIExportEndpointSlice.status.endpoints instead
+  """
+  virtualWorkspaces: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusVirtualWorkspaces_Input]
+  """conditions is a list of conditions that apply to the APIExport."""
+  conditions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusConditions_Input]
+}
+
+"""Condition defines an observation of a object operational state."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusConditions {
+  """
+  Last time the condition transitioned from one status to another.
+  This should be when the underlying condition changed. If that is not known, then using the time when
+  the API field changed is acceptable.
+  """
+  lastTransitionTime: String
+  """
+  A human readable message indicating details about the transition.
+  This field may be empty.
+  """
+  message: String
+  """
+  The reason for the condition's last transition in CamelCase.
+  The specific API may choose whether or not this field is considered a guaranteed API.
+  This field may not be empty.
+  """
+  reason: String
+  """
+  Severity provides an explicit classification of Reason code, so the users or machines can immediately
+  understand the current situation and act accordingly.
+  The Severity field MUST be set only when Status=False.
+  """
+  severity: String
+  """Status of the condition, one of True, False, Unknown."""
+  status: String
+  """
+  Type of condition in CamelCase or in foo.example.com/CamelCase.
+  Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+  can be useful (see .node.status.conditions), the ability to deconflict is important.
+  """
+  type: String
+}
+
+"""
+DetailViewExtension describes a provider-owned micro frontend that enriches
+the provider details view. The extension is rendered in list order.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDetailViewExtensions {
+  """URL is the absolute URL of the micro frontend."""
+  url: String
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconLight {
+  """"""
+  data: String
+  """"""
+  url: String
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts_Input {
+  """"""
+  displayName: String
+  """"""
+  email: String
+  """"""
+  role: [String]
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusVirtualWorkspaces_Input {
+  """url is an APIExport virtual workspace URL."""
+  url: String
+}
+
+"""
+ProviderMetadata contains metadata about the provider of the marketplace entry.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata {
+  """
+  APIVersion defines the versioned schema of this representation of an object.
+  Servers should convert recognized schemas to the latest internal value, and
+  may reject unrecognized values.
+  More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  """
+  apiVersion: String
+  """
+  Kind is a string value representing the REST resource this object represents.
+  Servers may infer this from the endpoint the client submits requests to.
+  Cannot be updated.
+  In CamelCase.
+  More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """"""
+  metadata: JSONString
+  """ProviderMetadataSpec defines the desired state of ProviderMetadata."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec
+  """ProviderMetadataStatus defines the observed state of ProviderMetadata."""
+  status: JSONString
+}
+
+"""
+ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.
+"""
+type io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryManagedFields {
+  """
+  APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.
+  """
+  apiVersion: String
+  """
+  FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1"
+  """
+  fieldsType: String
+  """
+  FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
+  """
+  fieldsV1: JSONString
+  """Manager is an identifier of the workflow managing these fields."""
+  manager: String
+  """
+  Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'.
+  """
+  operation: String
+  """
+  Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.
+  """
+  subresource: String
+  """
+  Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.
+  """
+  time: String
+}
+
+"""
+ProviderMetadata contains metadata about the provider of the marketplace entry.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata_Input {
+  """ProviderMetadataStatus defines the observed state of ProviderMetadata."""
+  status: JSONString
+  """
+  APIVersion defines the versioned schema of this representation of an object.
+  Servers should convert recognized schemas to the latest internal value, and
+  may reject unrecognized values.
+  More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  """
+  apiVersion: String
+  """
+  Kind is a string value representing the REST resource this object represents.
+  Servers may infer this from the endpoint the client submits requests to.
+  Cannot be updated.
+  In CamelCase.
+  More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """"""
+  metadata: JSONString
+  """ProviderMetadataSpec defines the desired state of ProviderMetadata."""
+  spec: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec_Input
+}
+
+"""ProviderMetadataSpec defines the desired state of ProviderMetadata."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec_Input {
+  """"""
+  tags: [String]
+  """"""
+  icon: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIcon_Input
+  """"""
+  documentation: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDocumentation_Input]
+  """
+  Additional information that should be stored with the provider metadata.
+  """
+  data: JSONString
+  """"""
+  contacts: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts_Input]
+  """"""
+  links: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks_Input]
+  """"""
+  preferredSupportChannels: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels_Input]
+  """"""
+  description: String
+  """"""
+  detailViewExtensions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDetailViewExtensions_Input]
+  """"""
+  displayName: String
+  """"""
+  helpCenterData: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecHelpCenterData_Input]
+}
+
+"""
+MaximalPermissionPolicy sets the APIExport's upper authorization bound.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecMaximalPermissionPolicy {
+  """
+  local is the policy that is defined in same workspace as the API Export.
+  """
+  local: JSONString
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusVirtualWorkspaces {
+  """url is an APIExport virtual workspace URL."""
+  url: String
+}
+
+"""
+ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
+"""
+input io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata_Input {
+  """
+  CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+
+  Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  creationTimestamp: String
+  """
+  GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
+
+  If this field is specified and the generated name exists, the server will return a 409.
+
+  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
+  """
+  generateName: String
+  """
+  An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
+
+  Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+  """
+  resourceVersion: String
+  """
+  List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
+  """
+  ownerReferences: [io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferenceOwnerReferences_Input]
+  """
+  Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+  """
+  name: String
+  """
+  ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
+  """
+  managedFields: [io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryManagedFields_Input]
+  """
+  UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
+
+  Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+  """
+  uid: String
+  """
+  Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
+  """
+  selfLink: String
+  """
+  Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
+
+  Must be a DNS_LABEL. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces
+  """
+  namespace: String
+  """
+  DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field, once the finalizers list is empty. As long as the finalizers list contains items, deletion is blocked. Once the deletionTimestamp is set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.
+
+  Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  deletionTimestamp: String
+  """
+  Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+  """
+  labels: StringMap_Input
+  """
+  Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
+  """
+  deletionGracePeriodSeconds: Int
+  """
+  Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
+  """
+  finalizers: [String]
+  """
+  Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+  """
+  annotations: StringMap_Input
+  """
+  A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
+  """
+  generation: Int
+}
+
+"""
+secretRef is a reference to a secret that contains the API identity in the 'key' file.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentitySecretRef {
+  """name is unique within a namespace to reference a secret resource."""
+  name: String
+  """
+  namespace defines the space within which the secret name must be unique.
+  """
+  namespace: String
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIcon {
+  """"""
+  dark: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconDark
+  """"""
+  light: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconLight
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntryEvent {
+  """"""
+  object: MarketplacePlatformMeshIoV1alpha1MarketplaceEntry
+  """"""
+  type: WatchEventType!
+}
+
+"""
+OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+"""
+type io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferenceOwnerReferences {
+  """API version of the referent."""
+  apiVersion: String
+  """
+  If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+  """
+  blockOwnerDeletion: Boolean
+  """If true, this reference points to the managing controller."""
+  controller: Boolean
+  """
+  Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """
+  Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+  """
+  name: String
+  """
+  UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+  """
+  uid: String
+}
+
+"""ProviderMetadataSpec defines the desired state of ProviderMetadata."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec {
+  """"""
+  contacts: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts]
+  """
+  Additional information that should be stored with the provider metadata.
+  """
+  data: JSONString
+  """"""
+  description: String
+  """"""
+  detailViewExtensions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDetailViewExtensions]
+  """"""
+  displayName: String
+  """"""
+  documentation: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDocumentation]
+  """"""
+  helpCenterData: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecHelpCenterData]
+  """"""
+  icon: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIcon
+  """"""
+  links: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks]
+  """"""
+  preferredSupportChannels: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels]
+  """"""
+  tags: [String]
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecDocumentation_Input {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""Identity points to the Secret containing the API identity."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentity_Input {
+  """
+  secretRef is a reference to a secret that contains the API identity in the 'key' file.
+  """
+  secretRef: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentitySecretRef_Input
+}
+
+"""Condition defines an observation of a object operational state."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusConditions_Input {
+  """
+  Type of condition in CamelCase or in foo.example.com/CamelCase.
+  Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+  can be useful (see .node.status.conditions), the ability to deconflict is important.
+  """
+  type: String
+  """
+  Last time the condition transitioned from one status to another.
+  This should be when the underlying condition changed. If that is not known, then using the time when
+  the API field changed is acceptable.
+  """
+  lastTransitionTime: String
+  """
+  A human readable message indicating details about the transition.
+  This field may be empty.
+  """
+  message: String
+  """
+  The reason for the condition's last transition in CamelCase.
+  The specific API may choose whether or not this field is considered a guaranteed API.
+  This field may not be empty.
+  """
+  reason: String
+  """
+  Severity provides an explicit classification of Reason code, so the users or machines can immediately
+  understand the current situation and act accordingly.
+  The Severity field MUST be set only when Status=False.
+  """
+  severity: String
+  """Status of the condition, one of True, False, Unknown."""
+  status: String
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts {
+  """"""
+  displayName: String
+  """"""
+  email: String
+  """"""
+  role: [String]
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIconDark {
+  """"""
+  data: String
+  """"""
+  url: String
+}
+
+"""Spec holds the desired state."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec_Input {
+  """Identity points to the Secret containing the API identity."""
+  identity: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentity_Input
+  """
+  LatestResourceSchemas records the latest APIResourceSchemas exposed by the APIExport.
+  """
+  latestResourceSchemas: [String]
+  """
+  MaximalPermissionPolicy sets the APIExport's upper authorization bound.
+  """
+  maximalPermissionPolicy: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecMaximalPermissionPolicy_Input
+  """
+  PermissionClaims are the legacy v1alpha1 claims retained for existing clients.
+  """
+  permissionClaims: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaims_Input]
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaimsResourceSelector_Input {
+  """
+  namespace containing the named object. Matches metadata.namespace field.
+  If "name" is unset, all objects from the namespace are being claimed.
+  """
+  namespace: String
+  """
+  name of an object within a claimed group/resource.
+  It matches the metadata.name field of the underlying object.
+  If namespace is unset, all objects matching that name will be claimed.
+  """
+  name: String
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelector_Input {
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelectorMatchExpressions_Input]
+}
+
+""""""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks_Input {
+  """"""
+  displayName: String
+  """"""
+  url: String
+}
+
+"""
+ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create.
+"""
+type io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata {
+  """
+  Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
+  """
+  annotations: StringMap_Input
+  """
+  CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC.
+
+  Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  creationTimestamp: String
+  """
+  Number of seconds allowed for this object to gracefully terminate before it will be removed from the system. Only set when deletionTimestamp is also set. May only be shortened. Read-only.
+  """
+  deletionGracePeriodSeconds: Int
+  """
+  DeletionTimestamp is RFC 3339 date and time at which this resource will be deleted. This field is set by the server when a graceful deletion is requested by the user, and is not directly settable by a client. The resource is expected to be deleted (no longer visible from resource lists, and not reachable by name) after the time in this field, once the finalizers list is empty. As long as the finalizers list contains items, deletion is blocked. Once the deletionTimestamp is set, this value may not be unset or be set further into the future, although it may be shortened or the resource may be deleted prior to this time. For example, a user may request that a pod is deleted in 30 seconds. The Kubelet will react by sending a graceful termination signal to the containers in the pod. After that 30 seconds, the Kubelet will send a hard termination signal (SIGKILL) to the container and after cleanup, remove the pod from the API. In the presence of network partitions, this object may still exist after this timestamp, until an administrator or automated process can determine the resource is fully terminated. If not set, graceful deletion of the object has not been requested.
+
+  Populated by the system when a graceful deletion is requested. Read-only. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  deletionTimestamp: String
+  """
+  Must be empty before the object is deleted from the registry. Each entry is an identifier for the responsible component that will remove the entry from the list. If the deletionTimestamp of the object is non-nil, entries in this list can only be removed. Finalizers may be processed and removed in any order.  Order is NOT enforced because it introduces significant risk of stuck finalizers. finalizers is a shared field, any actor with permission can reorder it. If the finalizer list is processed in order, then this can lead to a situation in which the component responsible for the first finalizer in the list is waiting for a signal (field value, external system, or other) produced by a component responsible for a finalizer later in the list, resulting in a deadlock. Without enforced ordering finalizers are free to order amongst themselves and are not vulnerable to ordering changes in the list.
+  """
+  finalizers: [String]
+  """
+  GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server.
+
+  If this field is specified and the generated name exists, the server will return a 409.
+
+  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
+  """
+  generateName: String
+  """
+  A sequence number representing a specific generation of the desired state. Populated by the system. Read-only.
+  """
+  generation: Int
+  """
+  Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
+  """
+  labels: StringMap_Input
+  """
+  ManagedFields maps workflow-id and version to the set of fields that are managed by that workflow. This is mostly for internal housekeeping, and users typically shouldn't need to set or understand this field. A workflow can be the user's name, a controller's name, or the name of a specific apply path like "ci-cd". The set of fields is always in the version that the workflow used when modifying the object.
+  """
+  managedFields: [io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryManagedFields]
+  """
+  Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+  """
+  name: String
+  """
+  Namespace defines the space within which each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty.
+
+  Must be a DNS_LABEL. Cannot be updated. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces
+  """
+  namespace: String
+  """
+  List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller.
+  """
+  ownerReferences: [io_k8s_apimachinery_pkg_apis_meta_v1_OwnerReferenceOwnerReferences]
+  """
+  An opaque value that represents the internal version of this object that can be used by clients to determine when objects have changed. May be used for optimistic concurrency, change detection, and the watch operation on a resource or set of resources. Clients must treat these values as opaque and passed unmodified back to the server. They may only be valid for a particular resource or set of resources.
+
+  Populated by the system. Read-only. Value must be treated as opaque by clients and . More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+  """
+  resourceVersion: String
+  """
+  Deprecated: selfLink is a legacy read-only field that is no longer populated by the system.
+  """
+  selfLink: String
+  """
+  UID is the unique in time and space value for this object. It is typically generated by the server on successful creation of a resource and is not allowed to change on PUT operations.
+
+  Populated by the system. Read-only. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+  """
+  uid: String
+}
+
+"""Status communicates the observed state."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatus {
+  """conditions is a list of conditions that apply to the APIExport."""
+  conditions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusConditions]
+  """
+  identityHash is the hash of the API identity key of this APIExport. This value
+  is immutable as soon as it is set.
+  """
+  identityHash: String
+  """
+  virtualWorkspaces contains all APIExport virtual workspace URLs.
+
+  Deprecated: use APIExportEndpointSlice.status.endpoints instead
+  """
+  virtualWorkspaces: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportStatusVirtualWorkspaces]
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaimsDefaultSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""
+secretRef is a reference to a secret that contains the API identity in the 'key' file.
+"""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecIdentitySecretRef_Input {
+  """name is unique within a namespace to reference a secret resource."""
+  name: String
+  """
+  namespace defines the space within which the secret name must be unique.
+  """
+  namespace: String
+}
+
+""""""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaimsResourceSelector {
+  """
+  name of an object within a claimed group/resource.
+  It matches the metadata.name field of the underlying object.
+  If namespace is unset, all objects matching that name will be claimed.
+  """
+  name: String
+  """
+  namespace containing the named object. Matches metadata.namespace field.
+  If "name" is unset, all objects from the namespace are being claimed.
+  """
+  namespace: String
+}
+
+"""MarketplaceEntrySpec defines the desired state of MarketplaceEntry."""
+input MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec_Input {
+  """
+  APIExportPermissionClaims contains v1alpha2 permission claims associated with
+  the APIExport, including verbs and default selectors. Claims originating from
+  v1alpha1 resourceSelector are omitted because they cannot be translated to a
+  v1alpha2 label selector without broadening their scope.
+  """
+  apiExportPermissionClaims: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportPermissionClaims_Input]
+  """
+  ProviderMetadata contains metadata about the provider of the marketplace entry.
+  """
+  providerMetadata: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata_Input
+  """
+  APIBindingName is the metadata.name of the APIBinding backing this installation.
+  Empty means not installed.
+  """
+  apiBindingName: String
+  """
+  APIExport is the v1alpha1-compatible export associated with the marketplace entry.
+  It is retained for existing Marketplace clients.
+  """
+  apiExport: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport_Input
+}
+
+"""
+ManagedFieldsEntry is a workflow-id, a FieldSet and the group version of the resource that the fieldset applies to.
+"""
+input io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryManagedFields_Input {
+  """Manager is an identifier of the workflow managing these fields."""
+  manager: String
+  """
+  Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'.
+  """
+  operation: String
+  """
+  Subresource is the name of the subresource used to update that object, or empty string if the object was updated through the main resource. The value of this field is used to distinguish between managers, even if they share the same name. For example, a status update will be distinct from a regular update using the same manager name. Note that the APIVersion field is not related to the Subresource field and it always corresponds to the version of the main resource.
+  """
+  subresource: String
+  """
+  Time is the timestamp of when the ManagedFields entry was added. The timestamp will also be updated if a field is added, the manager changes any of the owned fields value or removes a field. The timestamp does not update when a field is removed from the entry because another manager took it over.
+  """
+  time: String
+  """
+  APIVersion defines the version of this resource that this field set applies to. The format is "group/version" just like the top-level APIVersion field. It is necessary to track the version of a field set because it cannot be automatically converted.
+  """
+  apiVersion: String
+  """
+  FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: "FieldsV1"
+  """
+  fieldsType: String
+  """
+  FieldsV1 holds the first JSON version format as described in the "FieldsV1" type.
+  """
+  fieldsV1: JSONString
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+BoundAPIResource describes a bound GroupVersionResource through an APIResourceSchema of an APIExport..
+"""
+type ApisKcpIoV1alpha2APIBindingStatusBoundResources {
+  """
+  group is the group of the bound API. Empty string for the core API group.
+  """
+  group: String
+  """
+  resource is the resource of the bound API.
+
+  kubebuilder:validation:MinLength=1
+  """
+  resource: String
+  """Schema references the APIResourceSchema that is bound to this API."""
+  schema: ApisKcpIoV1alpha2APIBindingStatusBoundResourcesSchema
+  """
+  storageVersions lists all versions of a resource that were ever persisted. Tracking these
+  versions allows a migration path for stored versions in etcd. The field is mutable
+  so a migration controller can finish a migration to another version (ensuring
+  no old objects are left in storage), and then remove the rest of the
+  versions from this list.
+
+  Versions may not be removed while they exist in this list.
+  """
+  storageVersions: [String]
+}
+
+"""reference uniquely identifies an API to bind to."""
+input ApisKcpIoV1alpha2APIBindingSpecReference_Input {
+  """
+  export is a reference to an APIExport by cluster name and export name.
+  The creator of the APIBinding needs to have access to the APIExport with the
+  verb `bind` in order to bind to it.
+  """
+  export: ApisKcpIoV1alpha2APIBindingSpecReferenceExport_Input
+}
+
+""""""
+input ApisKcpIoV1alpha2APIBinding_Input {
+  """Spec holds the desired state."""
+  spec: ApisKcpIoV1alpha2APIBindingSpec_Input
+  """Status communicates the observed state."""
+  status: ApisKcpIoV1alpha2APIBindingStatus_Input
+  """
+  APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  """
+  apiVersion: String
+  """
+  Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  """
+  kind: String
+  """
+  Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+  """
+  metadata: io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata_Input
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+PermissionClaim identifies an object by GR and identity hash.
+Its purpose is to determine the added permissions that a service provider may
+request and that a consumer may accept and allow the service provider access to.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaims_Input {
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelector_Input
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelector_Input {
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelectorMatchExpressions_Input]
+}
+
+"""
+export is a reference to an APIExport by cluster name and export name.
+The creator of the APIBinding needs to have access to the APIExport with the
+verb `bind` in order to bind to it.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecReferenceExport {
+  """name is the name of the APIExport that describes the API."""
+  name: String
+  """
+  path is a logical cluster path where the APIExport is defined.
+  If the path is unset, the logical cluster of the APIBinding is used.
+  """
+  path: String
+}
+
+"""
+AcceptablePermissionClaim is a PermissionClaim that records if the user accepts or rejects it.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecPermissionClaims {
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelector
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  PermissionClaimSelector configures scoped access to objects
+  of a claimed resource.
+  """
+  selector: ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelector
+  """"""
+  state: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""Condition defines an observation of a object operational state."""
+type ApisKcpIoV1alpha2APIBindingStatusConditions {
+  """
+  Last time the condition transitioned from one status to another.
+  This should be when the underlying condition changed. If that is not known, then using the time when
+  the API field changed is acceptable.
+  """
+  lastTransitionTime: String
+  """
+  A human readable message indicating details about the transition.
+  This field may be empty.
+  """
+  message: String
+  """
+  The reason for the condition's last transition in CamelCase.
+  The specific API may choose whether or not this field is considered a guaranteed API.
+  This field may not be empty.
+  """
+  reason: String
+  """
+  Severity provides an explicit classification of Reason code, so the users or machines can immediately
+  understand the current situation and act accordingly.
+  The Severity field MUST be set only when Status=False.
+  """
+  severity: String
+  """Status of the condition, one of True, False, Unknown."""
+  status: String
+  """
+  Type of condition in CamelCase or in foo.example.com/CamelCase.
+  Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+  can be useful (see .node.status.conditions), the ability to deconflict is important.
+  """
+  type: String
+}
+
+"""
+export is a reference to an APIExport by cluster name and export name.
+The creator of the APIBinding needs to have access to the APIExport with the
+verb `bind` in order to bind to it.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecReferenceExport_Input {
+  """name is the name of the APIExport that describes the API."""
+  name: String
+  """
+  path is a logical cluster path where the APIExport is defined.
+  If the path is unset, the logical cluster of the APIBinding is used.
+  """
+  path: String
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+PermissionClaimSelector configures scoped access to objects
+of a claimed resource.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelector_Input {
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelectorMatchExpressions_Input]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+}
+
+"""
+ScopedPermissionClaim embeds a PermissionClaim and adds a selector to
+scope down access to objects of the claimed resource.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaims {
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelector
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  PermissionClaimSelector configures scoped access to objects
+  of a claimed resource.
+  """
+  selector: ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelector
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelector_Input {
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelectorMatchExpressions_Input]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+}
+
+"""
+ScopedPermissionClaim embeds a PermissionClaim and adds a selector to
+scope down access to objects of the claimed resource.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaims_Input {
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  PermissionClaimSelector configures scoped access to objects
+  of a claimed resource.
+  """
+  selector: ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelector_Input
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelector_Input
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+}
+
+"""Status communicates the observed state."""
+input ApisKcpIoV1alpha2APIBindingStatus_Input {
+  """conditions is a list of conditions that apply to the APIBinding."""
+  conditions: [ApisKcpIoV1alpha2APIBindingStatusConditions_Input]
+  """
+  exportPermissionClaims records the permissions that the export provider is asking for
+  the binding to grant.
+  """
+  exportPermissionClaims: [ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaims_Input]
+  """
+  phase is the current phase of the APIBinding:
+  - "": the APIBinding has just been created, waiting to be bound.
+  - Binding: the APIBinding is being bound.
+  - Bound: the APIBinding is bound and the referenced APIs are available in the workspace.
+  """
+  phase: String
+  """
+  APIExportClusterName records the name (not path) of the logical cluster that contains the APIExport.
+  """
+  apiExportClusterName: String
+  """
+  appliedPermissionClaims is a list of the permission claims the system has seen and applied,
+  according to the requests of the API service provider in the APIExport and the acceptance
+  state in spec.permissionClaims.
+  """
+  appliedPermissionClaims: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaims_Input]
+  """boundResources records the state of bound APIs."""
+  boundResources: [ApisKcpIoV1alpha2APIBindingStatusBoundResources_Input]
+}
+
+"""
+BoundAPIResource describes a bound GroupVersionResource through an APIResourceSchema of an APIExport..
+"""
+input ApisKcpIoV1alpha2APIBindingStatusBoundResources_Input {
+  """
+  storageVersions lists all versions of a resource that were ever persisted. Tracking these
+  versions allows a migration path for stored versions in etcd. The field is mutable
+  so a migration controller can finish a migration to another version (ensuring
+  no old objects are left in storage), and then remove the rest of the
+  versions from this list.
+
+  Versions may not be removed while they exist in this list.
+  """
+  storageVersions: [String]
+  """
+  group is the group of the bound API. Empty string for the core API group.
+  """
+  group: String
+  """
+  resource is the resource of the bound API.
+
+  kubebuilder:validation:MinLength=1
+  """
+  resource: String
+  """Schema references the APIResourceSchema that is bound to this API."""
+  schema: ApisKcpIoV1alpha2APIBindingStatusBoundResourcesSchema_Input
+}
+
+"""Schema references the APIResourceSchema that is bound to this API."""
+type ApisKcpIoV1alpha2APIBindingStatusBoundResourcesSchema {
+  """UID is the UID of the APIResourceSchema that is bound to this API."""
+  UID: String
+  """
+  identityHash is the hash of the API identity that this schema is bound to.
+  The API identity determines the etcd prefix used to persist the object.
+  Different identity means that the objects are effectively served and stored
+  under a distinct resource. A CRD of the same GroupVersionResource uses a
+  different identity and hence a separate etcd prefix.
+  """
+  identityHash: String
+  """name is the bound APIResourceSchema name."""
+  name: String
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""
+PermissionClaim identifies an object by GR and identity hash.
+Its purpose is to determine the added permissions that a service provider may
+request and that a consumer may accept and allow the service provider access to.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaims {
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelector
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+}
+
+"""
+AcceptablePermissionClaim is a PermissionClaim that records if the user accepts or rejects it.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecPermissionClaims_Input {
+  """
+  resource is the name of the resource.
+  Note: it is worth noting that you can not ask for permissions for resource provided by a CRD
+  not provided by an api export.
+  """
+  resource: String
+  """
+  PermissionClaimSelector configures scoped access to objects
+  of a claimed resource.
+  """
+  selector: ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelector_Input
+  """"""
+  state: String
+  """
+  verbs is a list of supported API operation types (this includes
+  but is not limited to get, list, watch, create, update, patch,
+  delete, deletecollection, and proxy).
+  """
+  verbs: [String]
+  """
+  defaultSelector is the default selector to use when creating APIBindings
+  via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+  default to matchAll: true.
+
+  This allows API providers to suggest a default scope for permission claims
+  that will be used when workspaces are automatically created with default
+  APIBindings. Users can always override the default selector by accepting the
+  claim with a different selector or by manually creating APIBindings with a custom selector.
+  """
+  defaultSelector: ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelector_Input
+  """
+  group is the name of an API group.
+  For core groups this is the empty string '""'.
+  """
+  group: String
+  """
+  This is the identity for a given APIExport that the APIResourceSchema belongs to.
+  The hash can be found on APIExport and APIResourceSchema's status.
+  It will be empty for core types.
+  Note that one must look this up for a particular kcp instance.
+  """
+  identityHash: String
+}
+
+"""
+PermissionClaimSelector configures scoped access to objects
+of a claimed resource.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelector_Input {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelectorMatchExpressions_Input]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+PermissionClaimSelector configures scoped access to objects
+of a claimed resource.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""Spec holds the desired state."""
+type ApisKcpIoV1alpha2APIBindingSpec {
+  """
+  permissionClaims records decisions about permission claims requested by the API service provider.
+  Individual claims can be accepted or rejected. If accepted, the API service provider gets the
+  requested access to the specified resources in this workspace. Access is granted per
+  GroupResource, identity, and other properties.
+  """
+  permissionClaims: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaims]
+  """reference uniquely identifies an API to bind to."""
+  reference: ApisKcpIoV1alpha2APIBindingSpecReference
+}
+
+"""Spec holds the desired state."""
+input ApisKcpIoV1alpha2APIBindingSpec_Input {
+  """
+  permissionClaims records decisions about permission claims requested by the API service provider.
+  Individual claims can be accepted or rejected. If accepted, the API service provider gets the
+  requested access to the specified resources in this workspace. Access is granted per
+  GroupResource, identity, and other properties.
+  """
+  permissionClaims: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaims_Input]
+  """reference uniquely identifies an API to bind to."""
+  reference: ApisKcpIoV1alpha2APIBindingSpecReference_Input
+}
+
+"""Schema references the APIResourceSchema that is bound to this API."""
+input ApisKcpIoV1alpha2APIBindingStatusBoundResourcesSchema_Input {
+  """name is the bound APIResourceSchema name."""
+  name: String
+  """UID is the UID of the APIResourceSchema that is bound to this API."""
+  UID: String
+  """
+  identityHash is the hash of the API identity that this schema is bound to.
+  The API identity determines the etcd prefix used to persist the object.
+  Different identity means that the objects are effectively served and stored
+  under a distinct resource. A CRD of the same GroupVersionResource uses a
+  different identity and hence a separate etcd prefix.
+  """
+  identityHash: String
+}
+
+"""Condition defines an observation of a object operational state."""
+input ApisKcpIoV1alpha2APIBindingStatusConditions_Input {
+  """
+  A human readable message indicating details about the transition.
+  This field may be empty.
+  """
+  message: String
+  """
+  The reason for the condition's last transition in CamelCase.
+  The specific API may choose whether or not this field is considered a guaranteed API.
+  This field may not be empty.
+  """
+  reason: String
+  """
+  Severity provides an explicit classification of Reason code, so the users or machines can immediately
+  understand the current situation and act accordingly.
+  The Severity field MUST be set only when Status=False.
+  """
+  severity: String
+  """Status of the condition, one of True, False, Unknown."""
+  status: String
+  """
+  Type of condition in CamelCase or in foo.example.com/CamelCase.
+  Many .condition.type values are consistent across resources like Available, but because arbitrary conditions
+  can be useful (see .node.status.conditions), the ability to deconflict is important.
+  """
+  type: String
+  """
+  Last time the condition transitioned from one status to another.
+  This should be when the underlying condition changed. If that is not known, then using the time when
+  the API field changed is acceptable.
+  """
+  lastTransitionTime: String
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaimsDefaultSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+input ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelector_Input {
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelectorMatchExpressions_Input]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+input ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelectorMatchExpressions_Input {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""
+A label selector requirement is a selector that contains values, a key, and an operator that
+relates the key and values.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsDefaultSelectorMatchExpressions {
+  """key is the label key that the selector applies to."""
+  key: String
+  """
+  operator represents a key's relationship to a set of values.
+  Valid operators are In, NotIn, Exists and DoesNotExist.
+  """
+  operator: String
+  """
+  values is an array of string values. If the operator is In or NotIn,
+  the values array must be non-empty. If the operator is Exists or DoesNotExist,
+  the values array must be empty. This array is replaced during a strategic
+  merge patch.
+  """
+  values: [String]
+}
+
+"""Status communicates the observed state."""
+type ApisKcpIoV1alpha2APIBindingStatus {
+  """
+  APIExportClusterName records the name (not path) of the logical cluster that contains the APIExport.
+  """
+  apiExportClusterName: String
+  """
+  appliedPermissionClaims is a list of the permission claims the system has seen and applied,
+  according to the requests of the API service provider in the APIExport and the acceptance
+  state in spec.permissionClaims.
+  """
+  appliedPermissionClaims: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaims]
+  """boundResources records the state of bound APIs."""
+  boundResources: [ApisKcpIoV1alpha2APIBindingStatusBoundResources]
+  """conditions is a list of conditions that apply to the APIBinding."""
+  conditions: [ApisKcpIoV1alpha2APIBindingStatusConditions]
+  """
+  exportPermissionClaims records the permissions that the export provider is asking for
+  the binding to grant.
+  """
+  exportPermissionClaims: [ApisKcpIoV1alpha2APIBindingStatusExportPermissionClaims]
+  """
+  phase is the current phase of the APIBinding:
+  - "": the APIBinding has just been created, waiting to be bound.
+  - Binding: the APIBinding is being bound.
+  - Bound: the APIBinding is bound and the referenced APIs are available in the workspace.
+  """
+  phase: String
+}
+
+"""reference uniquely identifies an API to bind to."""
+type ApisKcpIoV1alpha2APIBindingSpecReference {
+  """
+  export is a reference to an APIExport by cluster name and export name.
+  The creator of the APIBinding needs to have access to the APIExport with the
+  verb `bind` in order to bind to it.
+  """
+  export: ApisKcpIoV1alpha2APIBindingSpecReferenceExport
+}
+
+"""
+defaultSelector is the default selector to use when creating APIBindings
+via WorkspaceType's defaultAPIBindings. If not set, the APIBinding will
+default to matchAll: true.
+
+This allows API providers to suggest a default scope for permission claims
+that will be used when workspaces are automatically created with default
+APIBindings. Users can always override the default selector by accepting the
+claim with a different selector or by manually creating APIBindings with a custom selector.
+"""
+type ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingSpecPermissionClaimsDefaultSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
+}
+
+"""
+PermissionClaimSelector configures scoped access to objects
+of a claimed resource.
+"""
+type ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelector {
+  """matchAll grants access to all objects of the claimed resource."""
+  matchAll: Boolean
+  """
+  matchExpressions is a list of label selector requirements. The requirements are ANDed.
+  """
+  matchExpressions: [ApisKcpIoV1alpha2APIBindingStatusAppliedPermissionClaimsSelectorMatchExpressions]
+  """
+  matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+  map is equivalent to an element of matchExpressions, whose key field is "key", the
+  operator is "In", and the values array contains only "value". The requirements are ANDed.
+  """
+  matchLabels: StringMap_Input
 }
 
 schema {

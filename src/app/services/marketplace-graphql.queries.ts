@@ -50,16 +50,23 @@ export const getMarketplaceEntriesQuery = gql`
             }
             spec {
               apiBindingName
+              apiExportPermissionClaims {
+                defaultSelector {
+                  matchAll
+                  matchExpressions {
+                    key
+                    operator
+                    values
+                  }
+                  matchLabels
+                }
+                group
+                identityHash
+                resource
+                verbs
+              }
               apiExport {
                 metadata
-                spec {
-                  permissionClaims {
-                    all
-                    group
-                    identityHash
-                    resource
-                  }
-                }
               }
               providerMetadata {
                 spec {
