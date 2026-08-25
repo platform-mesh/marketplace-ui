@@ -74,7 +74,7 @@ describe('ProviderService', () => {
           linkManager: vi.fn().mockReturnValue({
             navigate: vi.fn(),
             goBack: vi.fn(),
-            fromParent: vi.fn().mockReturnValue({ openAsModal }),
+            openAsModal,
           }),
           clearFrameCache: vi.fn(),
           sendCustomMessage: vi.fn(),
@@ -294,12 +294,12 @@ describe('ProviderService', () => {
   });
 
   describe('navigateToProviderDetails', () => {
-    it('should open the provider route from the parent context', () => {
+    it('should open the provider from the marketplace root', () => {
       service.navigateToProviderDetails(
         buildMarketplaceEntry(undefined, { displayName: 'LLM Service' }),
       );
 
-      expect(openAsModal).toHaveBeenCalledWith('test-provider', {
+      expect(openAsModal).toHaveBeenCalledWith('/home/provider/test-provider', {
         title: 'Provider Details - LLM Service',
         keepPrevious: true,
       });
