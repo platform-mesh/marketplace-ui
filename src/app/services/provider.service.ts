@@ -145,7 +145,8 @@ export class ProviderService {
     const title = `Provider Details - ${marketplaceEntry.spec.providerMetadata.spec.displayName}`;
     void this.luigiClient
       .linkManager()
-      .openAsModal(`/home/provider/${marketplaceEntry.metadata.name}`, {
+      .fromParent()
+      .openAsModal(`/${marketplaceEntry.metadata.name}`, {
         title,
         keepPrevious: true,
       } as ModalSettings);
