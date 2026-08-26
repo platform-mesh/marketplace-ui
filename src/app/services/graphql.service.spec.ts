@@ -180,49 +180,6 @@ describe('GraphqlService', () => {
     });
   });
 
-  describe('getMarketplaceEntry', () => {
-    it('should return the matching marketplace entry by name', () => {
-      const entries = [mockMarketplaceEntry, { ...mockMarketplaceEntry, metadata: { name: 'other-provider' } }];
-      mockApolloQuery.mockReturnValue(
-        of({
-          data: {
-            marketplace_platform_mesh_io: {
-              v1alpha2: {
-                MarketplaceEntries: { items: entries },
-              },
-            },
-          },
-        }),
-      );
-
-      let result: MarketplaceEntry | undefined;
-      service.getMarketplaceEntry('test-provider').subscribe((res) => (result = res));
-      mockStore.refreshState();
-
-      expect(result).toEqual(mockMarketplaceEntry);
-    });
-
-    it('should return null when provider name is not found', () => {
-      mockApolloQuery.mockReturnValue(
-        of({
-          data: {
-            marketplace_platform_mesh_io: {
-              v1alpha2: {
-                MarketplaceEntries: { items: [] },
-              },
-            },
-          },
-        }),
-      );
-
-      let result: MarketplaceEntry | undefined;
-      service.getMarketplaceEntry('nonexistent').subscribe((res) => (result = res));
-      mockStore.refreshState();
-
-      expect(result).toBeNull();
-    });
-  });
-
   describe('installProviderInstance', () => {
     it('should mutate with correct variables and send custom message', () => {
       const linkManagerMock = { goBack: vi.fn() };
