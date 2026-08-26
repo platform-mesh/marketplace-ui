@@ -127,7 +127,7 @@ describe('GraphqlService', () => {
         of({
           data: {
             marketplace_platform_mesh_io: {
-              v1alpha2: {
+              v1alpha1: {
                 MarketplaceEntries: { items: entries },
               },
             },
@@ -158,7 +158,7 @@ describe('GraphqlService', () => {
         of({
           data: {
             marketplace_platform_mesh_io: {
-              v1alpha2: {
+              v1alpha1: {
                 MarketplaceEntries: { items: entries },
               },
             },
