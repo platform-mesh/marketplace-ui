@@ -56,11 +56,13 @@ export class GraphqlService {
             fetchPolicy: 'no-cache',
           })
           .pipe(
-            map(
-              (apolloResponse: any) =>
-                apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
-                  .MarketplaceEntries.items,
-            ),
+            map((apolloResponse) => {
+              if (!apolloResponse.data) {
+                throw new Error('Marketplace response did not contain data');
+              }
+              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
+                .MarketplaceEntries.items;
+            }),
           );
       }),
     );
@@ -149,5 +151,3 @@ export class GraphqlService {
     });
   }
 }
-
-
