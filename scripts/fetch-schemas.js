@@ -18,8 +18,8 @@ if (!token) {
 
 const schemaDir = path.join(__dirname, '..', 'schemas');
 
-const VW_URL = 'https://demo.portal.localhost:8443/api/kubernetes-graphql-gateway/virtual-workspace/marketplace/root:orgs:demo:test/graphql';
-const WS_URL = 'https://demo.portal.localhost:8443/api/kubernetes-graphql-gateway/root:orgs:demo/graphql';
+const VW_URL = 'https://demo.portal.localhost:8443/gateway/api/clusters/single-marketplace/graphql';
+const WS_URL = 'https://demo.portal.localhost:8443/gateway/api/clusters/root:orgs:demo/graphql';
 
 async function fetchAndMergeSchemas() {
   try {
@@ -27,6 +27,7 @@ async function fetchAndMergeSchemas() {
     const marketplaceSchema = await loadSchema(VW_URL, {
       loaders: [new UrlLoader()],
       headers: { Authorization: `Bearer ${token}` },
+      method: 'GET',
     });
     const marketplaceSDL = printSchema(marketplaceSchema);
 
@@ -34,6 +35,7 @@ async function fetchAndMergeSchemas() {
     const workspaceSchema = await loadSchema(WS_URL, {
       loaders: [new UrlLoader()],
       headers: { Authorization: `Bearer ${token}` },
+      method: 'GET',
     });
     const workspaceSDL = printSchema(workspaceSchema);
 
