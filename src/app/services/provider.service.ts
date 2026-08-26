@@ -141,12 +141,12 @@ export class ProviderService {
     return provider.spec.image ?? '';
   }
 
-  navigateToProviderDetails(marketplaceEntry: MarketplaceEntry) {
+  navigateToProviderDetails(marketplaceEntry: MarketplaceEntry): void {
     const title = `Provider Details - ${marketplaceEntry.spec.providerMetadata.spec.displayName}`;
     void this.luigiClient
       .linkManager()
       .fromParent()
-      .openAsModal(marketplaceEntry.metadata.name, {
+      .openAsModal(`/${marketplaceEntry.metadata.name}`, {
         title,
         keepPrevious: true,
       } as ModalSettings);
