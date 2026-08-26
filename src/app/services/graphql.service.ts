@@ -15,7 +15,7 @@ import {
 
 interface MarketplaceEntriesResponse {
   marketplace_platform_mesh_io: {
-    v1alpha2: {
+    v1alpha1: {
       MarketplaceEntries: {
         items: MarketplaceEntry[];
       };
@@ -60,7 +60,7 @@ export class GraphqlService {
               if (!apolloResponse.data) {
                 throw new Error('Marketplace response did not contain data');
               }
-              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
+              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha1
                 .MarketplaceEntries.items;
             }),
           );

@@ -42,7 +42,7 @@ export const deleteAPIBindingMutation = gql`
 export const getMarketplaceEntriesQuery = gql`
   {
     marketplace_platform_mesh_io {
-      v1alpha2 {
+      v1alpha1 {
         MarketplaceEntries {
           items {
             metadata {
