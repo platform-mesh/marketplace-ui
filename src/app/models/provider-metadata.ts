@@ -67,21 +67,12 @@ export interface StatusMapping {
 export interface Contact {
   displayName: string;
   email?: string;
-  roles?: string[];
+  role?: string[];
   contactLink?: string;
 }
 
 export type ColorCategory =
-  | '1'
-  | '2'
-  | '3'
-  | '4'
-  | '5'
-  | '6'
-  | '7'
-  | '8'
-  | '9'
-  | '10';
+  '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10';
 
 export interface Label {
   title: string;
@@ -117,10 +108,11 @@ export interface ProviderMetadata {
     displayName: string;
     description?: string;
 
-    data?: string;
+    data?: string | Record<string, unknown>;
     contacts?: Contact[];
     documentation?: Documentation[];
     icon?: Icon;
+    detailViewExtensions?: DetailViewExtension[];
 
     links?: Link[];
     preferredSupportChannels?: Link[];
@@ -145,6 +137,10 @@ export interface Link {
   default?: boolean;
 }
 
+export interface DetailViewExtension {
+  url: string;
+}
+
 export enum ServiceLevel {
   VeryHigh = 'veryHigh24x7',
   High = 'high24x5',
@@ -154,7 +150,7 @@ export enum ServiceLevel {
 }
 
 export interface Documentation {
-  name: string;
+  displayName?: string;
   url?: string;
 }
 

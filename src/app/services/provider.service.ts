@@ -1,6 +1,9 @@
 import { LuigiClient, PmLuigiContextService } from './luigi';
 import { Injectable, inject } from '@angular/core';
-import { ConfirmationModalSettings } from '@luigi-project/client';
+import {
+  ConfirmationModalSettings,
+  ModalSettings,
+} from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { ConfirmationDialogDecision } from 'models/dialog';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
@@ -138,8 +141,15 @@ export class ProviderService {
     return provider.spec.image ?? '';
   }
 
-  navigateToProviderDetails(marketplaceEntry: MarketplaceEntry) {
-    this.luigiClient.linkManager().navigate(marketplaceEntry.metadata.name);
+  navigateToProviderDetails(marketplaceEntry: MarketplaceEntry): void {
+    const title = `Provider Details - ${marketplaceEntry.spec.providerMetadata.spec.displayName}`;
+    void this.luigiClient
+      .linkManager()
+      .fromParent()
+      .openAsModal(`/${marketplaceEntry.metadata.name}`, {
+        title,
+        keepPrevious: true,
+      } as ModalSettings);
   }
 
   buildLabels(elem: ProviderMetadata): Label[] {

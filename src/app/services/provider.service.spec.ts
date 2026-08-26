@@ -1,8 +1,10 @@
 import { LuigiClient, PmLuigiContextService } from './luigi';
+import { IContextMessage } from './luigi/pm-luigi-context.service';
 import { NEW_LABEL, ProviderService } from './provider.service';
 import { TestBed } from '@angular/core/testing';
+import { ILuigiContextTypes } from '@luigi-project/client-support-angular';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { mock } from 'vitest-mock-extended';
+import { ConfirmationDialogDecision } from 'models/dialog';
 import {
   Label,
   MarketplaceEntry,
@@ -11,16 +13,16 @@ import {
 } from 'models/index';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
-import { of, Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { GraphqlService } from 'services/graphql.service';
 import { NotificationService } from 'services/notification.service';
 import { unInstallProviderInstance } from 'state/changing-provider-instance.actions';
 import { loadProviders } from 'state/providers.actions';
-import { ConfirmationDialogDecision } from 'models/dialog';
-import { IContextMessage } from './luigi/pm-luigi-context.service';
-import { ILuigiContextTypes } from '@luigi-project/client-support-angular';
+import { mock } from 'vitest-mock-extended';
 
-const buildProviderMetadata = (overrides: Partial<ProviderMetadata['spec']> = {}): ProviderMetadata => ({
+const buildProviderMetadata = (
+  overrides: Partial<ProviderMetadata['spec']> = {},
+): ProviderMetadata => ({
   spec: {
     displayName: 'Test Provider',
     description: 'A test provider',
@@ -28,7 +30,10 @@ const buildProviderMetadata = (overrides: Partial<ProviderMetadata['spec']> = {}
   },
 });
 
-const buildMarketplaceEntry = (apiBindingName?: string, overrides: Partial<ProviderMetadata['spec']> = {}): MarketplaceEntry => ({
+const buildMarketplaceEntry = (
+  apiBindingName?: string,
+  overrides: Partial<ProviderMetadata['spec']> = {},
+): MarketplaceEntry => ({
   metadata: { name: 'test-provider' },
   spec: {
     apiBindingName,
@@ -51,9 +56,13 @@ describe('ProviderService', () => {
   let notificationService: NotificationService;
   let graphqlService: GraphqlService;
   let contextSubject: Subject<IContextMessage>;
+  let fromParent: ReturnType<typeof vi.fn>;
+  let openAsModal: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     contextSubject = new Subject<IContextMessage>();
+    openAsModal = vi.fn().mockResolvedValue(undefined);
+    fromParent = vi.fn().mockReturnValue({ openAsModal });
 
     TestBed.configureTestingModule({
       providers: [
@@ -67,6 +76,7 @@ describe('ProviderService', () => {
           linkManager: vi.fn().mockReturnValue({
             navigate: vi.fn(),
             goBack: vi.fn(),
+            fromParent,
           }),
           clearFrameCache: vi.fn(),
           sendCustomMessage: vi.fn(),
@@ -107,7 +117,9 @@ describe('ProviderService', () => {
     it('should delegate to graphqlService.installProviderInstance', () => {
       const entry = buildMarketplaceEntry();
       service.installProviderInstance(entry);
-      expect(graphqlService.installProviderInstance).toHaveBeenCalledWith(entry);
+      expect(graphqlService.installProviderInstance).toHaveBeenCalledWith(
+        entry,
+      );
     });
   });
 
@@ -140,7 +152,9 @@ describe('ProviderService', () => {
 
   describe('showConfirmationModal', () => {
     it('should return CONFIRMED when modal resolves', async () => {
-      luigiClient.uxManager().showConfirmationModal = vi.fn().mockResolvedValue(undefined);
+      luigiClient.uxManager().showConfirmationModal = vi
+        .fn()
+        .mockResolvedValue(undefined);
 
       const result = await service.showConfirmationModal({
         type: 'warning',
@@ -154,7 +168,9 @@ describe('ProviderService', () => {
     });
 
     it('should return DISMISSED when modal rejects', async () => {
-      luigiClient.uxManager().showConfirmationModal = vi.fn().mockRejectedValue(new Error('dismissed'));
+      luigiClient.uxManager().showConfirmationModal = vi
+        .fn()
+        .mockRejectedValue(new Error('dismissed'));
 
       const result = await service.showConfirmationModal({
         type: 'warning',
@@ -170,17 +186,23 @@ describe('ProviderService', () => {
 
   describe('uninstallProviderInstanceDialog', () => {
     it('should return false and not uninstall when user dismisses', async () => {
-      luigiClient.uxManager().showConfirmationModal = vi.fn().mockRejectedValue(new Error('dismissed'));
+      luigiClient.uxManager().showConfirmationModal = vi
+        .fn()
+        .mockRejectedValue(new Error('dismissed'));
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
-      const result = await service.uninstallProviderInstanceDialog(buildMarketplaceEntry('test-provider-abc12'));
+      const result = await service.uninstallProviderInstanceDialog(
+        buildMarketplaceEntry('test-provider-abc12'),
+      );
 
       expect(result).toBe(false);
       expect(dispatchSpy).not.toHaveBeenCalled();
     });
 
     it('should return true and dispatch uninstall action when user confirms', async () => {
-      luigiClient.uxManager().showConfirmationModal = vi.fn().mockResolvedValue(undefined);
+      luigiClient.uxManager().showConfirmationModal = vi
+        .fn()
+        .mockResolvedValue(undefined);
       const dispatchSpy = vi.spyOn(store, 'dispatch');
 
       pmLuigiContextService.contextObservable = vi.fn().mockReturnValue(
@@ -193,10 +215,12 @@ describe('ProviderService', () => {
         }),
       );
 
-      const result = await service.uninstallProviderInstanceDialog(buildMarketplaceEntry('test-provider-abc12', {
-        displayName: 'Test Provider',
-        provider: 'some-provider',
-      }));
+      const result = await service.uninstallProviderInstanceDialog(
+        buildMarketplaceEntry('test-provider-abc12', {
+          displayName: 'Test Provider',
+          provider: 'some-provider',
+        }),
+      );
 
       expect(result).toBe(true);
       expect(dispatchSpy).toHaveBeenCalledWith(
@@ -219,7 +243,9 @@ describe('ProviderService', () => {
     });
 
     it('should return dark URL when theme is dark and dark URL exists', () => {
-      luigiClient.uxManager().getCurrentTheme = vi.fn().mockReturnValue('sap_horizon_dark');
+      luigiClient.uxManager().getCurrentTheme = vi
+        .fn()
+        .mockReturnValue('sap_horizon_dark');
       const provider = buildProviderMetadata({
         icon: {
           dark: { url: 'dark-url.png' },
@@ -230,7 +256,9 @@ describe('ProviderService', () => {
     });
 
     it('should return dark data when theme is dark and dark data exists (no URL)', () => {
-      luigiClient.uxManager().getCurrentTheme = vi.fn().mockReturnValue('sap_fiori_hcb');
+      luigiClient.uxManager().getCurrentTheme = vi
+        .fn()
+        .mockReturnValue('sap_fiori_hcb');
       const provider = buildProviderMetadata({
         icon: {
           dark: { data: 'dark-data' },
@@ -241,7 +269,9 @@ describe('ProviderService', () => {
     });
 
     it('should return light URL when theme is light', () => {
-      luigiClient.uxManager().getCurrentTheme = vi.fn().mockReturnValue('sap_horizon');
+      luigiClient.uxManager().getCurrentTheme = vi
+        .fn()
+        .mockReturnValue('sap_horizon');
       const provider = buildProviderMetadata({
         icon: {
           dark: { url: 'dark-url.png' },
@@ -252,7 +282,9 @@ describe('ProviderService', () => {
     });
 
     it('should return light data when light URL is missing', () => {
-      luigiClient.uxManager().getCurrentTheme = vi.fn().mockReturnValue('sap_horizon');
+      luigiClient.uxManager().getCurrentTheme = vi
+        .fn()
+        .mockReturnValue('sap_horizon');
       const provider = buildProviderMetadata({
         icon: {
           dark: {},
@@ -264,13 +296,16 @@ describe('ProviderService', () => {
   });
 
   describe('navigateToProviderDetails', () => {
-    it('should navigate to provider name', () => {
-      const navigateMock = vi.fn();
-      luigiClient.linkManager = vi.fn().mockReturnValue({ navigate: navigateMock });
+    it('should open the provider as a sibling in the current marketplace', () => {
+      service.navigateToProviderDetails(
+        buildMarketplaceEntry(undefined, { displayName: 'LLM Service' }),
+      );
 
-      service.navigateToProviderDetails(buildMarketplaceEntry());
-
-      expect(navigateMock).toHaveBeenCalledWith('test-provider');
+      expect(fromParent).toHaveBeenCalledOnce();
+      expect(openAsModal).toHaveBeenCalledWith('/test-provider', {
+        title: 'Provider Details - LLM Service',
+        keepPrevious: true,
+      });
     });
   });
 
@@ -347,7 +382,9 @@ describe('ProviderService', () => {
 
       service['handleInstallProvider']();
 
-      expect(notificationService.openSuccessToast).toHaveBeenCalledWith('Provider Enabled');
+      expect(notificationService.openSuccessToast).toHaveBeenCalledWith(
+        'Provider Enabled',
+      );
       expect(clearFrameCacheSpy).toHaveBeenCalled();
       expect(dispatchSpy).toHaveBeenCalledWith(loadProviders());
     });

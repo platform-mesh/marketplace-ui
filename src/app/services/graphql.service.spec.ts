@@ -1,14 +1,18 @@
 import { GraphqlService } from './graphql.service';
 import { TestBed } from '@angular/core/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
-import { NodeContext, MarketplaceEntry, ProviderMetadataFilter } from 'models/index';
+import {
+  MarketplaceEntry,
+  NodeContext,
+  ProviderMetadataFilter,
+} from 'models/index';
+import { MockProvider } from 'ng-mocks';
 import { of } from 'rxjs';
-import { luigiContextSelector } from 'services/luigi/state';
 import { ApolloFactory } from 'services/apollo-factory';
 import { LuigiClient } from 'services/luigi';
+import { luigiContextSelector } from 'services/luigi/state';
 import { type Mock } from 'vitest';
 import { mock } from 'vitest-mock-extended';
-import { MockProvider } from 'ng-mocks';
 
 const mockMarketplaceEntry: MarketplaceEntry = {
   metadata: { name: 'test-provider' },
@@ -163,7 +167,9 @@ describe('GraphqlService', () => {
       );
 
       let result: MarketplaceEntry[] | undefined;
-      service.getMarketplaceEntries(undefined, customFilter).subscribe((res) => (result = res));
+      service
+        .getMarketplaceEntries(undefined, customFilter)
+        .subscribe((res) => (result = res));
       mockStore.refreshState();
 
       expect(mockApolloQuery).toHaveBeenCalledWith(
@@ -226,7 +232,9 @@ describe('GraphqlService', () => {
       mockWsApolloMutate.mockReturnValue(of({ data: {} }));
 
       let completed = false;
-      service.installProviderInstance(mockMarketplaceEntry).subscribe(() => (completed = true));
+      service
+        .installProviderInstance(mockMarketplaceEntry)
+        .subscribe(() => (completed = true));
       mockStore.refreshState();
 
       expect(mockWsApolloMutate).toHaveBeenCalledWith(
@@ -248,7 +256,9 @@ describe('GraphqlService', () => {
       mockWsApolloMutate.mockReturnValue(of({ data: {} }));
 
       let completed = false;
-      service.unInstallExtension('test-provider').subscribe(() => (completed = true));
+      service
+        .unInstallExtension('test-provider')
+        .subscribe(() => (completed = true));
       mockStore.refreshState();
 
       expect(mockWsApolloMutate).toHaveBeenCalledWith(

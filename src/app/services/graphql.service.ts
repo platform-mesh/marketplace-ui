@@ -13,38 +13,21 @@ import {
   getMarketplaceEntriesQuery,
 } from 'services/marketplace-graphql.queries';
 
+interface MarketplaceEntriesResponse {
+  marketplace_platform_mesh_io: {
+    v1alpha2: {
+      MarketplaceEntries: {
+        items: MarketplaceEntry[];
+      };
+    };
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class GraphqlService {
   private luigiClient = inject(LuigiClient);
   private store = inject(Store);
   private apolloFactory = inject(ApolloFactory);
-
-  getMarketplaceEntry(providerName: string): Observable<MarketplaceEntry> {
-    return this.store.select(luigiContextSelector).pipe(
-      filter((x) => !!x),
-      switchMap((context) => {
-        return this.apolloFactory
-          .marketplace(context)
-          .query<{ getMarketplaceEntriesQuery: MarketplaceEntry[] }>({
-            query: getMarketplaceEntriesQuery,
-            fetchPolicy: 'no-cache',
-          })
-          .pipe(
-            map((apolloResponse: any) => {
-              return apolloResponse.data.marketplace_platform_mesh_io.v1alpha2
-                .MarketplaceEntries.items;
-            }),
-            map((entries: MarketplaceEntry[]) => {
-              const res = entries.filter((entry) => {
-                return entry.metadata.name === providerName;
-              });
-              return res;
-            }),
-            map((entries: MarketplaceEntry[]) => entries[0] || null),
-          );
-      }),
-    );
-  }
 
   createExtFilter(installableIn?: string[]): ProviderMetadataFilter {
     return installableIn
@@ -65,7 +48,7 @@ export class GraphqlService {
       switchMap((context) => {
         return this.apolloFactory
           .marketplace(context)
-          .query<{ getMarketplaceEntriesQuery: MarketplaceEntry[] }>({
+          .query<MarketplaceEntriesResponse>({
             query: getMarketplaceEntriesQuery,
             variables: {
               filter: extFilter,
@@ -166,3 +149,5 @@ export class GraphqlService {
     });
   }
 }
+
+
