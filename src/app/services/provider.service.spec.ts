@@ -56,11 +56,13 @@ describe('ProviderService', () => {
   let notificationService: NotificationService;
   let graphqlService: GraphqlService;
   let contextSubject: Subject<IContextMessage>;
+  let fromParent: ReturnType<typeof vi.fn>;
   let openAsModal: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     contextSubject = new Subject<IContextMessage>();
     openAsModal = vi.fn().mockResolvedValue(undefined);
+    fromParent = vi.fn().mockReturnValue({ openAsModal });
 
     TestBed.configureTestingModule({
       providers: [
@@ -74,7 +76,7 @@ describe('ProviderService', () => {
           linkManager: vi.fn().mockReturnValue({
             navigate: vi.fn(),
             goBack: vi.fn(),
-            fromParent: vi.fn().mockReturnValue({ openAsModal }),
+            fromParent,
           }),
           clearFrameCache: vi.fn(),
           sendCustomMessage: vi.fn(),
@@ -294,12 +296,13 @@ describe('ProviderService', () => {
   });
 
   describe('navigateToProviderDetails', () => {
-    it('should open the provider route from the parent context', () => {
+    it('should open the provider as a sibling in the current marketplace', () => {
       service.navigateToProviderDetails(
         buildMarketplaceEntry(undefined, { displayName: 'LLM Service' }),
       );
 
-      expect(openAsModal).toHaveBeenCalledWith('test-provider', {
+      expect(fromParent).toHaveBeenCalledOnce();
+      expect(openAsModal).toHaveBeenCalledWith('/test-provider', {
         title: 'Provider Details - LLM Service',
         keepPrevious: true,
       });
