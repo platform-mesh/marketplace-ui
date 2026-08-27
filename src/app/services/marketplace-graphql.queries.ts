@@ -54,7 +54,6 @@ export const getMarketplaceEntriesQuery = gql`
                 metadata
                 spec {
                   permissionClaims {
-                    all
                     group
                     identityHash
                     resource

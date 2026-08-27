@@ -13,6 +13,16 @@ import {
   getMarketplaceEntriesQuery,
 } from 'services/marketplace-graphql.queries';
 
+interface MarketplaceEntriesResponse {
+  marketplace_platform_mesh_io: {
+    v1alpha1: {
+      MarketplaceEntries: {
+        items: MarketplaceEntry[];
+      };
+    };
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class GraphqlService {
   private luigiClient = inject(LuigiClient);
@@ -140,14 +150,4 @@ export class GraphqlService {
       },
     });
   }
-}
-
-interface MarketplaceEntriesResponse {
-  marketplace_platform_mesh_io: {
-    v1alpha1: {
-      MarketplaceEntries: {
-        items: MarketplaceEntry[];
-      };
-    };
-  };
 }
