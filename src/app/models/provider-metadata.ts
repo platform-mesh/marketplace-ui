@@ -103,14 +103,12 @@ export interface MarketplaceEntry {
 }
 
 export interface PermissionClaimSelector {
-  __typename?: string;
   matchAll?: boolean;
   matchExpressions?: PermissionClaimSelectorRequirement[];
   matchLabels?: Record<string, string>;
 }
 
 export interface PermissionClaimSelectorRequirement {
-  __typename?: string;
   key: string;
   operator: string;
   values?: string[] | null;

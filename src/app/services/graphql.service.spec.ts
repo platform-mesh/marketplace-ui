@@ -4,6 +4,8 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import {
   MarketplaceEntry,
   NodeContext,
+  PermissionClaimSelector,
+  PermissionClaimSelectorRequirement,
   ProviderMetadataFilter,
 } from 'models/index';
 import { MockProvider } from 'ng-mocks';
@@ -29,7 +31,7 @@ const mockMarketplaceEntry: MarketplaceEntry = {
             defaultSelector: {
               __typename: 'PermissionClaimSelector',
               matchLabels: { 'example.io/credential': 'true' },
-            },
+            } as PermissionClaimSelector,
             group: 'example.io',
             identityHash: 'abc123',
             resource: 'configs',
@@ -52,15 +54,15 @@ const mockMarketplaceEntry: MarketplaceEntry = {
                   key: 'example.io/environment',
                   operator: 'In',
                   values: ['development'],
-                },
+                } as PermissionClaimSelectorRequirement,
                 {
                   __typename: 'LabelSelectorRequirement',
                   key: 'example.io/ready',
                   operator: 'Exists',
                   values: null,
-                },
+                } as PermissionClaimSelectorRequirement,
               ],
-            },
+            } as PermissionClaimSelector,
             group: '',
             identityHash: '',
             resource: 'namespaces',
@@ -70,7 +72,7 @@ const mockMarketplaceEntry: MarketplaceEntry = {
             defaultSelector: {
               __typename: 'PermissionClaimSelector',
               matchAll: true,
-            },
+            } as PermissionClaimSelector,
             group: '',
             identityHash: '',
             resource: 'configmaps',
