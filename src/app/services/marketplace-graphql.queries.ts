@@ -57,6 +57,16 @@ export const getMarketplaceEntriesQuery = gql`
                     group
                     identityHash
                     resource
+                    verbs
+                    defaultSelector {
+                      matchAll
+                      matchExpressions {
+                        key
+                        operator
+                        values
+                      }
+                      matchLabels
+                    }
                   }
                 }
               }

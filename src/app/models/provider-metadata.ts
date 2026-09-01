@@ -94,11 +94,24 @@ export interface MarketplaceEntry {
           identityHash: string;
           resource: string;
           verbs: string[];
+          defaultSelector?: PermissionClaimSelector | null;
         }[];
       };
     };
     providerMetadata: ProviderMetadata;
   };
+}
+
+export interface PermissionClaimSelector {
+  matchAll?: boolean;
+  matchExpressions?: PermissionClaimSelectorRequirement[];
+  matchLabels?: Record<string, string>;
+}
+
+export interface PermissionClaimSelectorRequirement {
+  key: string;
+  operator: string;
+  values?: string[] | null;
 }
 
 export interface ProviderMetadata {
