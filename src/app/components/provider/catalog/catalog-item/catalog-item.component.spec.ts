@@ -11,7 +11,7 @@ const buildItem = (
   badge: { text: 'INSTALLED', color: 'var(--sapPositiveColor)' },
   labels: [{ color: '1', title: 'Beta' }],
   additionalInfo: [{ label: 'Category', value: 'AI' }],
-  verification: { type: 'community' },
+  verification: { label: 'Community', status: 'neutral' },
   image: 'https://example.com/icon.png',
   ...overrides,
 });
@@ -33,36 +33,6 @@ describe('CatalogItemComponent', () => {
     fixture.componentRef.setInput('data', buildItem());
     fixture.detectChanges();
     expect(component).toBeTruthy();
-  });
-
-  describe('showProviderVerification', () => {
-    it('should return true when verification is defined', () => {
-      fixture.componentRef.setInput(
-        'data',
-        buildItem({ verification: { type: 'community' } }),
-      );
-      fixture.detectChanges();
-      expect(component.showProviderVerification()).toBe(true);
-    });
-
-    it('should return true when verification is null', () => {
-      fixture.componentRef.setInput(
-        'data',
-        buildItem({ verification: null as any }),
-      );
-      fixture.detectChanges();
-      // null !== undefined, so verification is "defined"
-      expect(component.showProviderVerification()).toBe(true);
-    });
-
-    it('should return false when verification is undefined', () => {
-      fixture.componentRef.setInput(
-        'data',
-        buildItem({ verification: undefined }),
-      );
-      fixture.detectChanges();
-      expect(component.showProviderVerification()).toBe(false);
-    });
   });
 
   describe('generateId', () => {
