@@ -1,0 +1,212 @@
+{
+  "data": {
+    "marketplace_platform_mesh_io": {
+      "__typename": "MarketplacePlatformMeshIoQuery",
+      "v1alpha1": {
+        "__typename": "MarketplacePlatformMeshIoV1alpha1Query",
+        "MarketplaceEntries": {
+          "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntryList",
+          "items": [
+            {
+              "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntry",
+              "metadata": {
+                "__typename": "io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata",
+                "name": "kro.run-kro.run"
+              },
+              "spec": {
+                "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec",
+                "apiBindingName": null,
+                "apiExport": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport",
+                  "metadata": "{\"annotations\":{\"kcp.io/path\":\"root:providers:kro-provider\"},\"name\":\"kro.run\"}",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec",
+                    "permissionClaims": null
+                  }
+                },
+                "providerMetadata": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec",
+                    "contacts": null,
+                    "description": "Compose Platform Mesh services with kro ResourceGraphDefinitions.\n",
+                    "displayName": "kro (composition)",
+                    "documentation": null,
+                    "icon": null,
+                    "preferredSupportChannels": null,
+                    "verification": {
+                      "label": "Certified",
+                      "status": "positive",
+                      "icon": "accept",
+                      "hint": "Certified by Platform Mesh."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntry",
+              "metadata": {
+                "__typename": "io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata",
+                "name": "orchestrate.platform-mesh.io-orchestrate.platform-mesh.io"
+              },
+              "spec": {
+                "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec",
+                "apiBindingName": null,
+                "apiExport": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport",
+                  "metadata": "{\"annotations\":{\"kcp.io/path\":\"root:providers:httpbin-provider\"},\"name\":\"orchestrate.platform-mesh.io\"}",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec",
+                    "permissionClaims": [
+                      {
+                        "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecPermissionClaims",
+                        "all": true,
+                        "group": null,
+                        "identityHash": null,
+                        "resource": "events"
+                      }
+                    ]
+                  }
+                },
+                "providerMetadata": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec",
+                    "contacts": [
+                      {
+                        "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts",
+                        "displayName": "Maria Garcia",
+                        "email": "maria.garcia@abc.com",
+                        "role": ["Technical Support Lead"]
+                      }
+                    ],
+                    "description": "High Performance infrastructure and managed services for your applications.\n",
+                    "displayName": "ABC MSP Provider",
+                    "documentation": null,
+                    "icon": null,
+                    "preferredSupportChannels": [
+                      {
+                        "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels",
+                        "displayName": "ABC Help Desk",
+                        "url": null
+                      }
+                    ],
+                    "verification": {
+                      "label": "Verified",
+                      "status": "positive",
+                      "hint": "Identity verified."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntry",
+              "metadata": {
+                "__typename": "io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata",
+                "name": "partner.example.io-partner.example.io"
+              },
+              "spec": {
+                "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec",
+                "apiBindingName": null,
+                "apiExport": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport",
+                  "metadata": "{\"annotations\":{\"kcp.io/path\":\"root:providers:partner-provider\"},\"name\":\"partner.example.io\"}",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec",
+                    "permissionClaims": null
+                  }
+                },
+                "providerMetadata": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec",
+                    "contacts": null,
+                    "description": "Partner-managed integrations and connectors.\n",
+                    "displayName": "Partner Integrations",
+                    "documentation": null,
+                    "icon": null,
+                    "preferredSupportChannels": null,
+                    "verification": {
+                      "label": "Partner",
+                      "status": "critical",
+                      "icon": "shield",
+                      "hint": "Provided by a Platform Mesh partner."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntry",
+              "metadata": {
+                "__typename": "io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata",
+                "name": "community.example.io-community.example.io"
+              },
+              "spec": {
+                "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec",
+                "apiBindingName": null,
+                "apiExport": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport",
+                  "metadata": "{\"annotations\":{\"kcp.io/path\":\"root:providers:community-provider\"},\"name\":\"community.example.io\"}",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec",
+                    "permissionClaims": null
+                  }
+                },
+                "providerMetadata": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec",
+                    "contacts": null,
+                    "description": "Community-maintained extension.\n",
+                    "displayName": "Community Toolkit",
+                    "documentation": null,
+                    "icon": null,
+                    "preferredSupportChannels": null,
+                    "verification": {
+                      "label": "Community",
+                      "status": "neutral"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntry",
+              "metadata": {
+                "__typename": "io_k8s_apimachinery_pkg_apis_meta_v1_ObjectMetaMetadata",
+                "name": "unverified.example.io-unverified.example.io"
+              },
+              "spec": {
+                "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpec",
+                "apiBindingName": null,
+                "apiExport": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExport",
+                  "metadata": "{\"annotations\":{\"kcp.io/path\":\"root:providers:unverified-provider\"},\"name\":\"unverified.example.io\"}",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpec",
+                    "permissionClaims": null
+                  }
+                },
+                "providerMetadata": {
+                  "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadata",
+                  "spec": {
+                    "__typename": "MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec",
+                    "contacts": null,
+                    "description": "An extension without verification metadata.\n",
+                    "displayName": "Unverified Sandbox",
+                    "documentation": null,
+                    "icon": null,
+                    "preferredSupportChannels": null
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
