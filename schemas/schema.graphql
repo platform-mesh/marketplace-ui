@@ -951,6 +951,23 @@ type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec {
   preferredSupportChannels: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels]
   """"""
   tags: [String]
+  """"""
+  verification: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecVerification
+}
+
+"""
+Verification describes the trust level of a provider, rendered as a badge in
+the marketplace UI.
+"""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecVerification {
+  """Text shown on the verification badge."""
+  label: String
+  """Object status color for the badge (e.g. positive, critical, neutral)."""
+  status: String
+  """Optional SAP-icons glyph name; defaults to a verified glyph when absent."""
+  icon: String
+  """Optional tooltip shown on the badge."""
+  hint: String
 }
 
 """
