@@ -1,4 +1,3 @@
-import { AdditionalInfo, CatalogDataItem } from 'models/index';
 import { ProviderEmptyComponent } from './provider-empty/provider-empty.component';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
@@ -12,6 +11,7 @@ import { DynamicPageComponent as DynamicPageComponent_1 } from '@fundamental-ngx
 import { ModalSettings } from '@luigi-project/client';
 import { Store } from '@ngrx/store';
 import { CatalogComponent } from 'components/provider/catalog';
+import { AdditionalInfo, CatalogDataItem } from 'models/index';
 import { MarketplaceEntry, ProviderMetadata } from 'models/provider-metadata';
 import {
   BehaviorSubject,
@@ -89,6 +89,7 @@ export class ProvidersComponent implements OnInit {
 
             total.push({
               id: marketplaceEntry.metadata.name,
+              type: marketplaceEntry.spec.providerMetadata.spec.type,
               testId: `app-extensions-catalog-all-card-${marketplaceEntry.metadata.name}-entity`,
               title: marketplaceEntry.spec.providerMetadata.spec.displayName,
               description:

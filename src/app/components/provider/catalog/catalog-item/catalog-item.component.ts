@@ -17,8 +17,8 @@ import { AvatarComponent } from '@fundamental-ngx/core/avatar';
 import { FormLabelComponent } from '@fundamental-ngx/core/form';
 import { InfoLabelComponent } from '@fundamental-ngx/core/info-label';
 import { TextComponent } from '@fundamental-ngx/core/text';
-import { CatalogDataItem } from 'models/index';
 import { VerificationInfoComponent } from 'components/provider/verification-info/verification-info.component';
+import { CatalogDataItem } from 'models/index';
 import { Md5 } from 'ts-md5';
 
 @Component({
@@ -45,13 +45,6 @@ export class CatalogItemComponent implements OnChanges, AfterViewInit {
    */
   @Input()
   data!: CatalogDataItem;
-
-  /**
-   * If the extension's verification is null, it indicates that the Community provides it, making it visible.
-   * If the verification is undefined, typically found in the templates catalog, the information remains hidden.
-   */
-  showProviderVerification = (): boolean =>
-    this.data?.verification !== undefined;
 
   constructor(private elementRef: ElementRef<HTMLElement>) {}
 

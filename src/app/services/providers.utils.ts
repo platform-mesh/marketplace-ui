@@ -13,7 +13,7 @@ export class ProvidersUtils {
     !filter.providers?.length ||
     filter.providers.some(
       (providerFilter) =>
-        providerFilter.id === el.verification?.type ||
+        providerFilter.id === el.type ||
         this.isCommunityVerification(providerFilter.id, el),
     );
 }

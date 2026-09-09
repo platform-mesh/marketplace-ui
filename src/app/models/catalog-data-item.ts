@@ -1,11 +1,11 @@
 import { AdditionalInfo } from './additional-info';
 import { Badge } from './badge';
 import { Label } from './provider-metadata';
-import { Verification } from './verification';
-
+import { VerificationInfo } from 'models/verification-info';
 
 export interface CatalogDataItem {
   title?: string;
+  type?: string;
   description?: string;
   badge?: Badge;
   category?: string;
@@ -14,6 +14,6 @@ export interface CatalogDataItem {
   glyph?: string;
   additionalInfo?: AdditionalInfo[];
   labels?: Label[];
-  verification?: Verification;
+  verification?: VerificationInfo;
   testId?: string;
 }

@@ -35,9 +35,7 @@
         [title]="data.title"
       >
         {{ data.title }}
-        @if (showProviderVerification()) {
-          <app-provider-verification [verification]="data.verification" />
-        }
+        <app-provider-verification [verificationInfo]="data.verification" />
       </h2>
     </fd-card-main-header>
   </fd-card-header>
