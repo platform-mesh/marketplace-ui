@@ -6,7 +6,7 @@
       fd-object-status
       [glyph]="verificationInfoData.icon || 'verified'"
       [label]="verificationInfoData.label"
-      [status]="verificationInfoData.status"
+      [status]="verificationInfoData.status || 'informative'"
       [fd-inline-help]="verificationInfoData.hint || ''"
     ></span>
   </div>

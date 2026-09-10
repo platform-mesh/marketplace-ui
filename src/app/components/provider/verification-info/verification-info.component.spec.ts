@@ -47,4 +47,11 @@ describe('VerificationInfoComponent', () => {
     setVerification({ label: 'Verified', status: 'positive' });
     expect(objectStatus()?.querySelector('.sap-icon--verified')).not.toBeNull();
   });
+
+  it('falls back to the informative status when no status is provided', () => {
+    setVerification({ label: 'Verified' });
+    expect(
+      objectStatus()?.classList.contains('fd-object-status--informative'),
+    ).toBe(true);
+  });
 });
