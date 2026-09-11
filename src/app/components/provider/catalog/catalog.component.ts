@@ -31,12 +31,10 @@ import {
 } from '@fundamental-ngx/core/layout-panel';
 import {
   FdpSelectionChangeEvent,
-  FormGroupComponent,
   MultiComboboxSelectionChangeEvent,
   SuggestionItem,
 } from '@fundamental-ngx/platform';
 import {
-  FormFieldComponent,
   MultiComboboxComponent,
   SelectComponent,
 } from '@fundamental-ngx/platform/form';
@@ -66,8 +64,6 @@ import { ProvidersUtils } from 'services/providers.utils';
     LayoutPanelFooterComponent,
     CatalogItemComponent,
     EmptyCatalogComponent,
-    FormFieldComponent,
-    FormGroupComponent,
     SelectComponent,
   ],
   templateUrl: './catalog.component.html',

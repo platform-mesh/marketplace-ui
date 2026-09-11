@@ -22,48 +22,41 @@
               (selectionChange)="setCategoryFilter($event)"
             />
           </div>
-          <fdp-form-group
-            class="catalog-page-header-filter"
-            columnLayout="XL1-L1-M1-S1"
-            [fieldColumnLayout]="{ XL: 12, L: 12, M: 12, S: 12 }"
-            [noLabelLayout]="true"
-          >
-            <fdp-form-field id="provider" [column]="1" [noLabelLayout]="true">
-              <label fd-form-label>Provider</label>
-              <fdp-multi-combobox
-                contentDensity="compact"
-                displayKey="label"
-                lookupKey="id"
-                name="Provider"
-                placeholder="All"
-                [autoResize]="true"
-                [dataSource]="providers"
-                [selectedItems]="filter.providers"
-                (selectionChange)="setProvidersFilter($event)"
-              />
-            </fdp-form-field>
-          </fdp-form-group>
+          <div class="catalog-page-header-filter">
+            <label fd-form-label>Provider</label>
+            <fdp-multi-combobox
+              contentDensity="compact"
+              displayKey="label"
+              lookupKey="id"
+              name="Provider"
+              placeholder="All"
+              [autoResize]="true"
+              [dataSource]="providers"
+              [selectedItems]="filter.providers"
+              (selectionChange)="setProvidersFilter($event)"
+            />
+          </div>
         }
-      </div>
 
-      <div class="search">
-        @if (!disableSearch) {
-          <fdp-search-field
-            contentDensity="compact"
-            data-testid="ngx-utilities-search-input"
-            fd-initial-focus="true"
-            [disableRefresh]="true"
-            [inputText]="initialFilter"
-            [placeholder]="searchPlaceholder"
-            i18n-placeholder="
-              search field placeholder|Search field on the Catalog
-            "
-            [suggestions]="suggestions"
-            (cancelSearch)="onInputChange()"
-            (inputChange)="onInputChange($event.text)"
-            (searchSubmit)="onInputChange($event.text)"
-          />
-        }
+        <div class="search">
+          @if (!disableSearch) {
+            <fdp-search-field
+              contentDensity="compact"
+              data-testid="ngx-utilities-search-input"
+              fd-initial-focus="true"
+              [disableRefresh]="true"
+              [inputText]="initialFilter"
+              [placeholder]="searchPlaceholder"
+              i18n-placeholder="
+                search field placeholder|Search field on the Catalog
+              "
+              [suggestions]="suggestions"
+              (cancelSearch)="onInputChange()"
+              (inputChange)="onInputChange($event.text)"
+              (searchSubmit)="onInputChange($event.text)"
+            />
+          }
+        </div>
       </div>
     </fd-layout-panel-body>
     <fd-layout-panel-footer />
