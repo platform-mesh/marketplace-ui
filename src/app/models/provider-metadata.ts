@@ -116,8 +116,6 @@ export interface PermissionClaimSelectorRequirement {
 
 export interface ProviderMetadata {
   spec: {
-    tags?: string[];
-
     displayName: string;
     description?: string;
     type?: string;
