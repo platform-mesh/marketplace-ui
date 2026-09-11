@@ -1,11 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import {
   CardComponent,
   CardContentComponent,
@@ -39,36 +32,9 @@ import { Md5 } from 'ts-md5';
   styleUrl: './catalog-item.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CatalogItemComponent implements OnChanges, AfterViewInit {
-  /**
-   * Catalog data item to be displayed in the card
-   */
+export class CatalogItemComponent {
   @Input()
   data!: CatalogDataItem;
-
-  constructor(private elementRef: ElementRef<HTMLElement>) {}
-
-  ngOnChanges(): void {
-    this.ensureBadge();
-  }
-
-  ngAfterViewInit(): void {
-    this.ensureBadge();
-  }
-
-  private ensureBadge() {
-    if (!this.data.badge) {
-      return;
-    }
-    const badge =
-      this.elementRef.nativeElement.querySelector<HTMLElement>('.fd-badge');
-    if (!badge) {
-      return;
-    }
-
-    badge.style.backgroundColor = this.data.badge.color;
-    badge.tabIndex = -1;
-  }
 
   generateId(): string {
     if (this.data.image) {

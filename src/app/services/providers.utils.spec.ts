@@ -3,29 +3,22 @@ import { ProvidersUtils } from './providers.utils';
 
 describe('ProvidersUtils', () => {
   describe('getProviders', () => {
-    it('should return a list containing the community provider', () => {
-      const providers = ProvidersUtils.getProviders();
-      expect(providers).toEqual([{ label: 'Community', id: 'community' }]);
-    });
-  });
-
-  describe('isCommunityVerification', () => {
-    it('should return true when providerId is the community fallback id', () => {
-      expect(
-        ProvidersUtils.isCommunityVerification(
-          'community',
-          {} as CatalogDataItem,
-        ),
-      ).toBe(true);
+    it('should return an empty list when there is no data', () => {
+      expect(ProvidersUtils.getProviders()).toEqual([]);
     });
 
-    it('should return false when providerId is not the community fallback id', () => {
-      expect(
-        ProvidersUtils.isCommunityVerification(
-          'hyperspace',
-          {} as CatalogDataItem,
-        ),
-      ).toBe(false);
+    it('should derive unique, sorted and capitalized provider options from the data types', () => {
+      const data = [
+        { type: 'managed' },
+        { type: 'composition' },
+        { type: 'managed' },
+        { type: undefined },
+      ] as CatalogDataItem[];
+
+      expect(ProvidersUtils.getProviders(data)).toEqual([
+        { label: 'Composition', id: 'composition' },
+        { label: 'Managed', id: 'managed' },
+      ]);
     });
   });
 
@@ -34,26 +27,25 @@ describe('ProvidersUtils', () => {
       {
         description: 'no providers filter — should always include',
         filter: { providers: [] },
-        item: { verification: undefined },
+        item: { type: undefined },
         expected: true,
       },
       {
-        description:
-          'no providers filter with a verification type — should include',
-        filter: { providers: [] },
-        item: { verification: { type: 'hyperspace' } },
-        expected: true,
-      },
-      {
-        description: 'matching verification type — should include',
-        filter: { providers: [{ label: 'Community', id: 'community' }] },
-        item: { verification: { type: 'community' } },
+        description: 'matching type — should include',
+        filter: { providers: [{ label: 'Composition', id: 'composition' }] },
+        item: { type: 'composition' },
         expected: true,
       },
       {
         description: 'non-matching filter — should exclude',
-        filter: { providers: [{ label: 'Hyperspace', id: 'hyperspace' }] },
-        item: { verification: { type: 'other' } },
+        filter: { providers: [{ label: 'Managed', id: 'managed' }] },
+        item: { type: 'composition' },
+        expected: false,
+      },
+      {
+        description: 'item without a type — should exclude when a filter is set',
+        filter: { providers: [{ label: 'Managed', id: 'managed' }] },
+        item: { type: undefined },
         expected: false,
       },
       {
@@ -61,11 +53,11 @@ describe('ProvidersUtils', () => {
           'multiple providers filter with one matching — should include',
         filter: {
           providers: [
-            { label: 'Hyperspace', id: 'hyperspace' },
-            { label: 'Community', id: 'community' },
+            { label: 'Managed', id: 'managed' },
+            { label: 'Composition', id: 'composition' },
           ],
         },
-        item: { verification: { type: 'hyperspace' } },
+        item: { type: 'composition' },
         expected: true,
       },
     ])('$description', ({ filter, item, expected }) => {

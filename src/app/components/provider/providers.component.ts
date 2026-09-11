@@ -103,7 +103,7 @@ export class ProvidersComponent implements OnInit {
               provider: marketplaceEntry.spec.providerMetadata.spec.provider,
               badge: {
                 text: badge,
-                color: 'var(--sapPositiveColor)',
+                status: 'neutral',
               },
               labels,
               additionalInfo: this.buildAdditionalInfo(

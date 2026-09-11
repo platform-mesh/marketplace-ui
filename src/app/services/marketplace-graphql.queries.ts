@@ -72,6 +72,9 @@ export const getMarketplaceEntriesQuery = gql`
               }
               providerMetadata {
                 spec {
+                  category
+                  type
+                  serviceLevel
                   contacts {
                     displayName
                     email
@@ -93,6 +96,15 @@ export const getMarketplaceEntriesQuery = gql`
                       url
                       data
                     }
+                  }
+                  labels {
+                    title
+                    color
+                    glyph
+                  }
+                  mainLink {
+                    displayName
+                    url
                   }
                   preferredSupportChannels {
                     url
