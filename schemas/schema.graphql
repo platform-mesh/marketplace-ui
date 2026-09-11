@@ -928,6 +928,8 @@ type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecApiExportSpecMaximalPe
 """ProviderMetadataSpec defines the desired state of ProviderMetadata."""
 type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec {
   """"""
+  category: String
+  """"""
   contacts: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecContacts]
   """
   Additional information that should be stored with the provider metadata.
@@ -946,13 +948,31 @@ type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpec {
   """"""
   icon: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecIcon
   """"""
+  labels: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLabels]
+  """"""
   links: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks]
+  """"""
+  mainLink: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLinks
   """"""
   preferredSupportChannels: [MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecPreferredSupportChannels]
   """"""
+  serviceLevel: String
+  """"""
   tags: [String]
   """"""
+  type: String
+  """"""
   verification: MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecVerification
+}
+
+"""Label is a colored chip rendered in the provider card header."""
+type MarketplacePlatformMeshIoV1alpha1MarketplaceEntrySpecProviderMetadataSpecLabels {
+  """The chip text."""
+  title: String
+  """The Fundamental info-label color category (1-10)."""
+  color: String
+  """Optional SAP-icons glyph name shown on the chip."""
+  glyph: String
 }
 
 """

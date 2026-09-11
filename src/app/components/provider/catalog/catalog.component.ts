@@ -190,7 +190,7 @@ export class CatalogComponent implements OnInit, OnChanges {
     }
     if (this.filterHeader) {
       this.categories = CategoriesUtils.getCategories(this.data);
-      this.providers = ProvidersUtils.getProviders();
+      this.providers = ProvidersUtils.getProviders(this.data);
     }
   }
 
