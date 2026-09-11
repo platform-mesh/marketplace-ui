@@ -10,13 +10,32 @@
 .catalog-page-header-body {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
 }
 .catalog-page-header-filter-wrapper {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-end;
+  gap: 1rem;
   flex-wrap: wrap;
+  width: 100%;
+  container-type: inline-size;
+  container-name: catalog-filters;
+}
+
+.catalog-page-header-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 250px;
+}
+
+.catalog-page-header-filter fdp-multi-combobox {
+  width: 100%;
+}
+
+.catalog-page-header-filter fdp-multi-combobox ::ng-deep .fd-popover-custom {
+  width: 100%;
 }
 
 .header-panel {
@@ -30,8 +49,16 @@
 }
 
 .search {
-  margin-top: 2rem;
-  flex: 0.7;
+  flex: 0 1 auto;
+  width: 500px;
+  min-width: 250px;
+  margin-left: auto;
+}
+
+@container catalog-filters (max-width: 1050px) {
+  .search {
+    margin-left: 0;
+  }
 }
 
 .cdk-overlay-container {
