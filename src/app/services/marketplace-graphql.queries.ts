@@ -101,6 +101,12 @@ export const getMarketplaceEntriesQuery = gql`
                   detailViewExtensions {
                     url
                   }
+                  verification {
+                    label
+                    status
+                    icon
+                    hint
+                  }
                 }
               }
             }

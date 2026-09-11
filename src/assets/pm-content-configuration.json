@@ -5,7 +5,7 @@
       "nodes": [
         {
           "pathSegment": "marketplace-local",
-          "entityType": "main.core_platform-mesh_io_account",
+          "entityType": "main",
           "order": 700,
           "label": "Marketplace (local)",
           "icon": "retail-store",
@@ -16,7 +16,7 @@
         },
         {
           "pathSegment": "provider",
-          "entityType": "main.core_platform-mesh_io_account",
+          "entityType": "main",
           "hideFromNav": true,
           "children": [
             {

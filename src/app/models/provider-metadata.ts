@@ -1,5 +1,5 @@
 import { MessageStripType } from '@fundamental-ngx/core';
-import { Verification } from 'models/verification';
+import { VerificationInfo } from 'models/verification-info';
 
 export interface MessageStripConfig {
   type: MessageStripType;
@@ -120,6 +120,8 @@ export interface ProviderMetadata {
 
     displayName: string;
     description?: string;
+    type?: string;
+    category?: string;
 
     data?: string | Record<string, unknown>;
     contacts?: Contact[];
@@ -133,13 +135,12 @@ export interface ProviderMetadata {
 
     // not supported yet
     image?: string; // data:image/x;base64,
-    category?: string;
     creationTimestamp?: string;
     labels?: Label[];
     mainLink?: Link;
     provider?: string;
     serviceLevel?: ServiceLevel;
-    verification?: Verification;
+    verification?: VerificationInfo;
   };
 }
 

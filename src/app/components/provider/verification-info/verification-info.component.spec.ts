@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { VerificationInfoComponent } from './verification-info.component';
+import { VerificationInfo } from 'models/verification-info';
 
 describe('VerificationInfoComponent', () => {
   let component: VerificationInfoComponent;
@@ -15,53 +16,42 @@ describe('VerificationInfoComponent', () => {
     fixture.detectChanges();
   });
 
+  const setVerification = (info: VerificationInfo | undefined) => {
+    fixture.componentRef.setInput('verificationInfo', info);
+    fixture.detectChanges();
+  };
+
+  const objectStatus = (): HTMLElement | null =>
+    fixture.nativeElement.querySelector('[fd-object-status]');
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('mapVerificationInfo', () => {
-    it('should return communityVerificationInfo when verification is undefined', () => {
-      fixture.componentRef.setInput('verification', undefined);
-      fixture.detectChanges();
-      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
-    });
-
-    it('should return communityVerificationInfo for community verification type', () => {
-      fixture.componentRef.setInput('verification', { type: 'community' });
-      fixture.detectChanges();
-      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
-    });
-
-    it('should return communityVerificationInfo for any unknown verification type', () => {
-      fixture.componentRef.setInput('verification', { type: 'some-unknown-type' });
-      fixture.detectChanges();
-      expect(component.mapVerificationInfo()).toEqual(component.communityVerificationInfo);
-    });
+  it('renders nothing when no verification info is provided', () => {
+    setVerification(undefined);
+    expect(objectStatus()).toBeNull();
   });
 
-  describe('communityVerificationInfo', () => {
-    it('should have showIcon false', () => {
-      expect(component.communityVerificationInfo.showIcon).toBe(false);
-    });
-
-    it('should have label Community', () => {
-      expect(component.communityVerificationInfo.label).toBe('Community');
-    });
-
-    it('should have objectStatus neutral', () => {
-      expect(component.communityVerificationInfo.objectStatus).toBe('neutral');
-    });
+  it('renders the object status when verification info is provided', () => {
+    setVerification({ label: 'Verified', status: 'positive' });
+    expect(objectStatus()).not.toBeNull();
   });
 
-  describe('verificationInfo computed signal', () => {
-    it('should return communityVerificationInfo for any verification input', () => {
-      fixture.componentRef.setInput('verification', { type: 'some-type' });
-      fixture.detectChanges();
-      expect(component.verificationInfo()).toEqual(component.communityVerificationInfo);
-    });
+  it('uses the icon from the data when provided', () => {
+    setVerification({ label: 'Certified', status: 'positive', icon: 'accept' });
+    expect(objectStatus()?.querySelector('.sap-icon--accept')).not.toBeNull();
+  });
 
-    it('should return communityVerificationInfo when no input is set', () => {
-      expect(component.verificationInfo()).toEqual(component.communityVerificationInfo);
-    });
+  it('falls back to the verified glyph when no icon is provided', () => {
+    setVerification({ label: 'Verified', status: 'positive' });
+    expect(objectStatus()?.querySelector('.sap-icon--verified')).not.toBeNull();
+  });
+
+  it('falls back to the informative status when no status is provided', () => {
+    setVerification({ label: 'Verified' });
+    expect(
+      objectStatus()?.classList.contains('fd-object-status--informative'),
+    ).toBe(true);
   });
 });
