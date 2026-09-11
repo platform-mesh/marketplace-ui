@@ -12,10 +12,10 @@ describe('CatalogComponentService', () => {
   describe('getSortedDataByInstallStatus', () => {
     it('should sort installed items first', () => {
       const data: CatalogDataItem[] = [
-        { title: 'Item 1', badge: { text: 'Beta', color: '' } },
-        { title: 'Item 2', badge: { text: 'INSTALLED', color: '' } },
+        { title: 'Item 1', badge: { text: 'Beta' } },
+        { title: 'Item 2', badge: { text: 'INSTALLED' } },
         { title: 'Item 3' },
-        { title: 'Item 4', badge: { text: 'INSTALLED', color: '' } },
+        { title: 'Item 4', badge: { text: 'INSTALLED' } },
       ];
 
       const sortedData = getSortedDataByInstallStatus(data);
@@ -32,8 +32,8 @@ describe('CatalogComponentService', () => {
 
     it('should handle an array with no installed items', () => {
       const data: CatalogDataItem[] = [
-        { badge: { text: '', color: '' } },
-        { badge: { text: 'Not installed', color: '' } },
+        { badge: { text: '' } },
+        { badge: { text: 'Not installed' } },
       ];
 
       const sortedData = getSortedDataByInstallStatus(data);
@@ -82,13 +82,13 @@ describe('CatalogComponentService', () => {
         { title: 'something else', image: 'searched' },
         {
           title: 'something else again',
-          badge: { text: 'searched', color: 'test' },
+          badge: { text: 'searched' },
           labels: [],
           additionalInfo: [],
         },
         {
           title: 'something else again',
-          badge: { text: 'searched', color: 'test' },
+          badge: { text: 'searched' },
           additionalInfo: [
             { label: 'some label', value: 'searched' },
             { label: 'other label', value: 'other label value' },
@@ -141,7 +141,7 @@ describe('CatalogComponentService', () => {
         { title: 'something else', image: 'searched' },
         {
           title: 'something else again',
-          badge: { text: 'searched', color: 'test' },
+          badge: { text: 'searched' },
         },
         { additionalInfo: [{ label: 'some label', value: 'searched' }] },
       ];

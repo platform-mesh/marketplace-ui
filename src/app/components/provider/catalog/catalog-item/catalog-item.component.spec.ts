@@ -1,14 +1,13 @@
 import { CatalogItemComponent } from './catalog-item.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CatalogDataItem } from 'models/index';
-import { mock } from 'vitest-mock-extended';
 
 const buildItem = (
   overrides: Partial<CatalogDataItem> = {},
 ): CatalogDataItem => ({
   title: 'Test Provider',
   description: 'A test provider description',
-  badge: { text: 'INSTALLED', color: 'var(--sapPositiveColor)' },
+  badge: { text: 'INSTALLED', status: 'positive' },
   labels: [{ color: '1', title: 'Beta' }],
   additionalInfo: [{ label: 'Category', value: 'AI' }],
   verification: { label: 'Community', status: 'neutral' },
@@ -63,39 +62,6 @@ describe('CatalogItemComponent', () => {
       );
       fixture.detectChanges();
       expect(component.generateId()).toBe('no-icon');
-    });
-  });
-
-  describe('ensureBadge', () => {
-    it('should set badge backgroundColor and tabIndex when badge and DOM element exist', () => {
-      const badgeColor = '#ff0000';
-      const data = buildItem({
-        badge: { text: 'INSTALLED', color: badgeColor },
-      });
-      fixture.componentRef.setInput('data', data);
-      fixture.detectChanges();
-
-      const badge = mock<HTMLElement>();
-      badge.style = { backgroundColor: '' } as any;
-      badge.tabIndex = 0;
-      component['elementRef'].nativeElement.querySelector = vi
-        .fn()
-        .mockReturnValue(badge);
-
-      component['ensureBadge']();
-
-      expect(
-        component['elementRef'].nativeElement.querySelector,
-      ).toHaveBeenCalledWith('.fd-badge');
-      expect(badge.style.backgroundColor).toEqual(badgeColor);
-      expect(badge.tabIndex).toEqual(-1);
-    });
-
-    it('should not throw when badge is not defined', () => {
-      fixture.componentRef.setInput('data', buildItem({ badge: undefined }));
-      fixture.detectChanges();
-
-      expect(() => component['ensureBadge']()).not.toThrow();
     });
   });
 });
