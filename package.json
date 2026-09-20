@@ -71,7 +71,7 @@
     "@luigi-project/testing-utilities": "2.29.0",
     "@openmfp/config-prettier": "0.9.2",
     "@openmfp/eslint-config-typescript": "0.7.14",
-    "@openmfp/gha-cache": "0.5.35",
+    "@openmfp/gha-cache": "0.5.38",
     "@types/node": "24.13.3",
     "@vitest/coverage-v8": "4.1.11",
     "angular-eslint": "22.5.0",
