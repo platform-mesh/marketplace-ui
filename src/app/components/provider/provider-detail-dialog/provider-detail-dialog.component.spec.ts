@@ -4,12 +4,13 @@ import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { MarketplaceEntry } from 'models/index';
 import { PROVIDER_INSTANCE_INSTALLED } from 'models/luigi-go-back';
 import { MockProvider } from 'ng-mocks';
-import { Subject, of } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
 import {
   IContextMessage,
   LuigiClient,
   PmLuigiContextService,
 } from 'services/luigi';
+import { NotificationService } from 'services/notification.service';
 import { ProviderService } from 'services/provider.service';
 import {
   selectProviderMetadata,
@@ -42,6 +43,7 @@ describe('ProviderDetailDialogComponent', () => {
   let fixture: ComponentFixture<ProviderDetailDialogComponent>;
   let luigiContextSubject: Subject<IContextMessage>;
   let luigiLinkManagerGoBackSpy: Mock;
+  let notificationServiceMock: { openErrorStrip: Mock };
   let providerServiceMock: {
     isInstallable: Mock;
     isUninstallable: Mock;
@@ -73,11 +75,13 @@ describe('ProviderDetailDialogComponent', () => {
       navigateToProviderDetails: vi.fn(),
       mapServiceLevel: vi.fn().mockReturnValue('24x7'),
     };
+    notificationServiceMock = { openErrorStrip: vi.fn() };
 
     await TestBed.configureTestingModule({
       imports: [ProviderDetailDialogComponent],
       providers: [
         { provide: ProviderService, useValue: providerServiceMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
         {
           provide: LuigiClient,
           useValue: {
@@ -187,6 +191,21 @@ describe('ProviderDetailDialogComponent', () => {
       expect(luigiLinkManagerGoBackSpy).toHaveBeenCalledWith(
         PROVIDER_INSTANCE_INSTALLED,
       );
+    });
+
+    it('should show an error notification and not navigate back when installProviderInstance fails', () => {
+      const entry = buildMarketplaceEntry();
+      component.marketplaceEntry = entry;
+      providerServiceMock.installProviderInstance.mockReturnValue(
+        throwError(() => new Error('access denied')),
+      );
+
+      component['installExtension']();
+
+      expect(notificationServiceMock.openErrorStrip).toHaveBeenCalledWith(
+        'access denied',
+      );
+      expect(luigiLinkManagerGoBackSpy).not.toHaveBeenCalled();
     });
   });
 

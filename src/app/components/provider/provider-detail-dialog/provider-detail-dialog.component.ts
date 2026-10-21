@@ -45,6 +45,7 @@ import { VerificationInfo } from 'models/verification-info';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { filter, mergeMap, tap } from 'rxjs/operators';
 import { LuigiClient, PmLuigiContextService } from 'services/luigi';
+import { NotificationService } from 'services/notification.service';
 import { ProviderService } from 'services/provider.service';
 import { isProviderInstanceChanging } from 'state/changing-provider-instance.selectors';
 import { loadProviderMetadata } from 'state/provider-metadata.action';
@@ -92,6 +93,7 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   private luigiClient = inject(LuigiClient);
   private contextService = inject(PmLuigiContextService);
   private providerService = inject(ProviderService);
+  private notificationService = inject(NotificationService);
 
   marketplaceEntryObservable: Observable<MarketplaceEntry>;
   marketplaceEntriesObservable: Observable<readonly MarketplaceEntry[]>;
@@ -158,11 +160,16 @@ export class ProviderDetailDialogComponent implements OnInit, OnDestroy {
   protected installExtension(): void {
     this.providerService
       .installProviderInstance(this.marketplaceEntry)
-      .subscribe(() => {
-        this.luigiClient.linkManager().goBack(PROVIDER_INSTANCE_INSTALLED);
-        if (this.marketplaceEntry) {
-          triggerMatomoEvent('InstallExtension', this.getMatomoEventObject());
-        }
+      .subscribe({
+        next: () => {
+          this.luigiClient.linkManager().goBack(PROVIDER_INSTANCE_INSTALLED);
+          if (this.marketplaceEntry) {
+            triggerMatomoEvent('InstallExtension', this.getMatomoEventObject());
+          }
+        },
+        error: (error: Error) => {
+          this.notificationService.openErrorStrip(error.message);
+        },
       });
   }
 
