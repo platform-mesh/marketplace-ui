@@ -42,7 +42,7 @@ jobs:
     with:
       appVersion: ${{ needs.create-version.outputs.version }}
       chart: marketplace-ui
-      targetRepository: platform-mesh/helm-charts
+      targetRepository: platform-mesh/platform-mesh
 
   sbom:
     needs: [create-version, docker-build-push]
