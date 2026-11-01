@@ -15,11 +15,11 @@ concurrency:
 
 jobs:
   test:
-    uses: platform-mesh/.github/.github/workflows/job-node-test.yml@aaab2be870b21521fd9b35888065268432bf4370 # main
+    uses: platform-mesh/.github/.github/workflows/job-node-test.yml@e5c3e3088d9399589459d5589d5a72e112d9ce68 # main
     secrets: inherit
 
   docker-build:
-    uses: platform-mesh/.github/.github/workflows/job-docker-build.yml@aaab2be870b21521fd9b35888065268432bf4370 # main
+    uses: platform-mesh/.github/.github/workflows/job-docker-build.yml@e5c3e3088d9399589459d5589d5a72e112d9ce68 # main
     with:
       imageTagName: ghcr.io/platform-mesh/marketplace-ui
 
