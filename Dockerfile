@@ -1,4 +1,4 @@
-FROM node:24.22.1@sha256:d862bb5d082c5ae0210ac07e8c0344cb8cf7bef6d78e9b8c50c179da923108ea AS build
+FROM node:24.22.2@sha256:8fa96264f302f58bbb13aa7339c541547b56975766ce956c875da149452a3e40 AS build
 
 COPY ./ /app
 
@@ -7,7 +7,7 @@ RUN npm ci
 
 RUN npm run build
 
-FROM nginx:alpine-slim@sha256:f45171d36c76a8b2f5ef97108a3a8a2294248a6578a0a180edc2d78f7d2edc26
+FROM nginx:alpine-slim@sha256:4c734d33ee731135dc9f2349914a34551c920f4451fca8bb05bf5880eb9079e8
 COPY --from=build /app/dist /usr/share/nginx/html/ui/marketplace/ui
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 8080
