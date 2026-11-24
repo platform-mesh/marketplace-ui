@@ -19,16 +19,16 @@ concurrency:
 
 jobs:
   test:
-    uses: platform-mesh/.github/.github/workflows/job-node-test.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-node-test.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     secrets: inherit
 
   create-version:
-    uses: platform-mesh/.github/.github/workflows/job-create-version.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-create-version.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     secrets: inherit
 
   docker-build-push:
     needs: [create-version, test]
-    uses: platform-mesh/.github/.github/workflows/job-docker-build-push.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-docker-build-push.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     with:
       imageTagName: ghcr.io/platform-mesh/marketplace-ui
       version: ${{ needs.create-version.outputs.version }}
@@ -37,7 +37,7 @@ jobs:
 
   update-version:
     needs: [create-version, docker-build-push]
-    uses: platform-mesh/.github/.github/workflows/job-chart-version-update.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-chart-version-update.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     secrets: inherit
     with:
       appVersion: ${{ needs.create-version.outputs.version }}
@@ -46,7 +46,7 @@ jobs:
 
   sbom:
     needs: [create-version, docker-build-push]
-    uses: platform-mesh/.github/.github/workflows/job-sbom.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-sbom.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     with:
       imageReference: ghcr.io/platform-mesh/marketplace-ui:${{ needs.create-version.outputs.version }}
 
@@ -59,7 +59,7 @@ jobs:
       packages: write # push OCM component to ghcr.io
       id-token: write # keyless OCM signing
     steps:
-      - uses: platform-mesh/.github/.github/actions/image-ocm@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+      - uses: platform-mesh/.github/.github/actions/image-ocm@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
         with:
           imageReference: ghcr.io/platform-mesh/marketplace-ui:${{ needs.create-version.outputs.version }}
           appVersion: ${{ needs.create-version.outputs.version }}
@@ -68,7 +68,7 @@ jobs:
 
   scan-sbom:
     needs: [create-version, docker-build-push, sbom, image-ocm]
-    uses: platform-mesh/.github/.github/workflows/job-trivy-sbom.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main
+    uses: platform-mesh/.github/.github/workflows/job-trivy-sbom.yml@15b291d550257bc590a89917bfbbe0e30bf08895 # main # zizmor: ignore[stale-action-refs]
     permissions:
       contents: read
       packages: read
